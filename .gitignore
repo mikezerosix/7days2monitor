@@ -56,3 +56,5 @@ $RECYCLE.BIN/
 secret.properties
 **/.idea
 *.iml
+target/
+**/admin.xml
