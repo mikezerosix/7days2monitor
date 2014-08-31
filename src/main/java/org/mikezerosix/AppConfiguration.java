@@ -7,6 +7,8 @@ import ch.qos.logback.core.ConsoleAppender;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.entities.Settings;
 import org.mikezerosix.entities.SettingsRepository;
+import org.mikezerosix.entities.UserRepository;
+import org.mikezerosix.rest.LoginResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,8 +31,13 @@ public class AppConfiguration {
     private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     public static final String PASSWORD = "password";
     public static final String PORT = "port";
+    public static final String PROTECTED_URL = "/protected/";
+
     @Inject
     private SettingsRepository settingsRepository;
+
+    @Inject
+    private UserRepository userRepository;
 
     @PostConstruct
     public void init() throws SQLException {
@@ -51,8 +58,8 @@ public class AppConfiguration {
         return settingsRepository.save(new Settings(value, key));
     }
 
-    private String getSetting(String password) {
-        Settings settings = settingsRepository.findOne(password);
+    private String getSetting(String key) {
+        Settings settings = settingsRepository.findOne(key);
         return settings != null ? settings.getValue() : null;
     }
 
@@ -86,6 +93,10 @@ public class AppConfiguration {
         } catch (NumberFormatException e) {
             return 9090;
         }
+    }
+
+    public LoginResource loginResource() {
+        return new LoginResource(userRepository);
     }
 
 }

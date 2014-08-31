@@ -1,6 +1,23 @@
-var sevenMonitor = angular.module('sevenMonitor',['ngRoute']);
+'use strict';
 
-sevenMonitor.config(function($routeProvider){
+var sevenMonitor = angular.module('sevenMonitor',['ngRoute','ngResource']);
+
+sevenMonitor.config(['$routeProvider' , function($routeProvider) {
+
     $routeProvider
-    .when('/', {templateUrl: 'index.html', controller: 'MainController'});
-});
+    .when('/', {
+      templateUrl: 'views/main.html',
+      controller: 'MainCtrl',
+      resolve: {
+            user: function(){
+                return 'yyyy';
+        }
+      }
+    })
+    .when('/login', {
+          templateUrl: 'views/login.html',
+          controller: 'LoginCtrl'
+      })
+    ;
+}]);
+

@@ -1,22 +1,21 @@
 package org.mikezerosix;
 
+import org.apache.commons.io.IOUtils;
+import org.mikezerosix.rest.LoginResource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import spark.Filter;
-import spark.Request;
-import spark.Response;
-import spark.Spark;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import static spark.Spark.*;
 import static spark.SparkBase.setPort;
-import static spark.SparkBase.staticFileLocation;
 
 public class App {
-    public static final String PROTECTED = "/protected/";
+
     static   String user  = null;
+    private static LoginResource loginResource;
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
@@ -25,7 +24,8 @@ public class App {
         String password = app.initPassword();
         int port = app.getPort();
         setPort(port);
-        reqisterRoutes();
+        staticFileLocation("/static");
+        loginResource = app.loginResource();
 
         System.out.println("HTTP service running in port: " + port + " password: " + password);
 
@@ -34,28 +34,4 @@ public class App {
         //2.1. if ftp conn *&
     }
 
-
-    private static void reqisterRoutes() {
-
-
-        staticFileLocation("/static");
-
-        before(PROTECTED + "*", (request, response) -> {
-            if (user == null || !user.equals(request.session().attribute("user"))) {
-                halt(401, "You are not welcome here");
-            }
-        });
-        get(PROTECTED + "settings", (request, response) -> {
-            return "7 days to die monitor ";
-        });
-
-        post(PROTECTED + "settings", (request, response) -> {
-            return "7 days to die monitor ";
-        });
-
-        put(PROTECTED + "settings", (request, response) -> {
-            return "login";
-        });
-
-    }
 }

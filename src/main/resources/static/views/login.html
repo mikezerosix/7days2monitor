@@ -1,5 +1,8 @@
 <div>
-    <input type="text" ng-model="user"></input>
-    <input type="text" ng-model="password"></input>
-    <input type="submit" ng-click="submit()">
+    <span></span>
+    <form ng-submit="submit()">
+        <input ng-model="user.username" type="text" name="user" placeholder="Username" />
+        <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
+        <input type="submit" value="Login" />
+    </form>
 </div>
