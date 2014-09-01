@@ -1,28 +1,33 @@
 'use strict';
 
-var sevenMonitor = angular.module('sevenMonitor',['ngRoute','ngResource'])
-.config(function ($routeProvider) {
+var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource'])
+  .config(function ($routeProvider) {
+
+    var checkRouting = function ($q, $rootScope, $location) {
+      if ($rootScope.user) {
+        return true;
+      } else {
+        $location.path("/login");
+        return false;
+      }
+    };
 
     $routeProvider
-    .when('/', {
-      templateUrl: '/views/main.html',
-      controller: 'MainCtrl',
+      .when('/', {
+        templateUrl: '/views/main.html',
+        controller: 'MainCtrl',
         resolve: {
-          loggedInUser: ['$q', function($q) {
-            var deferred = $q.defer();
-            deferred.resolve({name: 'foo'});
-            return deferred.promise;
-          }]
+          authorized: checkRouting
         }
-    })
-    .when('/login', {
-          templateUrl: '/views/login.html',
-          controller: 'LoginCtrl'
+      })
+      .when('/login', {
+        templateUrl: '/views/login.html',
+        controller: 'LoginCtrl'
       })
       .otherwise({
-                redirectTo: '/'
-            });
+        redirectTo: '/'
+      });
 
 
-});
+  });
 

@@ -1,6 +1,6 @@
 'use strict';
 
 sevenMonitor
-.controller('MainCtrl', function($scope, loggedInUser) {
-  $scope.user = loggedInUser;
+.controller('MainCtrl', function($scope, authorized) {
+  $scope.authorized = authorized;
 });
