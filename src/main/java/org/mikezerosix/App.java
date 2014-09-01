@@ -25,6 +25,7 @@ public class App {
         int port = app.getPort();
         setPort(port);
         staticFileLocation("/static");
+
         loginResource = app.loginResource();
 
         System.out.println("HTTP service running in port: " + port + " password: " + password);
