@@ -14,7 +14,7 @@ public class LoginResource {
     public LoginResource(UserRepository userRepository) {
 
         get(PATH, (request, response) -> {
-            return SessionUtil.getSessionUser(request) != null;
+            return toJson(SessionUtil.getSessionUser(request) != null);
         });
 
         post(PATH, (request, response) -> {

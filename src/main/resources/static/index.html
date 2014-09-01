@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html ng-app="sevenMonitor">
+<html  xmlns:ng="http://angularjs.org" ng-app="sevenMonitor">
 <head lang="en">
     <base href="/">
     <meta charset="UTF-8">
     <title>7 Days to Monitor</title>
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
     <script src="js/angular.min.js"></script>
     <script src="js/angular-resource.min.js"></script>
     <script src="js/angular-route.min.js"></script>
+    <script src="js/ui-bootstrap-custom-0.10.0.min.js"></script>
+    <script src="js/ui-bootstrap-custom-tpls-0.10.0.min.js"></script>
+
     <script src="js/app.js"></script>
 
+    <script src="js/controller/MenuCtrl.js"></script>
     <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/LoginCtrl.js"></script>
+    <script src="js/controller/SettingsCtrl.js"></script>
+
 </head>
 <body>
-  <h1>7 Days to monitor</h1>
+<div class="top" ng-controller="MenuCtrl">
+    <div class="top-banner">
+        <div class="title">7 Days to monitor</div>
+        <div class="logout"><a href="#" ng-click="logout()">Log out</a></div>
+    </div>
+
+    <div style="float: none;"></div>
+
+    <tabset>
+        <tab heading="Main" ng-click="selectTab('main')"></tab>
+        <tab heading="Settings" ng-click="selectTab('settings')"></tab>
+        <tab heading="Chat" ng-click="selectTab('chat')"></tab>
+    </tabset>
+</div>
+<div style="witdh: 100%" class="content">
 
     <ng-view></ng-view>
+
+</div>
 </body>
 </html>

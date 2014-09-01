@@ -7,10 +7,9 @@ sevenMonitor
 
     $http.post('/protected/login', $scope.user)
       .success(function (data) {
-        alert('Happy, happy, joy, joy !!!');
-        $rootScope.user = true;
-        alert($rootScope.user);
-        $location.path = "/main";
+        $rootScope.$apply(function() {
+            $location.path("/main");
+        });
       })
       .error(function (status) {
         alert('Error: ' + status);

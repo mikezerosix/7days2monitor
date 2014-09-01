@@ -1,0 +1,15 @@
+
+.top-banner .title {
+  font-size: 2em;
+  width: 49%;
+  text-align: left;
+  vertical-align: top;
+  display: inline;
+}
+.top-banner .logout {
+  width: 49%;
+  text-align: right;
+  vertical-align: top;
+  display: inline;
+  float: right;
+}
