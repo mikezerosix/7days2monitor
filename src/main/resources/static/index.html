@@ -18,13 +18,22 @@
     <script src="js/app.js"></script>
 
     <script src="js/controller/MenuCtrl.js"></script>
-    <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/LoginCtrl.js"></script>
+    <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/SettingsCtrl.js"></script>
+    <script src="js/PlayersCtrl.js"></script>
 
 </head>
 <body>
-<div class="top" ng-controller="MenuCtrl">
+<div ng-if="authorized === false" ng-controller="LoginCtrl">
+    <h2>Login</h2>
+    <form ng-submit="submit()">
+        <input ng-model="user.name" type="text" name="user" placeholder="Username" />
+        <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
+        <input type="submit" value="Submit"/>
+    </form>
+</div>
+<div ng-if="authorized" class="top" ng-controller="MenuCtrl">
     <div class="top-banner">
         <div class="title">7 Days to monitor</div>
         <div class="logout"><a href="#" ng-click="logout()">Log out</a></div>
@@ -38,7 +47,8 @@
         <tab heading="Chat" ng-click="selectTab('chat')"></tab>
     </tabset>
 </div>
-<div style="witdh: 100%" class="content">
+
+<div ng-if="authorized" style="witdh: 100%" class="content">
 
     <ng-view></ng-view>
 

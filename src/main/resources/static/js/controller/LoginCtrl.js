@@ -1,15 +1,12 @@
 'use strict';
 sevenMonitor
 .controller('LoginCtrl', function ($rootScope, $scope, $http, $location, $route, $routeParams) {
-  $scope.user = {username: '', password: ''};
+  $scope.user = {name: '', password: ''};
   $scope.message = '';
   $scope.submit = function () {
-
     $http.post('/protected/login', $scope.user)
       .success(function (data) {
-        $rootScope.$apply(function() {
-            $location.path("/main");
-        });
+         $rootScope.authorized = true;
       })
       .error(function (status) {
         alert('Error: ' + status);

@@ -33,7 +33,7 @@ public class JdbcConfiguration {
     @Bean
     public DataSource dataSource() {
         String driverStr = "org.apache.derby.jdbc.EmbeddedDriver";
-        String jdbc = "jdbc:derby:7days2monitor;create=true";
+        String jdbc = "jdbc:derby:db;create=true";
         String username = "";
         String password = "";
         log.info("DB driver={}, url={}", driverStr, jdbc);
@@ -80,29 +80,6 @@ public class JdbcConfiguration {
 
         };
     }
-/*
-
-    void initDB() throws SQLException {
-        Connection connection = connectionProvider().get();
-        createTable(connection, "CREATE TABLE settings (id varchar(64) not null PRIMARY KEY, value varchar(256))");
-        createTable(connection, "CREATE TABLE server (id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), host varchar(64), game_port int, telnet_port int, ftp_port int, telnet_password varchar(64))");
-        createTable(connection, "CREATE TABLE chat (playerId bigint not null PRIMARY KEY, name varchar(40), ts timestamp default  CURRENT_TIMESTAMP not null, msg  LONG VARCHAR)");
-
-
-    }
-
-    private void createTable(Connection connection, String ddl) throws SQLException {
-        Statement statement = connection.createStatement();
-        try {
-            statement.execute(ddl);
-            System.out.println("Created table: " + ddl.split(" ")[2]);
-        } catch (SQLException e) {
-            if (!e.getSQLState().equals("X0Y32")){
-                throw e;
-            }
-        }
-    }
-*/
 
     @Bean
     public PlatformTransactionManager transactionManager() {

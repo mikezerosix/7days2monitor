@@ -7,15 +7,12 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
 
         $http.get('/protected/login')
           .success(function (data) {
-             if (data == 'true') {
-                    $rootScope.authorized = true;
-             } else {
-                   // $location.path("/login").replace();
-             }
+              console.log(' requestUser= ' + (data == 'true'))
+             $rootScope.authorized = (data == 'true');
           })
           .error(function (status) {
                 alert('Error checking session user: ' + status);
-
+                $rootScope.authorized = false;
           });
 
 
@@ -45,26 +42,12 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
                   }
 
                 })
-      .when('/login', {
-        templateUrl: '/views/login.html',
+      .when('/players', {
+        templateUrl: '/views/players.html',
         controller: 'LoginCtrl'
       });
 
 
   }])
-   .run( function($rootScope, $location) {
 
-      // register listener to watch route changes
-      $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-        if ( $rootScope.authorized == null ) {
-          // no logged user, we should be going to #login
-          if ( next.templateUrl == "/views/login.html" ) {
-            // already going to #login, no redirect needed
-          } else {
-            // not going to #login, we should redirect now
-            $location.path( "/login" );
-          }
-        }
-      });
-   })
 

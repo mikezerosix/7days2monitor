@@ -1,16 +1,22 @@
 package org.mikezerosix.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-@Entity
+@Entity(name = "usr")
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     private String name;
+    @NotNull
     private String password;
 
     private Date lastLogin;

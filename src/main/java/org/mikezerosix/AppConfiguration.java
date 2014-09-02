@@ -4,9 +4,11 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.entities.Settings;
 import org.mikezerosix.entities.SettingsRepository;
+import org.mikezerosix.entities.User;
 import org.mikezerosix.entities.UserRepository;
 import org.mikezerosix.rest.LoginResource;
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.File;
 import java.sql.SQLException;
 
 @Configuration
@@ -32,6 +35,7 @@ public class AppConfiguration {
     public static final String PASSWORD = "password";
     public static final String PORT = "port";
     public static final String PROTECTED_URL = "/protected/";
+    public static final String ADMIN = "admin";
 
     @Inject
     private SettingsRepository settingsRepository;
@@ -41,17 +45,23 @@ public class AppConfiguration {
 
     @PostConstruct
     public void init() throws SQLException {
-        log.info("Initializing application");
         initLogger();
+        initPassword();
     }
 
-    public String initPassword() {
-        if (settingsRepository.exists(PASSWORD)) {
-            return getSetting(PASSWORD);
+    public void initPassword() {
+        if (userRepository.count() < 1) {
+            String password = Credential.MD5.digest("" + Math.random()).substring(5, 13);
+            //TODO: remove debug
+            password = "x";
+            final String msg = "New installation, creating user: admin , password: " + password;
+            log.info(msg);
+            System.out.println(msg);
+            final User user = new User();
+            user.setName(ADMIN);
+            user.setPassword(password);
+            userRepository.save(user);
         }
-        String password = Credential.MD5.digest("" + Math.random()).substring(5,13);
-        Settings save = setSetting(password, PASSWORD);
-        return save.getValue();
     }
 
     private Settings setSetting(String key, String value) {
@@ -76,12 +86,12 @@ public class AppConfiguration {
         consoleAppender.setEncoder(ple);
         consoleAppender.setContext(lc);
         consoleAppender.start();
-        /*
+
         FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-        fileAppender.setFile(file);
+        fileAppender.setFile("7days2monitor.log");
         fileAppender.setEncoder(ple);
         fileAppender.setContext(lc);
-        fileAppender.start();*/
+        fileAppender.start();
 
     }
 

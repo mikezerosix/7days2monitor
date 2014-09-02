@@ -21,14 +21,13 @@ public class App {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
         AppConfiguration app = context.getBean(AppConfiguration.class);
 
-        String password = app.initPassword();
         int port = app.getPort();
         setPort(port);
         staticFileLocation("/static");
 
         loginResource = app.loginResource();
 
-        System.out.println("HTTP service running in port: " + port + " password: " + password);
+        System.out.println("HTTP service running in port: " + port);
 
         //if server & autoconnect
         //2.1. if telnet conn & auto connect()
