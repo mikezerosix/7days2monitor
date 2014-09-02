@@ -6,11 +6,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
-import org.mikezerosix.entities.Settings;
-import org.mikezerosix.entities.SettingsRepository;
-import org.mikezerosix.entities.User;
-import org.mikezerosix.entities.UserRepository;
+import org.mikezerosix.entities.*;
 import org.mikezerosix.rest.LoginResource;
+import org.mikezerosix.rest.ServerResource;
+import org.mikezerosix.rest.SettingsResource;
+import org.mikezerosix.rest.UserResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.io.File;
 import java.sql.SQLException;
 
 @Configuration
@@ -31,14 +30,16 @@ import java.sql.SQLException;
 
 @Import({JdbcConfiguration.class})
 public class AppConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     public static final String PASSWORD = "password";
     public static final String PORT = "port";
     public static final String PROTECTED_URL = "/protected/";
     public static final String ADMIN = "admin";
-
+    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     @Inject
     private SettingsRepository settingsRepository;
+
+    @Inject
+    private ServerRepository serverRepository;
 
     @Inject
     private UserRepository userRepository;
@@ -109,4 +110,13 @@ public class AppConfiguration {
         return new LoginResource(userRepository);
     }
 
+    public SettingsResource settingsResource() {
+        return new SettingsResource(settingsRepository);
+    }
+
+    public UserResource userResource() {
+        return new UserResource(userRepository);
+    }
+
+    public ServerResource serverResource() {return new ServerResource(serverRepository);}
 }

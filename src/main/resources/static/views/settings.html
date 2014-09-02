@@ -1,4 +1,30 @@
+<H4>Settings</H4>
+
 <div>
-    <H2>Settings</H2>
-    authorized={{authorized}}
+    <div class="settings-col">
+        <fieldset>
+            <legend>Global</legend>
+            <ul>
+                <li ng-repeat="setting in settings"> x {{setting}}</li>
+            </ul>
+        </fieldset>
+    </div>
+    <div class="settings-col">
+        <fieldset>
+            <legend>Users</legend>
+            <ul>
+                <li ng-repeat="user in users"> {{user.name}} / {{user.password}} </li>
+            </ul>
+        </fieldset>
+    </div>
+    <div class="settings-col">
+        <fieldset>
+            <legend>Servers</legend>
+            <ul>
+                <li ng-repeat="server in servers"> {{server}}</li>
+            </ul>
+            <button ng-click="addServer()">Add</button>
+
+        </fieldset>
+    </div>
 </div>

@@ -2,15 +2,12 @@ package org.mikezerosix.rest;
 
 import org.mikezerosix.entities.User;
 import org.mikezerosix.entities.UserRepository;
+import org.mikezerosix.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
-import static org.mikezerosix.rest.JsonUtil.fromJson;
-import static org.mikezerosix.rest.JsonUtil.toJson;
+import static org.mikezerosix.util.JsonUtil.fromJson;
 import static spark.Spark.*;
 
 public class LoginResource {
@@ -19,17 +16,14 @@ public class LoginResource {
 
     public LoginResource(UserRepository userRepository) {
 
-        get(PATH, (request, response) -> {
+        get("/public/login", (request, response) -> {
             return SessionUtil.getSessionUser(request) != null;
         });
 
-        post(PATH, (request, response) -> {
+        post("/public/login", (request, response) -> {
             final User requestUser = fromJson(request, User.class);
             final User user = userRepository.findByNameAndPassword(requestUser.getName(), requestUser.getPassword());
             if (user == null) {
-                for (User user1 : userRepository.findAll()) {
-                    log.debug(user.getName());
-                }
                 response.status(401);
                 log.error("Could not find matching user: " + requestUser);
                 return null;
@@ -39,7 +33,7 @@ public class LoginResource {
             return true;
         });
 
-        delete(PATH, (request, response) -> {
+        delete(PROTECTED_URL + "login", (request, response) -> {
             SessionUtil.setSessionUser(request, null);
             return "Logged out";
         });

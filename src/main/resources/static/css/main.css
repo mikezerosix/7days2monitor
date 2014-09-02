@@ -13,3 +13,9 @@
   display: inline;
   float: right;
 }
+
+.settings-col {
+  display: inline;
+  width: 32%;
+  float: left;
+}

@@ -11,13 +11,9 @@ public class Server {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
-
     private boolean auto;
-
     private String addressTelnet;
     private String addressFTP;
-
     private int portGame;
     private int portTelnet;
     private int portFTP;

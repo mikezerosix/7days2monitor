@@ -5,7 +5,7 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
 
     var checkRouting = function ($q, $location, $http, $rootScope) {
 
-        $http.get('/protected/login')
+        $http.get('/public/login')
           .success(function (data) {
               console.log(' requestUser= ' + (data == 'true'))
              $rootScope.authorized = (data == 'true');

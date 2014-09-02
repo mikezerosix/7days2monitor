@@ -4,7 +4,7 @@ sevenMonitor
   $scope.user = {name: '', password: ''};
   $scope.message = '';
   $scope.submit = function () {
-    $http.post('/protected/login', $scope.user)
+    $http.post('/public/login', $scope.user)
       .success(function (data) {
          $rootScope.authorized = true;
       })

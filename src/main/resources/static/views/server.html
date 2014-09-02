@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h3 class="modal-title">Server</h3>
+</div>
+<div class="modal-body">
+
+    <h3>Telnet</h3>
+    <div>
+        <label for="server-addressTelnet">Host/IP</label>
+        <input id="server-addressTelnet" type="text" ng-model="server.addressTelnet">
+    </div>
+    <div>
+        <label for="server-portTelnet">Port</label>
+        <input id="server-portTelnet" type="text" ng-model="server.portTelnet">
+    </div>
+    <div>
+        <label for="server-passwordTelnet">Password</label>
+        <input id="server-passwordTelnet" type="text" ng-model="server.passwordTelnet">
+    </div>
+
+    <h3>FTP</h3>
+    <div>
+        <label for="server-addressFTP">Host/IP</label>
+        <input id="server-addressFTP" type="text" ng-model="server.addressFTP">
+    </div>
+    <div>
+        <label for="server-portFTP">Port</label>
+        <input id="server-portFTP" type="text" ng-model="server.portFTP">
+    </div>
+    <div>
+        <label for="server-passwordFTP">Password</label>
+        <input id="server-passwordFTP" type="text" ng-model="server.passwordFTP">
+    </div>
+
+    <ul>
+        <li ng-repeat="item in items">
+            <a ng-click="selected.item = item">{{ item }}</a>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

@@ -1,4 +1,4 @@
-package org.mikezerosix.rest;
+package org.mikezerosix.util;
 
 import org.mikezerosix.entities.User;
 import spark.Request;

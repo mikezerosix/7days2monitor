@@ -17,11 +17,14 @@
 
     <script src="js/app.js"></script>
 
+    <script src="js/service/SettingsService.js"></script>
+
     <script src="js/controller/MenuCtrl.js"></script>
     <script src="js/controller/LoginCtrl.js"></script>
     <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/SettingsCtrl.js"></script>
-    <script src="js/PlayersCtrl.js"></script>
+    <script src="js/controller/ServerCtrl.js"></script>
+    <script src="js/controller/PlayersCtrl.js"></script>
 
 </head>
 <body>
@@ -36,7 +39,7 @@
 <div ng-if="authorized" class="top" ng-controller="MenuCtrl">
     <div class="top-banner">
         <div class="title">7 Days to monitor</div>
-        <div class="logout"><a href="#" ng-click="logout()">Log out</a></div>
+        <div class="logout">authorized={{authorized}} <a href="#" ng-click="logout()">Log out</a></div>
     </div>
 
     <div style="float: none;"></div>
