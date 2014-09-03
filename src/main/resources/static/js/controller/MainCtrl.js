@@ -15,5 +15,8 @@ sevenMonitor
                          alert(status);
                     });
 
+  $scope.connectTelnet = function() {
+     alert('TODO: bacjk end read DB for setting before connect ');
+  }
 
 }]);
