@@ -28,31 +28,60 @@ import java.sql.SQLException;
 
 @Import({JdbcConfiguration.class})
 public class AppConfiguration {
-    public static final String PASSWORD = "password";
     public static final String PORT = "port";
     public static final String PROTECTED_URL = "/protected/";
     public static final String ADMIN = "admin";
-    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
+    public static final String SETTING_CURRENT_SERVER = "CURRENT_SERVER";
 
+    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     private static TelnetService telnetService;
-    private static Thread thread;
 
     @Inject
     private SettingsRepository settingsRepository;
 
     @Inject
-    private ServerRepository serverRepository;
+    private ConnectionRepository connectionRepository;
 
     @Inject
     private UserRepository userRepository;
 
+
     @PostConstruct
     public void init() throws SQLException {
         initLogger();
-        initPassword();
+        initUsers();
+        initSettings();
+        initConnections();
     }
 
-    public void initPassword() {
+    private void initSettings() {
+        //TODO: I guess something could need this
+    }
+
+    private void initConnections() {
+        for (ConnectionType connectionType : ConnectionType.values()) {
+            Linkage connection = connectionRepository.findByType(connectionType);
+            if (connection == null) {
+                connection = new Linkage();
+                connection.setType(connectionType);
+                connectionRepository.save(connection);
+            } else {
+               switch (connectionType) {
+                   case GAME_TELNET:
+                       telnetService = new TelnetService(connection);
+                       if(connection.isAuto()) {
+                           telnetService.start();
+                       }
+                       break;
+                   //TODO: other connection
+               }
+            }
+
+
+        }
+    }
+
+    private void initUsers() {
         if (userRepository.count() < 1) {
             String password = Credential.MD5.digest("" + Math.random()).substring(5, 13);
             //TODO: remove debug
@@ -76,7 +105,6 @@ public class AppConfiguration {
         return settings != null ? settings.getValue() : null;
     }
 
-
     private void initLogger() {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         PatternLayoutEncoder ple = new PatternLayoutEncoder();
@@ -97,7 +125,6 @@ public class AppConfiguration {
         fileAppender.start();
 
     }
-
 
     public int getPort() {
         String port = getSetting(PORT);
@@ -120,8 +147,11 @@ public class AppConfiguration {
         return new UserResource(userRepository);
     }
 
-    public ServerResource serverResource() {return new ServerResource(serverRepository);}
+    public ConnectionResource connectionResource() {
+        return new ConnectionResource(connectionRepository);
+    }
+
     public TelnetResource telnetResource() {
-        return new TelnetResource(telnetService, thread);
+        return new TelnetResource(telnetService);
     }
 }

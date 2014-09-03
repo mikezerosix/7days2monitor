@@ -1,22 +1,30 @@
 'use strict';
 
 sevenMonitor
-.controller('MainCtrl', ['$scope', function($scope) {
-  var getTelnetStatus = function () {
-       return $http.get('/protected/telnet');
-  }
+.controller('MainCtrl',  function($scope, $q, $http, SettingsService, TelnetService) {
 
   $scope.telnetStatus;
+  TelnetService.isRunning()
+        .success(function (data) {
+            alert(data);
+            $scope.telnetStatus = data == 'true';
+        })
+        .error(function (status) {
+            alert(status);
+        });
 
-  getTelnetStatus.success(function (data) {
-                        $scope.telnetStatus = data;
-                    })
-                    .error(function (status) {
-                         alert(status);
-                    });
 
   $scope.connectTelnet = function() {
-     alert('TODO: bacjk end read DB for setting before connect ');
+
   }
 
-}]);
+   $scope.raw;
+   TelnetService.raw()
+           .success(function (data) {
+               alert(data);
+               $scope.raw = data;
+           })
+           .error(function (status) {
+               alert(status);
+           });
+});

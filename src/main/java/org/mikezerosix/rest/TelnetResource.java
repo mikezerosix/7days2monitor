@@ -1,21 +1,20 @@
 package org.mikezerosix.rest;
 
-import org.apache.commons.collections.IteratorUtils;
-import org.mikezerosix.entities.Server;
-import org.mikezerosix.entities.ServerRepository;
+import org.mikezerosix.handlers.AllHandler;
 import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.util.SessionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
-import static org.mikezerosix.util.JsonUtil.fromJson;
-import static org.mikezerosix.util.JsonUtil.toJson;
 import static spark.Spark.*;
 
 @SuppressWarnings("unchecked")
 public class TelnetResource {
-
-
-    public TelnetResource(TelnetService telnetService, Thread thread) {
+    public TelnetResource(TelnetService telnetService) {
 
         before(PROTECTED_URL + "*", (request, response) -> {
             if (!SessionUtil.isLoggedIn(request)) {
@@ -23,17 +22,34 @@ public class TelnetResource {
             }
         });
 
-        get(PROTECTED_URL + "telnet", (request, response) -> telnetService.isLoggedIn());
+        get(PROTECTED_URL + "telnet", (request, response) -> telnetService.isAlive());
 
         post(PROTECTED_URL + "telnet", (request, response) -> {
-            thread.start();
+            if (!telnetService.isAlive()) {
+                telnetService.start();
+            }
             return true;
         });
 
         delete(PROTECTED_URL + "telnet", (request, response) -> {
-            thread.stop();
+            if (telnetService.isAlive()) {
+                telnetService.interrupt();
+            }
             return true;
         });
+        get(PROTECTED_URL + "telnet/raw", (request, response) -> {
+            if (telnetService.isAlive()) {
+                try {
+                    final HttpServletResponse raw = response.raw();
+                    telnetService.addHandler(new AllHandler(raw.getWriter()));
+                    return raw;
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            return false;
+        });
     }
 }

@@ -8,26 +8,19 @@ sevenMonitor.factory('SettingsService',function( $q, $http) {
    var readUsers = function () {
        return $http.get('/protected/users');
    }
-   var readServers = function () {
-      return $http.get('/protected/servers');
+   var readConnections = function () {
+      return $http.get('/protected/connections');
    }
-   var createServer = function (server) {
-      return $http.post('/protected/servers', server);
-   }
-   var updateServer = function (server) {
-      return $http.put('/protected/servers', server);
-   }
-   var deleteServer = function (server) {
-      return $http.delete('/protected/servers', server);
+   var updateConnection = function (connection) {
+      return $http.put('/protected/connections', connection);
    }
 
    return {
       readSettings: readSettings,
       readUsers: readUsers,
-      readServers: readServers,
-      createServer: createServer,
-      updateServer: updateServer,
-      deleteServer: deleteServer
+      readConnections: readConnections,
+      updateConnection: updateConnection
+
    };
 
 });

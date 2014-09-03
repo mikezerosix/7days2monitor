@@ -2,14 +2,15 @@ package org.mikezerosix.handlers;
 
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 /* read all to destination
  */
 public class AllHandler implements TelnetOutputHandler {
 
-    PrintStream out;
+    PrintWriter out;
 
-    public AllHandler(PrintStream out) {
+    public AllHandler(PrintWriter out) {
         this.out = out;
     }
 

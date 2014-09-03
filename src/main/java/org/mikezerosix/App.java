@@ -1,9 +1,6 @@
 package org.mikezerosix;
 
-import org.mikezerosix.entities.UserRepository;
 import org.mikezerosix.rest.*;
-import org.mikezerosix.telnet.TelnetConnection;
-import org.mikezerosix.telnet.TelnetService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static spark.Spark.staticFileLocation;
@@ -15,7 +12,7 @@ public class App {
     private static LoginResource loginResource;
     private static SettingsResource settingsResource;
     private static UserResource userResource;
-    private static ServerResource serverResource;
+    private static ConnectionResource connectionResource;
     private static TelnetResource telnetResource;
 
     public static void main(String[] args) {
@@ -29,7 +26,7 @@ public class App {
         loginResource = app.loginResource();
         settingsResource = app.settingsResource();
         userResource = app.userResource();
-        serverResource = app.serverResource();
+        connectionResource = app.connectionResource();
         telnetResource = app.telnetResource();
 
         System.out.println("HTTP service running in port: " + port);

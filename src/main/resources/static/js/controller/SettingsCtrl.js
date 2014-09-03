@@ -5,7 +5,7 @@ sevenMonitor
 
    $scope.settings = [];
    $scope.users = [];
-   $scope.servers = [];
+   $scope.connections = [];
 
    SettingsService.readUsers()
    .success(function (data) {
@@ -23,39 +23,36 @@ sevenMonitor
         alert(status);
    });
 
-   SettingsService.readServers()
+   SettingsService.readConnections()
    .success(function (data) {
-        $scope.servers = data;
+        $scope.connections = data;
    })
    .error(function (status) {
         alert(status);
    });
 
-   $scope.server = {}
-     $scope.addServer = function () {
-       if (typeof $scope.servers !== 'undefined' && $scope.servers.length > 0) {
-          alert('currently only one server is supported');
-          return;
-       }
+
+    $scope.openConnection = function (connection) {
+       $scope.connection = connection;
        var modalInstance = $modal.open({
-         templateUrl: '/views/server.html',
-         controller: 'ServerCtrl',
+         templateUrl: '/views/connection.html',
+         controller: 'ConnectionsCtrl',
          backdrop: 'static',
          resolve: {
-           server: function () {
-             return $scope.server;
+           connection: function () {
+             return $scope.connection;
            }
          }
        });
 
-       modalInstance.result.then(function (server) {
-       alert('server returned');
-       SettingsService.createServer(server)
+       modalInstance.result.then(function (connection) {
+       alert('connection returned');
+       SettingsService.updateConnection(connection)
        .success(function (data) {
-            $scope.servers = data;
-            SettingsService.readServers()
+
+            SettingsService.readConnections()
                .success(function (data) {
-                    $scope.servers = data;
+                    $scope.connections = data;
                })
                .error(function (status) {
                     alert(status);
@@ -66,7 +63,7 @@ sevenMonitor
        });
 
        //TODO: remove
-         $scope.server = server;
+         $scope.connection = connection;
        }, function () {
         // closed
        });

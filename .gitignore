@@ -53,7 +53,7 @@ $RECYCLE.BIN/
 *.msp
 
 # non public
-secret.properties
+secrets.properties
 **/.idea
 *.iml
 target/
