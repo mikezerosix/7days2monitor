@@ -7,10 +7,8 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.entities.*;
-import org.mikezerosix.rest.LoginResource;
-import org.mikezerosix.rest.ServerResource;
-import org.mikezerosix.rest.SettingsResource;
-import org.mikezerosix.rest.UserResource;
+import org.mikezerosix.rest.*;
+import org.mikezerosix.telnet.TelnetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,6 +33,10 @@ public class AppConfiguration {
     public static final String PROTECTED_URL = "/protected/";
     public static final String ADMIN = "admin";
     private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
+
+    private static TelnetService telnetService;
+    private static Thread thread;
+
     @Inject
     private SettingsRepository settingsRepository;
 
@@ -119,4 +121,7 @@ public class AppConfiguration {
     }
 
     public ServerResource serverResource() {return new ServerResource(serverRepository);}
+    public TelnetResource telnetResource() {
+        return new TelnetResource(telnetService, thread);
+    }
 }

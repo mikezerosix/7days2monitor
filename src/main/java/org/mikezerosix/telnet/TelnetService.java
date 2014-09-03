@@ -4,6 +4,7 @@ import org.apache.commons.net.telnet.*;
 import org.mikezerosix.handlers.TelnetOutputHandler;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +23,8 @@ public class TelnetService implements Runnable, TelnetNotificationHandler {
     private PrintStream output = null;
     private long waitTime = 500;
     private long connectionTimeoutSeconds = 10;
-
-    private List<TelnetOutputHandler> handlers;
+    private boolean loggedIn = false;
+    private List<TelnetOutputHandler> handlers = new ArrayList<>();
 
     public TelnetService(String address, int port, String password) {
         this.address = address;
@@ -43,7 +44,7 @@ public class TelnetService implements Runnable, TelnetNotificationHandler {
     @Override
     public void run() {
         telnet = new TelnetClient();
-
+        loggedIn = false;
         try {
             connect();
 
@@ -56,14 +57,27 @@ public class TelnetService implements Runnable, TelnetNotificationHandler {
                 }
             }
             readUntil(CONNECTED_WITH_7_DTD_SERVER);
+            loggedIn = true;
             System.out.println("Connection established");
 
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader( getInputStream()));
+            while  (telnet.isConnected()) {
+                final String line = bufferedReader.readLine();
+                for (TelnetOutputHandler handler : handlers) {
+                    handler.handleInput(line);
+                }
+                Thread.sleep(waitTime);
+            }
+            loggedIn = false;
         } catch (InvalidTelnetOptionException e) {
             System.err.println("Error registering option handlers: " + e.getMessage());
+            loggedIn = false;
             throw new RuntimeException(e);
         } catch (IOException e) {
+            loggedIn = false;
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
+            loggedIn = false;
             throw new RuntimeException(e);
         }
 
@@ -72,7 +86,9 @@ public class TelnetService implements Runnable, TelnetNotificationHandler {
     public boolean isConnected() {
         return telnet != null && telnet.isConnected();
     }
-
+    public boolean isLoggedIn() {
+        return isConnected() && loggedIn;
+    }
     private boolean connect() throws InterruptedException, IOException, InvalidTelnetOptionException {
         System.out.println("Telnet connecting to: " + address);
         telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, true, false));
@@ -115,5 +131,7 @@ public class TelnetService implements Runnable, TelnetNotificationHandler {
 
     }
 
-
+    public void addHandler(TelnetOutputHandler handler) {
+        handlers.add(handler);
+    }
 }

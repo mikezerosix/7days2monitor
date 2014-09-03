@@ -14,8 +14,8 @@ public class TelnetServiceTest extends TestCase {
         thread.start();
         while (!telnetService.isConnected()) {
             Thread.sleep(1000);
-        }
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(telnetService.getInputStream()));
+            }
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(telnetService.getInputStream()));
 
         telnetService.write("lp");
         while (true) {
