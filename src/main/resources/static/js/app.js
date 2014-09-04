@@ -42,6 +42,14 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
                   }
 
                 })
+          .when('/chat', {
+                          templateUrl: '/views/chat.html',
+                          controller: 'ChatCtrl',
+                          resolve: {
+                            authorized: checkRouting
+                          }
+
+                        })
       .when('/players', {
         templateUrl: '/views/players.html',
         controller: 'LoginCtrl'

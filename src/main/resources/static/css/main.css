@@ -19,3 +19,22 @@
   width: 32%;
   float: left;
 }
+
+.chat-messages-pane {
+  min-height: 20em;
+  border: 1px solid gray;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-right: 5px;
+  visibility: visible;
+  border: thin solid white;
+  background-color: #336699;
+  scrollbar-face-color: #336699;
+  scrollbar-3dlight-color: #336699;
+  scrollbar-base-color: #336699;
+  scrollbar-track-color: #336699;
+  scrollbar-darkshadow-color: #000;
+  scrollbar-arrow-color: #000;
+  scrollbar-shadow-color: #fff;
+  scrollbar-highlight-color: #fff;
+}

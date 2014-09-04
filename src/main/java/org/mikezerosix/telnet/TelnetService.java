@@ -52,15 +52,15 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
             while (!telnet.isConnected()) {
                 Thread.sleep(1000);
-                System.out.println("    ...waiting for connection");
+                log.info("    ...waiting for connection");
                 if (--connectionTimeoutSeconds < 0) {
-                    System.out.println("ERROR: Connection timed out. Another connection might have taken the telnet.");
+                    log.error("ERROR: Connection timed out. Another connection might have taken the telnet.");
                     throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
                 }
             }
             readUntil(CONNECTED_WITH_7_DTD_SERVER);
             loggedIn = true;
-            System.out.println("Connection established");
+            log.info("Connection established");
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
             while (telnet.isConnected()) {
@@ -75,17 +75,20 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
             loggedIn = false;
 
         } catch (InvalidTelnetOptionException e) {
-            System.err.println("Error registering option handlers: " + e.getMessage());
+            log.error("Error registering option handlers: " + e.getMessage());
             loggedIn = false;
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
+            log.warn("Interrupted " , e );
             loggedIn = false;
             return;
         } catch (InterruptedIOException e) {
             //I assume this is from intention interrupt
+            log.warn("Interrupted IO " , e );
             loggedIn = false;
             return;
         } catch (IOException e) {
+            log.error("IO error", e);
             loggedIn = false;
             throw new RuntimeException(e);
         }
@@ -101,7 +104,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     }
 
     private boolean connect() throws InterruptedException, IOException, InvalidTelnetOptionException {
-        System.out.println("Telnet connecting to: " + linkage.getAddress());
+        log.info("Telnet connecting to: " + linkage.getAddress());
         telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, true, false));
         telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
         telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
@@ -127,10 +130,11 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
     private void readUntil(String stopPhrase) throws IOException, InterruptedException {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
+        log.info("...waiting for stopPhrase: "+ stopPhrase);
         while (true) {
             String line = bufferedReader.readLine();
             if (line.equals(stopPhrase)) {
-                System.out.println("Logged in");
+                log.info("Received stopPhrase: " + stopPhrase);
                 return;
             }
             Thread.sleep(waitTime);
@@ -143,6 +147,28 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     }
 
     public void addHandler(TelnetOutputHandler handler) {
+        for (TelnetOutputHandler telnetOutputHandler : handlers) {
+            if (telnetOutputHandler.getClass().equals(handler.getClass())) {
+                log.debug("telnet output handlers already contain " + handler.getClass().getName());
+                return;
+            }
+        }
+        log.info("Registering TelnetOutputHandler :" +  handler.getClass().getName());
         handlers.add(handler);
+    }
+
+    public void removeHandler(Class handler) {
+        TelnetOutputHandler remove = null;
+        for (TelnetOutputHandler telnetOutputHandler : handlers) {
+            if (telnetOutputHandler.getClass().equals(handler)) {
+                remove = telnetOutputHandler;
+                break;
+            }
+        }
+
+        if (remove!=null){
+            log.info("Removing TelnetOutputHandler :" +  remove.getClass().getName());
+            handlers.remove(remove);
+        }
     }
 }

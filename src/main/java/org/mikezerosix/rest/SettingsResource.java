@@ -1,8 +1,10 @@
 package org.mikezerosix.rest;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.mikezerosix.AppConfiguration;
 import org.mikezerosix.entities.Settings;
 import org.mikezerosix.entities.SettingsRepository;
+import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.util.SessionUtil;
 
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
@@ -13,7 +15,7 @@ import static spark.Spark.*;
 @SuppressWarnings("unchecked")
 public class SettingsResource {
 
-    public SettingsResource(SettingsRepository settingsRepository) {
+    public SettingsResource(SettingsRepository settingsRepository, AppConfiguration appConfiguration) {
 
         before(PROTECTED_URL + "*", (request, response) -> {
             if (!SessionUtil.isLoggedIn(request)) {
@@ -25,10 +27,9 @@ public class SettingsResource {
 
         put(PROTECTED_URL + "settings", (request, response) -> {
             final Settings settings = fromJson(request, Settings.class);
-            if (settingsRepository.exists(settings.getId())){
-                settingsRepository.save(settings);
-            }
-            return true;
+            final Settings save = settingsRepository.save(settings);
+            appConfiguration.settingsChange(settings);
+            return toJson(save);
         });
     }
 }

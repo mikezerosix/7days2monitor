@@ -5,7 +5,11 @@
         <fieldset>
             <legend>Global</legend>
             <ul>
-                <li ng-repeat="setting in settings"> x {{setting}}</li>
+                <li>Monitor chat: <input type="checkbox" ng-model="settings['CHAT_HANDLER_ENABLE']" ng-true-value="'true'" ng-change="setChatHandlerEnable()"> </li>
+            </ul>
+            <h4>All settings</h4>
+            <ul>
+                <li ng-repeat="setting in settingsIds"> {{setting}}={{settings[setting]}}</li>
             </ul>
         </fieldset>
     </div>

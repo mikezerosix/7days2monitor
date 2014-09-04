@@ -1,13 +1,14 @@
 package org.mikezerosix.rest;
 
-import org.mikezerosix.handlers.AllHandler;
 import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.util.SessionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
 import static spark.Spark.*;
@@ -39,17 +40,28 @@ public class TelnetResource {
         });
         get(PROTECTED_URL + "telnet/raw", (request, response) -> {
             if (telnetService.isAlive()) {
-                try {
-                    final HttpServletResponse raw = response.raw();
-                    telnetService.addHandler(new AllHandler(raw.getWriter()));
-                    return raw;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
             }
             return false;
         });
+
+        get(PROTECTED_URL + "telnet/chat", (request, response) -> {
+            response.type("text/javascript");
+            List<String> lines = new ArrayList<>();
+            try {
+                final File file = new File("chat.log");
+                BufferedReader reader = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    lines.add(line);
+                }
+                return lines;
+            } catch (IOException e) {
+                response.status(500);
+                return e.getMessage();
+            }
+        }, new JsonTransformer());
+
     }
+
 }

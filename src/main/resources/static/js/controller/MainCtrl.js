@@ -7,7 +7,7 @@ sevenMonitor
   TelnetService.isRunning()
         .success(function (data) {
             alert(data);
-            $scope.telnetStatus = data == 'true';
+            $scope.telnetStatus = data;
         })
         .error(function (status) {
             alert(status);

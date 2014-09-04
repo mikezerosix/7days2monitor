@@ -10,6 +10,9 @@ sevenMonitor.factory('TelnetService',function( $q, $http) {
           return $http.post('/protected/telnet');
    };
 
+   var chat = function () {
+        return $http.get('/protected/telnet/chat');
+   };
 
     var raw = function () {
        return $http.get('/protected/telnet/raw');
@@ -19,6 +22,7 @@ sevenMonitor.factory('TelnetService',function( $q, $http) {
    return {
         isRunning: isRunning,
         run: run,
-        raw: raw
+        raw: raw,
+        chat: chat
    };
 });

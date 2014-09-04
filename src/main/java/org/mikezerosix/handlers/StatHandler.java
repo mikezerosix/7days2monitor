@@ -7,7 +7,7 @@ package org.mikezerosix.handlers;
  */
 
 public class StatHandler implements TelnetOutputHandler {
-    public static final String STAT_TRIGGER = "\\d{6,}+\\.\\d{3}\\sSTATS:(.*)";
+    public static final String STAT_TRIGGER = "\\d+\\.\\d{3}\\sSTATS:(.*)";
 
     @Override public boolean match(String line) {
         return false;

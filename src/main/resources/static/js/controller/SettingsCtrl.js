@@ -4,6 +4,7 @@ sevenMonitor
 .controller('SettingsCtrl', function($scope, $q, $http, $modal, SettingsService) {
 
    $scope.settings = [];
+   $scope.settingsIds = [];
    $scope.users = [];
    $scope.connections = [];
 
@@ -17,7 +18,12 @@ sevenMonitor
 
    SettingsService.readSettings()
    .success(function (data) {
-        $scope.settings = data;
+        console.log('settings: ' + data)
+        for (var i = 0; i < data.length; i++) {
+           $scope.settingsIds[i] = data[i].id;
+           $scope.settings[data[i].id] = data[i].value;
+        }
+
    })
    .error(function (status) {
         alert(status);
@@ -30,6 +36,20 @@ sevenMonitor
    .error(function (status) {
         alert(status);
    });
+
+    $scope.monitorChat = $scope.settings['CHAT_HANDLER_ENABLE'];
+
+    $scope.setChatHandlerEnable = function() {
+         console.log('upserting CHAT_HANDLER_ENABLE =' + $scope.settings['CHAT_HANDLER_ENABLE']);
+        SettingsService.upsertSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
+         .success(function (data) {
+  console.log('received: ' + data.id +  '=' + data.value);
+             $scope.settings[data.id] = data.value;
+       })
+       .error(function (status) {
+            alert(status);
+       });
+    };
 
 
     $scope.openConnection = function (connection) {
