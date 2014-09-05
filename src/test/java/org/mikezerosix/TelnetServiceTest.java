@@ -2,16 +2,15 @@ package org.mikezerosix;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mikezerosix.entities.Linkage;
+import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.entities.ConnectionType;
-import org.mikezerosix.handlers.AllHandler;
 import org.mikezerosix.telnet.TelnetService;
 
 import java.io.*;
 import java.util.Properties;
 
 public class TelnetServiceTest {
-    private static Linkage linkage = new Linkage();
+    private static ConnectionSettings connectionSettings = new ConnectionSettings();
 
     @BeforeClass
     public static void setup() {
@@ -19,10 +18,10 @@ public class TelnetServiceTest {
         File secrets = new File("secrets.properties");
         try {
             prop.load(new InputStreamReader(new FileInputStream(secrets)));
-            linkage.setType(ConnectionType.GAME_TELNET);
-            linkage.setAddress(prop.getProperty("telnetHost"));
-            linkage.setPort(Integer.parseInt(prop.getProperty("telnetPort")));
-            linkage.setPassword(prop.getProperty("telnetPassword"));
+            connectionSettings.setType(ConnectionType.GAME_TELNET);
+            connectionSettings.setAddress(prop.getProperty("telnetHost"));
+            connectionSettings.setPort(Integer.parseInt(prop.getProperty("telnetPort")));
+            connectionSettings.setPassword(prop.getProperty("telnetPassword"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,7 +31,9 @@ public class TelnetServiceTest {
     @Test
     public void testRun() throws Exception {
 
-        TelnetService telnetService = new TelnetService(linkage);
+        TelnetService telnetService = TelnetService.getInstance();
+        telnetService.setConnectionSettings(connectionSettings);
+
        // telnetService.addHandler(new AllHandler(System.out.));
         telnetService.start();
         while (!telnetService.isConnected()) {

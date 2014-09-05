@@ -4,7 +4,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
-import org.mikezerosix.entities.Linkage;
+import org.mikezerosix.entities.ConnectionSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,18 +17,18 @@ import java.nio.file.AccessDeniedException;
 public class FTPService {
     public static final Logger log = LoggerFactory.getLogger(FTPService.class);
     private FTPClient ftp;
-    private Linkage connection;
+    private ConnectionSettings connectionSettings;
 
 
-    public FTPService(Linkage connection) throws IOException {
+    public FTPService(ConnectionSettings connectionSettings) throws IOException {
         this.ftp = new FTPClient();
         ftp.setControlKeepAliveTimeout(300);
         ftp.enterLocalPassiveMode();
-        config(connection);
+        config(connectionSettings);
     }
 
-    public void config(Linkage connection) {
-        this.connection = connection;
+    public void config(ConnectionSettings connectionSettings) {
+        this.connectionSettings = connectionSettings;
         FTPClientConfig config = new FTPClientConfig();
         //config.setXXX(YYY); // change required options
         ftp.configure(config);
@@ -78,12 +78,12 @@ public class FTPService {
 
     public void connect() throws IOException {
         if (!ftp.isConnected()) {
-            ftp.connect(connection.getAddress(), connection.getPort());
-            final boolean login = ftp.login(connection.getUsername(), connection.getPassword());
+            ftp.connect(connectionSettings.getAddress(), connectionSettings.getPort());
+            final boolean login = ftp.login(connectionSettings.getUsername(), connectionSettings.getPassword());
             if (!login ) {
                 throw new AccessDeniedException("FTP login failed: " + ftp.getReplyString());
             }
-            log.info("FTP Connected to " + connection.getAddress() + ":" + connection.getPort() + ".");
+            log.info("FTP Connected to " + connectionSettings.getAddress() + ":" + connectionSettings.getPort() + ".");
             log.info(ftp.getReplyString());
             confirmPositiveCompletion();
         }

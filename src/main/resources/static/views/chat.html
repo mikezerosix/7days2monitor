@@ -1,12 +1,20 @@
-<div>
+<div id="chat-content">
 
-   <div class="chat-messages-pane">
-   <ul>
-      <li ng-repeat="msg in chatLog track by $index">{{msg}} </li>
+   <div id="chat-messages" class="chat-messages-pane">
+   <ul id="chat-listing">
+      <li class="chat-line" ng-repeat="msg in chatLog track by $index">{{msg}} </li>
+
    </ul>
+   <span id="bottom"></span>
    </div>
-   <div class="chat-input">
+   <div class="say-block">
 
-       Say <input class="say-input" type="text" ng-model="say" > <input type="button" title="Send" ng-click="send()" value="Send">
+       <label>As</label>
+       <input class="use-say-as-input" type="checkbox" ng-model="useAs">
+       <input class="say-as-input" type="text" ng-model="messageAs">
+       <label>Say</label>
+       <input class="say-input" type="text" ng-model="message">
+       <input id="" type="button" title="Send" ng-click="send()" value="Send">
+       <img ng-show="processing"  src="/img/processing-32.png">
    </div>
 </div>

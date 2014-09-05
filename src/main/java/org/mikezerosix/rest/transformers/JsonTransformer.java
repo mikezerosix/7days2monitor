@@ -1,4 +1,4 @@
-package org.mikezerosix.rest;
+package org.mikezerosix.rest.transformers;
 
 import com.google.gson.Gson;
 import spark.ResponseTransformer;

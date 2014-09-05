@@ -9,6 +9,7 @@ public class ChatLogger {
     public static final Logger chatLogger = LoggerFactory.getLogger(ChatLogger.class);
 
     public void log(String chat) {
+
         chatLogger.info(chat);
     }
 }

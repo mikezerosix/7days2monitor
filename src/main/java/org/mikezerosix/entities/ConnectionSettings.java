@@ -4,7 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class Linkage {
+public class ConnectionSettings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

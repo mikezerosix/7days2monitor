@@ -1,9 +1,34 @@
-<h4>Main</h4>
-<div>
-   <p>User: {{authorized}} </p>
-    <p>Server: </p>
-    <p>Telnet monitoring:  {{telnetStatus}} <button ng-click="connectTelnet()">Connect</button></p>
-    <p>FTP: </p>
-    <p>Alloc's Fixes: </p>
-{{raw}}
+<div id="main-content">
+
+<dl class="main-settings">
+        <dt>User</dt>
+        <dd> {{authorized}}</dd>
+        <dt>Server</dt>
+        <dd></dd>
+        <dt>Telnet</dt>
+        <dd>
+
+
+        <span ng-if="telnetStatus.alive ">
+          Running <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Running">
+        </span>
+        <span ng-if="!telnetStatus.alive ">
+          Dead <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Dead">
+        </span>
+            ,
+        <span ng-if="telnetStatus.connected ">
+          Connected <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Connected">
+          <button ng-click="disconnectTelnet()">Disconnect</button>
+        </span>
+        <span ng-if="!telnetStatus.connected ">
+          Disconnected <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Disconnected">
+          <button ng-click="connectTelnet()">Connect</button>
+        </span>
+
+        </dd>
+        <dt>FTP</dt>
+        <dd></dd>
+        <dt>Alloc's Fixes</dt>
+        <dd></dd>
+    </dl>
 </div>

@@ -5,7 +5,7 @@ sevenMonitor.factory('SettingsService',function( $q, $http) {
    var readSettings = function () {
      return $http.get('/protected/settings');
    }
-   var upsertSettings = function (id, value) {
+   var updateSettings = function (id, value) {
       return $http.put('/protected/settings', {id: id, value: value});
    }
 
@@ -15,17 +15,17 @@ sevenMonitor.factory('SettingsService',function( $q, $http) {
 
 
    var readConnections = function () {
-      return $http.get('/protected/connections');
+      return $http.get('/protected/settings/connections');
    }
    var updateConnection = function (connection) {
-      return $http.put('/protected/connections', connection);
+      return $http.put('/protected/settings/connections', connection);
    }
 
 
 
    return {
       readSettings: readSettings,
-      upsertSettings: upsertSettings,
+      updateSettings: updateSettings,
       readUsers: readUsers,
       readConnections: readConnections,
       updateConnection: updateConnection

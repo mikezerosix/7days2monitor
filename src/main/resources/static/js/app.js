@@ -52,7 +52,7 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
                         })
       .when('/players', {
         templateUrl: '/views/players.html',
-        controller: 'LoginCtrl'
+        controller: 'PlayersCtrl'
       });
 
 

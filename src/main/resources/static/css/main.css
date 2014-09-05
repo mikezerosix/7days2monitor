@@ -1,22 +1,19 @@
 
 .top {
-  background-color: #336699;
+  background-color: lightgray;
 }
 
 .top-banner .title {
   font-size: 2em;
   width: 49%;
   text-align: left;
-  vertical-align: top;
   display: inline;
-  background-color: #336699;
   padding-left: 1em;
-  color: #ffDDFF;
+  color: #5C395C;
 }
 .top-banner .logout {
   width: 49%;
   text-align: right;
-  vertical-align: top;
   display: inline;
   float: right;
 }
@@ -28,13 +25,15 @@
 }
 
 .chat-messages-pane {
+  margin: 8px;
   min-height: 20em;
+  height: 30em;
   border: 1px solid gray;
   overflow-y: scroll;
   overflow-x: hidden;
   padding-right: 5px;
   visibility: visible;
-  border: thin solid lightgray;
+  border: thin solid gray;
 
   /*background-color: #336699;
   scrollbar-face-color: #336699;
@@ -47,6 +46,35 @@
   scrollbar-highlight-color: #fff;*/
 }
 
+#chat-listing {
+
+  display: initial;
+}
+li.chat-line {
+  list-style-type: none;
+  margin-left: 1em;
+}
 .say-input {
   width: 80%;
+}
+
+.green-ball {
+background-image: url('/img/green-ball-48.png');
+background-color: transparent;
+background-repeat: no-repeat;
+background-size: contain;
+background-position-x: right;
+}
+
+.main-settings td {
+ display: inline;
+}
+
+.say-block {
+  border: thin solid lightgray;
+
+}
+
+.say-input {
+   width: 60%;
 }

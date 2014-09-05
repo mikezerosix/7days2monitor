@@ -39,7 +39,7 @@ public class AppConfiguration {
 
 
     private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
-    private static TelnetService telnetService;
+    private static TelnetService telnetService = TelnetService.getInstance();
 
     @Inject
     private SettingsRepository settingsRepository;
@@ -55,8 +55,8 @@ public class AppConfiguration {
     public void init() throws SQLException {
         initLogger();
         initUsers();
-        initConnections();
         initSettings();
+        initConnections();
     }
 
     private void initSettings() {
@@ -68,24 +68,26 @@ public class AppConfiguration {
 
     private void initConnections() {
         for (ConnectionType connectionType : ConnectionType.values()) {
-            Linkage connection = connectionRepository.findByType(connectionType);
-            if (connection == null) {
-                connection = new Linkage();
-                connection.setType(connectionType);
-                connectionRepository.save(connection);
+            ConnectionSettings connectionSettings = connectionRepository.findByType(connectionType);
+            if (connectionSettings == null) {
+                connectionSettings = new ConnectionSettings();
+                connectionSettings.setType(connectionType);
+                connectionRepository.save(connectionSettings);
             } else {
-                switch (connectionType) {
-                    case GAME_TELNET:
-                        telnetService = new TelnetService(connection);
-                        if (connection.isAuto()) {
-                            telnetService.start();
-                        }
-                        break;
-                    //TODO: other connection
-                }
+                connectionChange(connectionSettings);
             }
+        }
+    }
 
-
+    public void connectionChange( ConnectionSettings connectionSettings) {
+        switch (connectionSettings.getType()) {
+            case GAME_TELNET:
+                telnetService.setConnectionSettings(connectionSettings);
+                if (connectionSettings.isAuto() && !telnetService.isAlive()) {
+                    telnetService.start();
+                }
+                break;
+            //TODO: other connection
         }
     }
 
@@ -151,7 +153,7 @@ public class AppConfiguration {
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(consoleAppender);
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).setLevel(Level.INFO);
 
-        loggerContext.getLogger(TelnetService.class).setLevel(Level.INFO);
+        loggerContext.getLogger(TelnetService.class).setLevel(Level.DEBUG);
         loggerContext.getLogger(TelnetService.class).addAppender(consoleAppender);
         loggerContext.getLogger(TelnetService.class).addAppender(fileAppender);
 
@@ -173,15 +175,11 @@ public class AppConfiguration {
     }
 
     public SettingsResource settingsResource() {
-        return new SettingsResource(settingsRepository, this);
+        return new SettingsResource(settingsRepository, this, connectionRepository);
     }
 
     public UserResource userResource() {
         return new UserResource(userRepository);
-    }
-
-    public ConnectionResource connectionResource() {
-        return new ConnectionResource(connectionRepository);
     }
 
     public TelnetResource telnetResource() {
@@ -189,12 +187,14 @@ public class AppConfiguration {
     }
 
     public void settingsChange(Settings settings) {
-        if (telnetService.isConnected() && SETTING_CHAT_HANDLER_ENABLE.equals(settings.getId())) {
-            if (Boolean.parseBoolean(settings.getValue())) {
-                telnetService.addHandler(new ChatHandler());
-            } else {
-                telnetService.removeHandler(ChatHandler.class);
-            }
+        switch (settings.getId()) {
+            case SETTING_CHAT_HANDLER_ENABLE:
+                if (Boolean.parseBoolean(settings.getValue())) {
+                    telnetService.addHandler(new ChatHandler());
+                } else {
+                    telnetService.removeHandler(ChatHandler.class);
+                }
+                break;
         }
     }
 }

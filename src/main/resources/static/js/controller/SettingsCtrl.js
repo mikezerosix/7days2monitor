@@ -40,8 +40,8 @@ sevenMonitor
     $scope.monitorChat = $scope.settings['CHAT_HANDLER_ENABLE'];
 
     $scope.setChatHandlerEnable = function() {
-         console.log('upserting CHAT_HANDLER_ENABLE =' + $scope.settings['CHAT_HANDLER_ENABLE']);
-        SettingsService.upsertSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
+         console.log('updating CHAT_HANDLER_ENABLE =' + $scope.settings['CHAT_HANDLER_ENABLE']);
+        SettingsService.updateSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
          .success(function (data) {
   console.log('received: ' + data.id +  '=' + data.value);
              $scope.settings[data.id] = data.value;

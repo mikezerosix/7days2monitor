@@ -1,7 +1,7 @@
 package org.mikezerosix.telnet;
 
 import org.apache.commons.net.telnet.*;
-import org.mikezerosix.entities.Linkage;
+import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.handlers.TelnetOutputHandler;
 import org.mikezerosix.rest.LoginResource;
 import org.slf4j.Logger;
@@ -15,23 +15,30 @@ import java.util.List;
  * http://www.java2s.com/Code/Java/Network-Protocol/ExampleofuseofTelnetClient.htm
  */
 public class TelnetService extends Thread implements TelnetNotificationHandler {
-    private static final Logger log = LoggerFactory.getLogger(LoginResource.class);
-
     public static final String PLEASE_ENTER_PASSWORD = "Please enter password:";
     public static final String CONNECTED_WITH_7_DTD_SERVER = "*** Connected with 7DTD server.";
-    private Linkage linkage;
-
-    private TelnetClient telnet = null;
-    private BufferedInputStream input = null;
-    private PrintStream output = null;
+    public static final String WRONG_PASSWORD = "Password incorrect, please enter password:";
+    private static final Logger log = LoggerFactory.getLogger(LoginResource.class);
+    private static TelnetClient telnet = null;
+    private static BufferedInputStream input = null;
+    private static PrintStream output = null;
+    private static TelnetService instance = null;
+    private ConnectionSettings connectionSettings;
     private long waitTime = 500;
-    private long connectionTimeoutSeconds = 10;
-    private boolean loggedIn = false;
-    private List<TelnetOutputHandler> handlers = new ArrayList<>();
+    private static long connectionTimeoutSeconds = 10;
+    private static boolean loggedIn = false;
+    private static List<TelnetOutputHandler> handlers = new ArrayList<>();
 
-    public TelnetService(Linkage linkage) {
+    private TelnetService() {
         super();
-        this.linkage = linkage;
+
+    }
+
+    public static synchronized TelnetService getInstance() {
+        if (instance == null) {
+            instance = new TelnetService();
+        }
+        return instance;
     }
 
     public InputStream getInputStream() {
@@ -40,6 +47,10 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
     public OutputStream getOutputStream() {
         return telnet.getOutputStream();
+    }
+
+    public void setConnectionSettings(ConnectionSettings connectionSettings) {
+        this.connectionSettings = connectionSettings;
     }
 
     @Override
@@ -58,7 +69,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
                     throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
                 }
             }
-            readUntil(CONNECTED_WITH_7_DTD_SERVER);
+            readUntil(CONNECTED_WITH_7_DTD_SERVER, null);
             loggedIn = true;
             log.info("Connection established");
 
@@ -73,18 +84,19 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
             }
             loggedIn = false;
+            log.info("Telnet shutdown");
 
         } catch (InvalidTelnetOptionException e) {
             log.error("Error registering option handlers: " + e.getMessage());
             loggedIn = false;
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            log.warn("Interrupted " , e );
+            log.warn("Interrupted ", e);
             loggedIn = false;
             return;
         } catch (InterruptedIOException e) {
             //I assume this is from intention interrupt
-            log.warn("Interrupted IO " , e );
+            log.warn("Interrupted IO ", e);
             loggedIn = false;
             return;
         } catch (IOException e) {
@@ -104,20 +116,20 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     }
 
     private boolean connect() throws InterruptedException, IOException, InvalidTelnetOptionException {
-        log.info("Telnet connecting to: " + linkage.getAddress());
+        log.info("Telnet connecting to: " + connectionSettings.getAddress());
         telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, true, false));
         telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
         telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
 
         telnet.setConnectTimeout(5000);
 
-        telnet.connect(linkage.getAddress(), linkage.getPort());
+        telnet.connect(connectionSettings.getAddress(), connectionSettings.getPort());
         Thread.sleep(waitTime);
         input = new BufferedInputStream(telnet.getInputStream());
         output = new PrintStream(telnet.getOutputStream());
 
-        readUntil(PLEASE_ENTER_PASSWORD);
-        write(linkage.getPassword());
+        readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
+        write(connectionSettings.getPassword());
         Thread.sleep(waitTime);
         return true;
     }
@@ -128,15 +140,18 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
     }
 
-    private void readUntil(String stopPhrase) throws IOException, InterruptedException {
+    private void readUntil(String stopPhrase, String errorPhrase) throws IOException, InterruptedException {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
-        log.info("...waiting for stopPhrase: "+ stopPhrase);
+        log.info("...waiting for stopPhrase: " + stopPhrase);
         while (true) {
             String line = bufferedReader.readLine();
             if (line.equals(stopPhrase)) {
                 log.info("Received stopPhrase: " + stopPhrase);
                 return;
+            } else if (errorPhrase != null && errorPhrase.equals(line)){
+                throw new RuntimeException("ErrorPhrase (" + errorPhrase +") detected");
             }
+            log.debug("Wrong stopPhrase, ignoring: " + line);
             Thread.sleep(waitTime);
         }
     }
@@ -153,7 +168,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
                 return;
             }
         }
-        log.info("Registering TelnetOutputHandler :" +  handler.getClass().getName());
+        log.info("Registering TelnetOutputHandler :" + handler.getClass().getName());
         handlers.add(handler);
     }
 
@@ -166,8 +181,8 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
             }
         }
 
-        if (remove!=null){
-            log.info("Removing TelnetOutputHandler :" +  remove.getClass().getName());
+        if (remove != null) {
+            log.info("Removing TelnetOutputHandler :" + remove.getClass().getName());
             handlers.remove(remove);
         }
     }

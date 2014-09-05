@@ -41,16 +41,21 @@
 <div ng-if="authorized" class="top" ng-controller="MenuCtrl">
     <div class="top-banner">
         <div class="title">7 Days to monitor</div>
-        <div class="logout">authorized={{authorized}} <a href="#" ng-click="logout()">Log out</a></div>
+
+        <div class="logout">
+            <a ng-click="selectTab('settings')"><img src="/img/settings-32.png" alt="Settings" /> </a>
+            authorized={{authorized}} <a href="#" ng-click="logout()"><img src="/img/sign-out-32.png" alt="Settings" />Log out</a>
+        </div>
     </div>
 
     <div style="float: none;"></div>
 
     <tabset>
         <tab heading="Main" ng-click="selectTab('main')"></tab>
-        <tab heading="Settings" ng-click="selectTab('settings')"></tab>
+        <tab heading="Players" ng-click="selectTab('players')"></tab>
         <tab heading="Chat" ng-click="selectTab('chat')"></tab>
     </tabset>
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 </div>
 
 <div ng-if="authorized" style="witdh: 100%" class="content">
