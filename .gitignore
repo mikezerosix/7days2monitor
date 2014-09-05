@@ -58,3 +58,4 @@ secrets.properties
 *.iml
 target/
 **/admin.xml
+**/*.log
