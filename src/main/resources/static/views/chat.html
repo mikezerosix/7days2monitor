@@ -5,4 +5,8 @@
       <li ng-repeat="msg in chatLog track by $index">{{msg}} </li>
    </ul>
    </div>
+   <div class="chat-input">
+
+       Say <input class="say-input" type="text" ng-model="say" > <input type="button" title="Send" ng-click="send()" value="Send">
+   </div>
 </div>

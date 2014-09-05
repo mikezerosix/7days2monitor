@@ -1,5 +1,6 @@
 package org.mikezerosix.rest;
 
+import org.mikezerosix.entities.Settings;
 import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.util.SessionUtil;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
+import static org.mikezerosix.util.JsonUtil.fromJson;
 import static spark.Spark.*;
 
 @SuppressWarnings("unchecked")
@@ -62,6 +64,18 @@ public class TelnetResource {
             }
         }, new JsonTransformer());
 
+        post(PROTECTED_URL + "telnet/say", (request, response) -> {
+            String say = "say " + request.body();
+            if (telnetService.isAlive()) {
+                try {
+                    telnetService.getOutputStream().write(say.getBytes());
+                    return true;
+                } catch (IOException e) {
+                    return e.getMessage();
+                }
+            }
+            return false;
+        });
     }
 
 }

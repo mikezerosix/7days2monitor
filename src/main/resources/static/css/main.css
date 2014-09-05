@@ -1,10 +1,17 @@
 
+.top {
+  background-color: #336699;
+}
+
 .top-banner .title {
   font-size: 2em;
   width: 49%;
   text-align: left;
   vertical-align: top;
   display: inline;
+  background-color: #336699;
+  padding-left: 1em;
+  color: #ffDDFF;
 }
 .top-banner .logout {
   width: 49%;
@@ -27,8 +34,9 @@
   overflow-x: hidden;
   padding-right: 5px;
   visibility: visible;
-  border: thin solid white;
-  background-color: #336699;
+  border: thin solid lightgray;
+
+  /*background-color: #336699;
   scrollbar-face-color: #336699;
   scrollbar-3dlight-color: #336699;
   scrollbar-base-color: #336699;
@@ -36,5 +44,9 @@
   scrollbar-darkshadow-color: #000;
   scrollbar-arrow-color: #000;
   scrollbar-shadow-color: #fff;
-  scrollbar-highlight-color: #fff;
+  scrollbar-highlight-color: #fff;*/
+}
+
+.say-input {
+  width: 80%;
 }

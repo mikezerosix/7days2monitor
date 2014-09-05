@@ -17,12 +17,16 @@ sevenMonitor.factory('TelnetService',function( $q, $http) {
     var raw = function () {
        return $http.get('/protected/telnet/raw');
     };
+    var say = function (msg) {
+           return $http.post('/protected/telnet/say', msg);
+   };
 
 
    return {
         isRunning: isRunning,
         run: run,
         raw: raw,
-        chat: chat
+        chat: chat,
+        say: say
    };
 });
