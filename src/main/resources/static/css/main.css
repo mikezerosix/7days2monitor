@@ -78,3 +78,13 @@ background-position-x: right;
 .say-input {
    width: 60%;
 }
+.loading-box {
+   height: 100%
+   width: 100%
+   align: center;
+   vertical-align: middle;
+}
+.loading {
+  font-size: 2em;
+
+}

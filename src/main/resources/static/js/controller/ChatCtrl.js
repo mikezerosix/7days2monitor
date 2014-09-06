@@ -4,6 +4,7 @@ sevenMonitor
 .controller('ChatCtrl',  function($scope, $q, $http, $timeout,  $location, $anchorScroll, SettingsService, TelnetService) {
    $scope.chatLog = [];
    $scope.processing = false;
+   $scope.loading = true;
 
    var readChat = function() {
         $scope.processing = true;
@@ -22,6 +23,7 @@ sevenMonitor
                     alert(status);
                     return false;
                 });
+                 $scope.loading = false;
                readChat();
            }, 1000);
          $scope.processing = false;
