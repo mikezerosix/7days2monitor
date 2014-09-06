@@ -44,16 +44,16 @@
 
         <div class="logout">
             <a ng-click="selectTab('settings')"><img src="/img/settings-32.png" alt="Settings" /> </a>
-            authorized={{authorized}} <a href="#" ng-click="logout()"><img src="/img/sign-out-32.png" alt="Settings" />Log out</a>
+            <a ng-show="authorized" ng-click="logout()"><img src="/img/sign-out-32.png" alt="Settings" />Log out</a>
         </div>
     </div>
 
     <div style="float: none;"></div>
 
     <tabset>
-        <tab heading="Main" ng-click="selectTab('main')"></tab>
-        <tab heading="Players" ng-click="selectTab('players')"></tab>
-        <tab heading="Chat" ng-click="selectTab('chat')"></tab>
+        <tab ng-click="selectTab('main')"> <tab-heading><img src="/img/home-16.png"> Home</tab-heading> </tab>
+        <tab ng-click="selectTab('players')"> <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
+        <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
     </tabset>
     <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 </div>
