@@ -2,7 +2,9 @@ package org.mikezerosix.telnet;
 
 import org.apache.commons.net.telnet.*;
 import org.mikezerosix.entities.ConnectionSettings;
-import org.mikezerosix.handlers.TelnetOutputHandler;
+import org.mikezerosix.telnet.commands.*;
+import org.mikezerosix.telnet.commands.TelnetCommand;
+import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
 import org.mikezerosix.rest.LoginResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * http://www.java2s.com/Code/Java/Network-Protocol/ExampleofuseofTelnetClient.htm
@@ -28,7 +31,8 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private static long connectionTimeoutSeconds = 10;
     private static boolean loggedIn = false;
     private static List<TelnetOutputHandler> handlers = new ArrayList<>();
-
+    private static ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
+    private static TelnetCommand runningCommand = null;
     private TelnetService() {
         super();
 
@@ -58,6 +62,8 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         log.info("** Starting TelnetService");
         telnet = new TelnetClient();
         loggedIn = false;
+
+
         try {
             connect();
 
@@ -75,11 +81,13 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
             while (telnet.isConnected()) {
+                runCommand();
+
                 final String line = bufferedReader.readLine();
+                commandHandleInput(line);
                 for (TelnetOutputHandler handler : handlers) {
                     handler.handleInput(line);
                 }
-
                 Thread.sleep(waitTime);
 
             }
@@ -184,6 +192,38 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         if (remove != null) {
             log.info("Removing TelnetOutputHandler :" + remove.getClass().getName());
             handlers.remove(remove);
+        }
+    }
+
+    public boolean hasHandler(Class handler) {
+        for (TelnetOutputHandler telnetOutputHandler : handlers) {
+            if (telnetOutputHandler.getClass().equals(handler)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void sendCommand(TelnetCommand  cmd) throws InterruptedException {
+        for (TelnetCommand command : commands) {
+            if (command.getCommand().equals(cmd.getCommand())) {
+                return;
+            }
+        }
+        commands.put(cmd);
+    }
+
+    private void  runCommand() {
+        if (runningCommand == null ||runningCommand.isFinished()) {
+            runningCommand = commands.poll();
+            write(runningCommand.getCommand());
+        }
+
+    }
+
+    private void commandHandleInput(String line) {
+        if (runningCommand == null) {
+            runningCommand.handleInput(line);
         }
     }
 }

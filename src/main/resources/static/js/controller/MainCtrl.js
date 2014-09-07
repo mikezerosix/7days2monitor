@@ -31,5 +31,19 @@ sevenMonitor
             alert(status);
         });
   }
+  $scope.status;
 
+  $scope.cmd;
+    $scope.sendCmd = function() {
+       console.log('sending cmd ' +$scope.cmd );
+
+       TelnetService.sendCmd($scope.cmd)
+           .success(function (data) {
+              $scope.status = data;
+              $scope.cmd = undefined;
+           })
+           .error(function (status) {
+               alert(status);
+           });
+   }
 });

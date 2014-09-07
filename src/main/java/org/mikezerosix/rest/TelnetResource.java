@@ -5,6 +5,7 @@ import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Response;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
-import static org.mikezerosix.util.JsonUtil.toJson;
 import static spark.Spark.*;
 
 @SuppressWarnings("unchecked")
@@ -42,23 +42,21 @@ public class TelnetResource {
             if (!telnetService.isAlive()) {
                 telnetService.start();
             }
-            log.warn("calling start on live telnet connection");
-            return toJson(true);
+            return returnDeadConnectionError(response);
         });
 
         delete(PROTECTED_URL + "telnet", (request, response) -> {
             if (telnetService.isAlive()) {
                 telnetService.interrupt();
             }
-            log.warn("calling disconnect on dead telnet connection");
-            return toJson(true);
+            return returnDeadConnectionError(response);
         });
 
         get(PROTECTED_URL + "telnet/raw", (request, response) -> {
             if (telnetService.isAlive()) {
                 log.warn("raw is not supported , needs web sockets ");
             }
-            return false;
+            return returnDeadConnectionError(response);
         });
 
         get(PROTECTED_URL + "telnet/chat", (request, response) -> {
@@ -85,10 +83,26 @@ public class TelnetResource {
                 telnetService.write(say);
                 return true;
             }
-            log.warn("calling say on dead telnet connection");
-            response.status(500);
-            return "telnet connection is dead";
+            return returnDeadConnectionError(response);
         });
+
+        post(PROTECTED_URL + "telnet/send-cmd", (request, response) -> {
+            String cmd =  request.body();
+            if (telnetService.isAlive()) {
+                log.info("sending cmd: " + cmd);
+                telnetService.write(cmd);
+                return true;
+            }
+            return returnDeadConnectionError(response);
+        });
+
+
+
     }
 
+   private String returnDeadConnectionError(Response response) {
+       log.warn("calling dead telnet connection");
+       response.status(500);
+       return "telnet connection is dead";
+   }
 }

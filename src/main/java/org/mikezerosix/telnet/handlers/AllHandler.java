@@ -1,8 +1,8 @@
-package org.mikezerosix.handlers;
+package org.mikezerosix.telnet.handlers;
 
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.regex.Matcher;
 
 /* read all to destination
  */
@@ -14,9 +14,10 @@ public class AllHandler implements TelnetOutputHandler {
         this.out = out;
     }
 
+
     @Override
-    public boolean match(String line) {
-        return true;
+    public Matcher[] matcher(String line) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

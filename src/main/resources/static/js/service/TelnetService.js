@@ -26,6 +26,12 @@ sevenMonitor.factory('TelnetService',function( $q, $http) {
        return $http.post('/protected/telnet/say', msg);
    };
 
+     var sendCmd = function (cmd) {
+        return $http.post('/protected/telnet/send-cmd', cmd);
+    };
+
+
+
 
    return {
         status: status,
@@ -33,6 +39,7 @@ sevenMonitor.factory('TelnetService',function( $q, $http) {
         disconnect: disconnect,
         raw: raw,
         chat: chat,
-        say: say
+        say: say,
+        sendCmd: sendCmd
    };
 });

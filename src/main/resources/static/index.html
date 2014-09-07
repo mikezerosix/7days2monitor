@@ -54,6 +54,7 @@
         <tab ng-click="selectTab('main')"> <tab-heading><img src="/img/home-16.png"> Home</tab-heading> </tab>
         <tab ng-click="selectTab('players')"> <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
         <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
+        <tab ng-click="selectTab('requests')"> <tab-heading><img src="/img/16/request-16.png"> Request</tab-heading> </tab>
     </tabset>
     <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 </div>

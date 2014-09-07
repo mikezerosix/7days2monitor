@@ -9,9 +9,12 @@ import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.entities.*;
-import org.mikezerosix.handlers.ChatHandler;
-import org.mikezerosix.rest.*;
+import org.mikezerosix.rest.LoginResource;
+import org.mikezerosix.rest.SettingsResource;
+import org.mikezerosix.rest.TelnetResource;
+import org.mikezerosix.rest.UserResource;
 import org.mikezerosix.telnet.TelnetService;
+import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -79,7 +82,7 @@ public class AppConfiguration {
         }
     }
 
-    public void connectionChange( ConnectionSettings connectionSettings) {
+    public void connectionChange(ConnectionSettings connectionSettings) {
         switch (connectionSettings.getType()) {
             case GAME_TELNET:
                 telnetService.setConnectionSettings(connectionSettings);

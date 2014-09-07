@@ -1,17 +1,24 @@
 package org.mikezerosix.handlers;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 
+import java.util.regex.Matcher;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class PlayerLoginHandlerTest  {
+public class PlayerLoginHandlerTest {
 
-    @Ignore
+    private PlayerLoginHandler playerLoginHandler = new PlayerLoginHandler(null);
+
     @Test
-    public void testMatch() throws Exception {
-        assertTrue("167628.000 STATS: a".matches("\\d{6,}+\\.\\d{3}\\sSTATS:"));
-        assertTrue("167628.000 STATS: sdfsdfsdf".matches("\\d{6,}+\\.\\d{3}\\sSTATS:(.*)"));
+    public void testMatcher() throws Exception {
+        final Matcher matcher = playerLoginHandler.matcher("167515.900 RequestToSpawnPlayer: 221, 99, [FF00FF]Camalot, 11");
+        assertTrue(matcher.matches());
 
+        assertThat(Long.parseLong(matcher.group(1).trim()), equalTo(221L));
+        final Matcher matcher2 = playerLoginHandler.matcher("19024.030 RequestToSpawnPlayer: 171, 11, Mike06, 10");
     }
 }

@@ -1,4 +1,4 @@
-package org.mikezerosix.handlers;
+package org.mikezerosix.telnet.handlers;
 
 
 /*
@@ -13,24 +13,57 @@ package org.mikezerosix.handlers;
 99, ch=2
 167515.300 RequestToEnterGame: 99/[FF00FF]Camalot
 167515.300 GMSG: [FF00FF]Camalot joined the game
+
+
 167515.900 RequestToSpawnPlayer: 221, 99, [FF00FF]Camalot, 11
 167515.900 Created player with id=221
 *
+
+22207.830 Authenticating player: [FF00FF]Camalot SteamId: 76561197975187104 TicketLen: 1024 Result: OK
+
 * */
+
+import org.mikezerosix.entities.PlayerRepository;
+import org.mikezerosix.util.TelentLineUtil;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PlayerLoginHandler implements TelnetOutputHandler {
 
-    public static final String REQUEST_TO_SPAWN_PLAYER = "167515.900 RequestToSpawnPlayer:";
+    public static final String REQUEST_TO_SPAWN_PLAYER = TelentLineUtil.TIME_STAMP + "RequestToSpawnPlayer: (\\d+), (\\d+), (.*?), (\\d+).*";
+    private final Pattern pattern = Pattern.compile(REQUEST_TO_SPAWN_PLAYER);
+    public static final String AUTHENTICATING_PLAYER = TelentLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";
+    private final Pattern pattern2 = Pattern.compile(AUTHENTICATING_PLAYER);
+    private PlayerRepository playerRepository;
+
+    public PlayerLoginHandler(PlayerRepository playerRepository) {
+        this.playerRepository = playerRepository;
+    }
 
     @Override
-    public boolean match(String line) {
-        return false;
+    public Matcher[] matcher(String line) {
+        return new Matcher[]{pattern.matcher(line), pattern2.matcher(line)};
     }
 
     @Override
     public void handleInput(String input) {
+        final Matcher[] matchers = matcher(input);
+
+        if (matchers[0].matches()) {
+            final long entityId = Long.parseLong(matchers[0].group(1).trim());
+            final long clientId = Long.parseLong(matchers[0].group(2).trim());
+            final String name = matchers[0].group(3).trim();
+            final long observedEntity = Long.parseLong(matchers[0].group(4).trim());
+        }
+
+        if (matchers[1].matches()) {
+            final long entityId = Long.parseLong(matchers[0].group(1).trim());
+            final long clientId = Long.parseLong(matchers[0].group(2).trim());
+            final String name = matchers[0].group(3).trim();
+            final long observedEntity = Long.parseLong(matchers[0].group(4).trim());
+        }
 
     }
-
 
 }
