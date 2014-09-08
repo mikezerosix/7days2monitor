@@ -2,10 +2,9 @@ package org.mikezerosix.telnet;
 
 import org.apache.commons.net.telnet.*;
 import org.mikezerosix.entities.ConnectionSettings;
-import org.mikezerosix.telnet.commands.*;
+import org.mikezerosix.rest.LoginResource;
 import org.mikezerosix.telnet.commands.TelnetCommand;
 import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
-import org.mikezerosix.rest.LoginResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,13 +25,14 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private static BufferedInputStream input = null;
     private static PrintStream output = null;
     private static TelnetService instance = null;
-    private ConnectionSettings connectionSettings;
-    private long waitTime = 500;
     private static long connectionTimeoutSeconds = 10;
     private static boolean loggedIn = false;
     private static List<TelnetOutputHandler> handlers = new ArrayList<>();
     private static ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
     private static TelnetCommand runningCommand = null;
+    private ConnectionSettings connectionSettings;
+    private long waitTime = 500;
+
     private TelnetService() {
         super();
 
@@ -47,10 +47,6 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
     public InputStream getInputStream() {
         return telnet.getInputStream();
-    }
-
-    public OutputStream getOutputStream() {
-        return telnet.getOutputStream();
     }
 
     public void setConnectionSettings(ConnectionSettings connectionSettings) {
@@ -101,12 +97,12 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         } catch (InterruptedException e) {
             log.warn("Interrupted ", e);
             loggedIn = false;
-            return;
+
         } catch (InterruptedIOException e) {
             //I assume this is from intention interrupt
             log.warn("Interrupted IO ", e);
             loggedIn = false;
-            return;
+
         } catch (IOException e) {
             log.error("IO error", e);
             loggedIn = false;
@@ -156,8 +152,8 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
             if (line.equals(stopPhrase)) {
                 log.info("Received stopPhrase: " + stopPhrase);
                 return;
-            } else if (errorPhrase != null && errorPhrase.equals(line)){
-                throw new RuntimeException("ErrorPhrase (" + errorPhrase +") detected");
+            } else if (errorPhrase != null && errorPhrase.equals(line)) {
+                throw new RuntimeException("ErrorPhrase (" + errorPhrase + ") detected");
             }
             log.debug("Wrong stopPhrase, ignoring: " + line);
             Thread.sleep(waitTime);
@@ -204,7 +200,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         return false;
     }
 
-    public void sendCommand(TelnetCommand  cmd) throws InterruptedException {
+    public void sendCommand(TelnetCommand cmd) throws InterruptedException {
         for (TelnetCommand command : commands) {
             if (command.getCommand().equals(cmd.getCommand())) {
                 return;
@@ -213,16 +209,18 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         commands.put(cmd);
     }
 
-    private void  runCommand() {
-        if (runningCommand == null ||runningCommand.isFinished()) {
+    private void runCommand() {
+        if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();
-            write(runningCommand.getCommand());
+            if (runningCommand != null) {
+                write(runningCommand.getCommand());
+            }
         }
 
     }
 
     private void commandHandleInput(String line) {
-        if (runningCommand == null) {
+        if (runningCommand != null) {
             runningCommand.handleInput(line);
         }
     }

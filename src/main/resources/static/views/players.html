@@ -1,9 +1,41 @@
 <div id="players-content">
     <table border="1">
         <thead>
-        <tr><th>Name</th><th>SteamId</th><th>Joined</th><th>Last Login</th><th>SteamId</th><th>Keystones</th><th>PK</th><th>ZK</th><th> locate/ban/kick/promote</th></tr>
-        </thead>
+        <tr>
+            <th>Name</th>
+            <th>SteamId</th>
+            <th>EntityId<th>
+            <th>Joined</th>
+            <th>Last Login</th>
 
+            <th>Last Sync</th>
+            <th>PK</th>
+            <th>ZK</th>
+            <th>Score</th>
+            <th>Health</th>
+
+            <th>Keystones</th>
+            <th> locate/ban/kick/promote</th>
+        </tr>
+        </thead>
+        <tr ng-repeat="player in players" class="player{{player.online}}">
+            <td>{{player.name}}</td>
+            <td><a href="http://steamcommunity.com/profiles/{{player.steamId}}" target="_blank">{{player.steamId}}</a></td>
+            <td>{{player.entityId}}</td>
+            <td>{{player.joined}}</td>
+            <td>{{player.lastLogin}}</td>
+
+            <td>{{player.lastSync}}</td>
+            <td>{{player.pk}}</td>
+            <td>{{player.zk}}</td>
+            <td>{{player.score}}</td>
+            <td>{{player.health}}</td>
+
+            <td></td>
+            <td> </td>
+
+        </tr>
+        </tr>
 
     </table>
 

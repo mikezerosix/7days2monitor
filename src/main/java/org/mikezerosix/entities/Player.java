@@ -11,7 +11,7 @@ public class Player {
     @Column(unique=true)
     private String steamId;
     @Column(unique=true)
-    private long entityId;
+    private Long entityId;
 
     private String name;
     private Date joined;
@@ -42,11 +42,11 @@ public class Player {
         this.steamId = steamId;
     }
 
-    public long getEntityId() {
+    public Long getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(long entityId) {
+    public void setEntityId(Long entityId) {
         this.entityId = entityId;
     }
 

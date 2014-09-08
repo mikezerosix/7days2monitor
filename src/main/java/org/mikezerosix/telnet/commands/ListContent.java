@@ -32,7 +32,7 @@ public class ListContent implements TelnetCommand {
     }
 
     @Override
-    public Matcher matcher(String line) {
+    public Matcher[] matcher(String line) {
         return null;
     }
 

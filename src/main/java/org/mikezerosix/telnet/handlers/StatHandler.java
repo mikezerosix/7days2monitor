@@ -14,8 +14,8 @@ public class StatHandler implements TelnetOutputHandler {
     private final Pattern pattern = Pattern.compile(STAT_TRIGGER);
 
     @Override
-    public Matcher matcher(String line) {
-        return pattern.matcher(line) ;
+    public Matcher[] matcher(String line) {
+        return new Matcher[] {pattern.matcher(line)} ;
     }
 
 

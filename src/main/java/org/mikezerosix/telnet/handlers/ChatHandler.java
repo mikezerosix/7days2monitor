@@ -25,7 +25,7 @@ public class ChatHandler implements TelnetOutputHandler {
 
     @Override
     public void handleInput(String input) {
-        final Matcher matcher = matcher(input);
+        final Matcher matcher = matcher(input)[0];
         if (matcher.find()) {
             final String chat = matcher.group(1).trim();
             chatLogger.log(chat);

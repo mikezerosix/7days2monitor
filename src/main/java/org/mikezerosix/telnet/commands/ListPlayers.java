@@ -37,13 +37,13 @@ public class ListPlayers implements TelnetCommand {
     }
 
     @Override
-    public Matcher matcher(String line) {
-        return pattern.matcher(line);
+    public Matcher[] matcher(String line) {
+        return new Matcher[] {pattern.matcher(line)};
     }
 
     @Override
     public void handleInput(String input) {
-        final Matcher matcher = matcher(input);
+        final Matcher matcher = matcher(input)[0];
         if (matcher.find()) {
             Player player = new Player();
             final String id = matcher.group(2).trim();
