@@ -1,90 +1,98 @@
+.root {
+    background-color: rgba(196, 191, 191, 0.98);
+}
 
 .top {
-  background-color: rgba(196, 191, 191, 0.98);
+
 }
 
 .top-banner .title {
-  font-size: 2em;
-  width: 49%;
-  text-align: left;
-  display: inline;
-  padding-left: 1em;
-  color: #5C395C;
+    font-size: 2em;
+    width: 49%;
+    text-align: left;
+    display: inline;
+    padding-left: 1em;
+    color: #5C395C;
 }
+
 .top-banner .logout {
-  width: 49%;
-  text-align: right;
-  display: inline;
-  float: right;
+    width: 49%;
+    text-align: right;
+    display: inline;
+    float: right;
+}
+
+#content {
+    background-color: snow;
+    min-height: 100%;
+    position: fixed;
+    width: 100%;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border: 1px solid lightgrey;
+    height: 1.1em;
+    background-color: seashell;
 }
 
 .settings-col {
-  display: inline;
-  width: 32%;
-  float: left;
+    display: inline;
+    width: 32%;
+    float: left;
 }
 
-.chat-messages-pane {
-  margin: 8px;
-  min-height: 20em;
-  height: 30em;
-  border: 1px solid gray;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  padding-right: 5px;
-  visibility: visible;
-  border: thin solid gray;
-
-  /*background-color: #336699;
-  scrollbar-face-color: #336699;
-  scrollbar-3dlight-color: #336699;
-  scrollbar-base-color: #336699;
-  scrollbar-track-color: #336699;
-  scrollbar-darkshadow-color: #000;
-  scrollbar-arrow-color: #000;
-  scrollbar-shadow-color: #fff;
-  scrollbar-highlight-color: #fff;*/
-}
-
-#chat-listing {
-
-  display: initial;
-}
-li.chat-line {
-  list-style-type: none;
-  margin-left: 1em;
-}
-.say-input {
-  width: 80%;
-}
-
-.green-ball {
-background-image: url('/img/green-ball-48.png');
-background-color: transparent;
-background-repeat: no-repeat;
-background-size: contain;
-background-position-x: right;
+.ok {
+    background-image: url('/img/green-ball-48.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
 }
 
 .main-settings td {
- display: inline;
+    display: inline;
 }
 
-.say-block {
-  border: thin solid lightgray;
+.chat-messages-pane {
+    margin: 8px;
+    min-height: 20em;
+    height: 30em;
+    border: 1px solid gray;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-right: 5px;
+    visibility: visible;
+    border: thin solid gray;
+}
 
+#chat-listing {
+    display: initial;
+}
+
+li.chat-line {
+    list-style-type: none;
+    margin-left: 1em;
 }
 
 .say-input {
-   width: 60%;
+    width: 80%;
 }
-.loading-box {
-   height: 100%
-   width: 100%
-   align: center;
-   vertical-align: middle;
-}
-.loading {
-  font-size: 2em;
 
+.chat-bottom {
+    border: thin solid lightgray;
+    position: fixed;
+    width: 100%;
+}
+
+.loading-box {
+    height: 100% width : 100 % align : center;
+    vertical-align: middle;
+    position: absolute;
+}
+
+.loading {
+    font-size: 2em;
 }

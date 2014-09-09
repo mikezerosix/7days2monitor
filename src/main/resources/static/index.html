@@ -21,8 +21,9 @@
     <script src="js/service/TelnetService.js"></script>
     <script src="js/service/PlayerService.js"></script>
 
-    <script src="js/controller/MenuCtrl.js"></script>
     <script src="js/controller/LoginCtrl.js"></script>
+    <script src="js/controller/MenuCtrl.js"></script>
+    <script src="js/controller/StatusCtrl.js"></script>
     <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/SettingsCtrl.js"></script>
     <script src="js/controller/ConnectionsCtrl.js"></script>
@@ -39,7 +40,7 @@
         <input type="submit" value="Submit"/>
     </form>
 </div>
-<div ng-if="authorized" class="top" ng-controller="MenuCtrl">
+<div ng-if="authorized" class="root top" ng-controller="MenuCtrl">
     <div class="top-banner">
         <div class="title">7 Days to monitor</div>
 
@@ -60,10 +61,11 @@
     <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 </div>
 
-<div ng-if="authorized" style="witdh: 100%" class="content">
+<div id="content" ng-if="authorized" style="witdh: 100%" class="root content">
 
     <ng-view></ng-view>
 
 </div>
+<div id="footer" ng-controller="StatusCtrl" class="root bottom"><div class="status-msg" class="{{status.state}}">{{status.msg}}</div></div>
 </body>
 </html>

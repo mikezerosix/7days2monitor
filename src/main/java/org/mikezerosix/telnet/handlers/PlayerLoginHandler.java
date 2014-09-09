@@ -41,6 +41,8 @@ public class PlayerLoginHandler implements TelnetOutputHandler {
     public static final String AUTHENTICATING_PLAYER = TelentLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";
     private final Pattern pattern1 = Pattern.compile(AUTHENTICATING_PLAYER);
     private PlayerRepository playerRepository;
+    private static int AUTHENTICATE = 0;
+    private static int SPAWN = 1;
 
     public PlayerLoginHandler(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
@@ -54,11 +56,12 @@ public class PlayerLoginHandler implements TelnetOutputHandler {
     @Override
     public void handleInput(String input) {
         final Matcher[] matchers = matcher(input);
-
+        final Matcher authenticateMatcher = matchers[AUTHENTICATE];
+        final Matcher spawnMatcher = matchers[SPAWN];
         try {
-            if (matchers[0].matches()) {
-                final String name = matchers[0].group(1).trim();
-                final String steamId = matchers[0].group(2).trim();
+            if (authenticateMatcher.matches()) {
+                final String name = authenticateMatcher.group(1).trim();
+                final String steamId = authenticateMatcher.group(2).trim();
                 log.info("detected login: " + name + " / " + steamId);
                 Player player = playerRepository.findBySteamId(steamId);
                 if (player == null) {
@@ -71,11 +74,11 @@ public class PlayerLoginHandler implements TelnetOutputHandler {
                 playerRepository.save(player);
             }
 
-            if (matchers[1].matches()) {
-                final long entityId = Long.parseLong(matchers[1].group(1).trim());
-                final long clientId = Long.parseLong(matchers[1].group(2).trim());
-                final String name = matchers[1].group(3).trim();
-                final long observedEntity = Long.parseLong(matchers[1].group(4).trim());
+            if (spawnMatcher.matches()) {
+                final long entityId = Long.parseLong(spawnMatcher.group(1).trim());
+                final long clientId = Long.parseLong(spawnMatcher.group(2).trim());
+                final String name = spawnMatcher.group(3).trim();
+                final long observedEntity = Long.parseLong(spawnMatcher.group(4).trim());
                 Player player = playerRepository.findByName(name);
                 if (player.getEntityId() == null || player.getEntityId().equals(entityId)) {
                     player.setLastSync(new Date());

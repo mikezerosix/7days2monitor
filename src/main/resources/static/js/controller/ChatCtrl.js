@@ -16,11 +16,11 @@ sevenMonitor
              TelnetService.chat(lastLine)
                 .success(function (data) {
                    $scope.chatLog = data;
-                   $location.hash('bottom');
+                   $location.hash('lastMessage');
                    $anchorScroll();
                 })
                 .error(function (status) {
-                    alert(status);
+                    $scope.$broadcast('status_error', 'Reading chat failed, error ' + status);
                     return false;
                 });
                  $scope.loading = false;
