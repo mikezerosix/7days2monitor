@@ -19,10 +19,14 @@ public class FTPService {
     private FTPClient ftp;
     private ConnectionSettings connectionSettings;
 
+    public FTPClient getFtp() {
+        return ftp;
+    }
 
     public FTPService(ConnectionSettings connectionSettings) throws IOException {
         this.ftp = new FTPClient();
         ftp.setControlKeepAliveTimeout(300);
+        ftp.setDataTimeout(5000);
         ftp.enterLocalPassiveMode();
         config(connectionSettings);
     }
@@ -37,6 +41,20 @@ public class FTPService {
     public FTPFile[] listFiles(String path) throws IOException {
         connect();
         FTPFile[] files = ftp.listFiles(path);
+        confirmPositiveCompletion();
+        return files;
+    }
+
+    public FTPFile[] listFiles() throws IOException {
+        connect();
+        FTPFile[] files;
+        try {
+            ftp.enterRemotePassiveMode();
+            files = ftp.listDirectories();
+        } catch (IOException e) {
+            log.error("IO exception from list files ", e );
+            throw e;
+        }
         confirmPositiveCompletion();
         return files;
     }
@@ -78,6 +96,7 @@ public class FTPService {
 
     public void connect() throws IOException {
         if (!ftp.isConnected()) {
+            log.info("Connecting FTP to " + connectionSettings.getAddress());
             ftp.connect(connectionSettings.getAddress(), connectionSettings.getPort());
             final boolean login = ftp.login(connectionSettings.getUsername(), connectionSettings.getPassword());
             if (!login ) {
@@ -94,7 +113,7 @@ public class FTPService {
     private void confirmPositiveCompletion() {
         final int replyCode = ftp.getReplyCode();
         if (!FTPReply.isPositiveCompletion(replyCode)) {
-            throw new RuntimeException("Bad reply code: " + replyCode);
+            throw new RuntimeException("Bad reply code: " + replyCode + ", " + ftp.getReplyString());
         }
 
 
