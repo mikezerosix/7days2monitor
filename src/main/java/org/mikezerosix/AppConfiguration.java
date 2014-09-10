@@ -1,14 +1,18 @@
 package org.mikezerosix;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
+import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.entities.*;
 import org.mikezerosix.rest.*;
 import org.mikezerosix.telnet.TelnetService;
+import org.mikezerosix.telnet.handlers.ChatHandler;
+import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,31 +32,71 @@ import java.sql.SQLException;
 
 @Import({JdbcConfiguration.class})
 public class AppConfiguration {
-    public static final String PASSWORD = "password";
     public static final String PORT = "port";
     public static final String PROTECTED_URL = "/protected/";
     public static final String ADMIN = "admin";
-    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
+    public static final String SETTING_CURRENT_SERVER = "CURRENT_SERVER";
+    public static final String SETTING_CHAT_HANDLER_ENABLE = "CHAT_HANDLER_ENABLE";
 
-    private static TelnetService telnetService;
-    private static Thread thread;
+
+    private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
+    private static TelnetService telnetService = TelnetService.getInstance();
 
     @Inject
     private SettingsRepository settingsRepository;
 
     @Inject
-    private ServerRepository serverRepository;
+    private ConnectionRepository connectionRepository;
 
     @Inject
     private UserRepository userRepository;
 
+    @Inject
+    private PlayerRepository playerRepository;
+
+
     @PostConstruct
     public void init() throws SQLException {
         initLogger();
-        initPassword();
+        initUsers();
+        initSettings();
+        initConnections();
+        telnetService.addHandler(new PlayerLoginHandler(playerRepository));
     }
 
-    public void initPassword() {
+    private void initSettings() {
+        final Iterable<Settings> settings = settingsRepository.findAll();
+        for (Settings setting : settings) {
+            settingsChange(setting);
+        }
+    }
+
+    private void initConnections() {
+        for (ConnectionType connectionType : ConnectionType.values()) {
+            ConnectionSettings connectionSettings = connectionRepository.findByType(connectionType);
+            if (connectionSettings == null) {
+                connectionSettings = new ConnectionSettings();
+                connectionSettings.setType(connectionType);
+                connectionRepository.save(connectionSettings);
+            } else {
+                connectionChange(connectionSettings);
+            }
+        }
+    }
+
+    public void connectionChange(ConnectionSettings connectionSettings) {
+        switch (connectionSettings.getType()) {
+            case GAME_TELNET:
+                telnetService.setConnectionSettings(connectionSettings);
+                if (connectionSettings.isAuto() && !telnetService.isAlive()) {
+                    telnetService.start();
+                }
+                break;
+            //TODO: other connection
+        }
+    }
+
+    private void initUsers() {
         if (userRepository.count() < 1) {
             String password = Credential.MD5.digest("" + Math.random()).substring(5, 13);
             //TODO: remove debug
@@ -76,28 +120,51 @@ public class AppConfiguration {
         return settings != null ? settings.getValue() : null;
     }
 
-
     private void initLogger() {
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        PatternLayoutEncoder ple = new PatternLayoutEncoder();
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
+        // Needed or otherwise Logback will use it's default console appender without asking us
+        loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).detachAndStopAllAppenders();
+
+        PatternLayoutEncoder ple = new PatternLayoutEncoder();
         ple.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg%n");
-        ple.setContext(lc);
+        ple.setContext(loggerContext);
         ple.start();
 
         ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
         consoleAppender.setEncoder(ple);
-        consoleAppender.setContext(lc);
+        consoleAppender.setContext(loggerContext);
         consoleAppender.start();
 
         FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
         fileAppender.setFile("7days2monitor.log");
         fileAppender.setEncoder(ple);
-        fileAppender.setContext(lc);
+        fileAppender.setContext(loggerContext);
         fileAppender.start();
 
-    }
+        PatternLayoutEncoder chatEncoder = new PatternLayoutEncoder();
 
+        chatEncoder.setPattern("%date %msg%n");
+        chatEncoder.setContext(loggerContext);
+        chatEncoder.start();
+
+
+        FileAppender<ILoggingEvent> chatAppender = new FileAppender<>();
+        chatAppender.setFile("chat.log");
+        chatAppender.setEncoder(chatEncoder);
+        chatAppender.setContext(loggerContext);
+        chatAppender.start();
+
+        loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(consoleAppender);
+        loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).setLevel(Level.INFO);
+
+        loggerContext.getLogger(TelnetService.class).setLevel(Level.DEBUG);
+        loggerContext.getLogger(TelnetService.class).addAppender(consoleAppender);
+        loggerContext.getLogger(TelnetService.class).addAppender(fileAppender);
+
+        loggerContext.getLogger(ChatLogger.class).setLevel(Level.ALL);
+        loggerContext.getLogger(ChatLogger.class).addAppender(chatAppender);
+    }
 
     public int getPort() {
         String port = getSetting(PORT);
@@ -113,15 +180,30 @@ public class AppConfiguration {
     }
 
     public SettingsResource settingsResource() {
-        return new SettingsResource(settingsRepository);
+        return new SettingsResource(settingsRepository, this, connectionRepository);
     }
 
     public UserResource userResource() {
         return new UserResource(userRepository);
     }
 
-    public ServerResource serverResource() {return new ServerResource(serverRepository);}
     public TelnetResource telnetResource() {
-        return new TelnetResource(telnetService, thread);
+        return new TelnetResource(telnetService);
+    }
+
+
+    public PlayerResource playerResource() {
+        return new PlayerResource(telnetService, playerRepository);
+    }
+    public void settingsChange(Settings settings) {
+        switch (settings.getId()) {
+            case SETTING_CHAT_HANDLER_ENABLE:
+                if (Boolean.parseBoolean(settings.getValue())) {
+                    telnetService.addHandler(new ChatHandler());
+                } else {
+                    telnetService.removeHandler(ChatHandler.class);
+                }
+                break;
+        }
     }
 }

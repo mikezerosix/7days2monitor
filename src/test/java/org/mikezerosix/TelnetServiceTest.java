@@ -1,32 +1,48 @@
 package org.mikezerosix;
 
-import junit.framework.TestCase;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mikezerosix.entities.ConnectionSettings;
+import org.mikezerosix.entities.ConnectionType;
 import org.mikezerosix.telnet.TelnetService;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Properties;
 
-public class TelnetServiceTest extends TestCase {
+public class TelnetServiceTest {
+    private static ConnectionSettings connectionSettings = new ConnectionSettings();
 
-    public void testRun() throws Exception {
-        TelnetService telnetService = new TelnetService("", 0, "");
-        final Thread thread = new Thread(telnetService);
-        thread.start();
-        while (!telnetService.isConnected()) {
-            Thread.sleep(1000);
-            }
-    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(telnetService.getInputStream()));
-
-        telnetService.write("lp");
-        while (true) {
-            boolean end_loop = false;
-            Thread.sleep(1000);
-
-            System.out.println(bufferedReader.readLine());
+    @BeforeClass
+    public static void setup() {
+        Properties prop = new Properties();
+        File secrets = new File("secrets.properties");
+        try {
+            prop.load(new InputStreamReader(new FileInputStream(secrets)));
+            connectionSettings.setType(ConnectionType.GAME_TELNET);
+            connectionSettings.setAddress(prop.getProperty("telnetHost"));
+            connectionSettings.setPort(Integer.parseInt(prop.getProperty("telnetPort")));
+            connectionSettings.setPassword(prop.getProperty("telnetPassword"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
 
+    @Test
+    public void testRun() throws Exception {
+
+        TelnetService telnetService = TelnetService.getInstance();
+        telnetService.setConnectionSettings(connectionSettings);
+
+       // telnetService.addHandler(new AllHandler(System.out.));
+        telnetService.start();
+        while (!telnetService.isConnected()) {
+            Thread.sleep(1000);
+        }
+        Thread.sleep(5000);
+        telnetService.interrupt();
+
+    }
 
 
 }

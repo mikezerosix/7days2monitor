@@ -4,8 +4,9 @@ sevenMonitor
 .controller('SettingsCtrl', function($scope, $q, $http, $modal, SettingsService) {
 
    $scope.settings = [];
+   $scope.settingsIds = [];
    $scope.users = [];
-   $scope.servers = [];
+   $scope.connections = [];
 
    SettingsService.readUsers()
    .success(function (data) {
@@ -17,45 +18,61 @@ sevenMonitor
 
    SettingsService.readSettings()
    .success(function (data) {
-        $scope.settings = data;
+        console.log('settings: ' + data)
+        for (var i = 0; i < data.length; i++) {
+           $scope.settingsIds[i] = data[i].id;
+           $scope.settings[data[i].id] = data[i].value;
+        }
+
    })
    .error(function (status) {
         alert(status);
    });
 
-   SettingsService.readServers()
+   SettingsService.readConnections()
    .success(function (data) {
-        $scope.servers = data;
+        $scope.connections = data;
    })
    .error(function (status) {
         alert(status);
    });
 
-   $scope.server = {}
-     $scope.addServer = function () {
-       if (typeof $scope.servers !== 'undefined' && $scope.servers.length > 0) {
-          alert('currently only one server is supported');
-          return;
-       }
+    $scope.monitorChat = $scope.settings['CHAT_HANDLER_ENABLE'];
+
+    $scope.setChatHandlerEnable = function() {
+         console.log('updating CHAT_HANDLER_ENABLE =' + $scope.settings['CHAT_HANDLER_ENABLE']);
+        SettingsService.updateSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
+         .success(function (data) {
+  console.log('received: ' + data.id +  '=' + data.value);
+             $scope.settings[data.id] = data.value;
+       })
+       .error(function (status) {
+            alert(status);
+       });
+    };
+
+
+    $scope.openConnection = function (connection) {
+       $scope.connection = connection;
        var modalInstance = $modal.open({
-         templateUrl: '/views/server.html',
-         controller: 'ServerCtrl',
+         templateUrl: '/views/connection.html',
+         controller: 'ConnectionsCtrl',
          backdrop: 'static',
          resolve: {
-           server: function () {
-             return $scope.server;
+           connection: function () {
+             return $scope.connection;
            }
          }
        });
 
-       modalInstance.result.then(function (server) {
-       alert('server returned');
-       SettingsService.createServer(server)
+       modalInstance.result.then(function (connection) {
+       alert('connection returned');
+       SettingsService.updateConnection(connection)
        .success(function (data) {
-            $scope.servers = data;
-            SettingsService.readServers()
+
+            SettingsService.readConnections()
                .success(function (data) {
-                    $scope.servers = data;
+                    $scope.connections = data;
                })
                .error(function (status) {
                     alert(status);
@@ -66,7 +83,7 @@ sevenMonitor
        });
 
        //TODO: remove
-         $scope.server = server;
+         $scope.connection = connection;
        }, function () {
         // closed
        });

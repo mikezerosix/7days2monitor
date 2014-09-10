@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h3 class="modal-title">Edit connection</h3>
+</div>
+<div class="modal-body">
+
+    <h3>Connection ( {{connection.id}} )</h3>
+    type {{connection.type}}
+    <div>
+        <label for="connection-address">Address</label>
+        <input id="connection-address" type="text" ng-model="connection.address">
+    </div>
+    <div>
+        <label for="connection-port">Port</label>
+        <input id="connection-port" type="text" ng-model="connection.port">
+    </div>
+    <div>
+        <label for="connection-username">Username</label>
+        <input id="connection-username" type="text" ng-model="connection.username">
+    </div>
+    <div>
+        <label for="connection-password">Password</label>
+        <input id="connection-password" type="text" ng-model="connection.password">
+    </div>
+    <div>
+        <label for="connection-auto">Automatic connection</label>
+        <input id="connection-auto" type="checkbox" ng-model="connection.auto" ng-value="true">
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

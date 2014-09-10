@@ -5,7 +5,11 @@
         <fieldset>
             <legend>Global</legend>
             <ul>
-                <li ng-repeat="setting in settings"> x {{setting}}</li>
+                <li>Monitor chat: <input type="checkbox" ng-model="settings['CHAT_HANDLER_ENABLE']" ng-true-value="'true'" ng-change="setChatHandlerEnable()"> </li>
+            </ul>
+            <h4>All settings</h4>
+            <ul>
+                <li ng-repeat="setting in settingsIds"> {{setting}}={{settings[setting]}}</li>
             </ul>
         </fieldset>
     </div>
@@ -19,12 +23,18 @@
     </div>
     <div class="settings-col">
         <fieldset>
-            <legend>Servers</legend>
+            <legend>Connections</legend>
             <ul>
-                <li ng-repeat="server in servers"> {{server}}</li>
+                <li ng-repeat="connection in connections" ng-click="openConnection(connection)"> {{connection.type}} </li>
             </ul>
-            <button ng-click="addServer()">Add</button>
+
 
         </fieldset>
+    </div>
+    <div style="float:none;"> </div>
+    <div class="raw-feed">
+
+
+
     </div>
 </div>
