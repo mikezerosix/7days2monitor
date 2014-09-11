@@ -18,22 +18,24 @@ public class FTPService {
     public static final Logger log = LoggerFactory.getLogger(FTPService.class);
     private FTPClient ftp;
     private ConnectionSettings connectionSettings;
+    private static FTPService instance;
 
-    public FTPClient getFtp() {
-        return ftp;
+    public static FTPService getInstance() {
+        if (instance == null) {
+            instance = new FTPService();
+        }
+        return instance;
     }
 
-    public FTPService(ConnectionSettings connectionSettings) throws IOException {
+    private FTPService() {
         this.ftp = new FTPClient();
         ftp.setControlKeepAliveTimeout(300);
-        ftp.setDataTimeout(5000);
-        ftp.enterLocalPassiveMode();
-        config(connectionSettings);
+
     }
 
     public void config(ConnectionSettings connectionSettings) {
         this.connectionSettings = connectionSettings;
-        FTPClientConfig config = new FTPClientConfig();
+        FTPClientConfig config = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
         //config.setXXX(YYY); // change required options
         ftp.configure(config);
     }
@@ -49,7 +51,7 @@ public class FTPService {
         connect();
         FTPFile[] files;
         try {
-            ftp.enterRemotePassiveMode();
+
             files = ftp.listDirectories();
         } catch (IOException e) {
             log.error("IO exception from list files ", e );
@@ -98,9 +100,13 @@ public class FTPService {
         if (!ftp.isConnected()) {
             log.info("Connecting FTP to " + connectionSettings.getAddress());
             ftp.connect(connectionSettings.getAddress(), connectionSettings.getPort());
+            ftp.enterLocalPassiveMode();
             final boolean login = ftp.login(connectionSettings.getUsername(), connectionSettings.getPassword());
             if (!login ) {
                 throw new AccessDeniedException("FTP login failed: " + ftp.getReplyString());
+            }
+            if ("Windows_NT".equals(ftp.getSystemType())) {
+                ftp.configure( new FTPClientConfig(FTPClientConfig.SYST_NT));
             }
             log.info("FTP Connected to " + connectionSettings.getAddress() + ":" + connectionSettings.getPort() + ".");
             log.info(ftp.getReplyString());
@@ -109,7 +115,9 @@ public class FTPService {
         //TODO: can I use this if I have not issued any commands  ?
         // confirmPositiveCompletion();
     }
-
+    public void disconnect() throws IOException {
+        ftp.disconnect();
+    }
     private void confirmPositiveCompletion() {
         final int replyCode = ftp.getReplyCode();
         if (!FTPReply.isPositiveCompletion(replyCode)) {

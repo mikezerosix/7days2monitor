@@ -2,13 +2,21 @@
 
 <dl class="main-settings">
         <dt>Monitor uptime</dt>
-        <dd> xd xh xm xs</dd>
+        <dd>
+            {{  Math.floor(uptime/1000/60/60/60) }}d
+            {{  Math.floor(uptime/1000/60/60%60) }}h
+            {{  Math.floor(uptime/1000/60%60) }}m
+            {{ Math.floor((uptime/1000)%60) }}s
+
+        </dd>
 
         <dt>User</dt>
         <dd> {{authorized}}</dd>
 
-        <dt>Server</dt>
-        <dd></dd>
+        <fieldset>
+            <legend>Game Server</legend>
+            {{gameServerStatus}}
+        </fieldset>
 
         <dt>Telnet</dt>
         <dd>
@@ -31,14 +39,15 @@
 
         </dd>
         <dt>FTP</dt>
-        <dd></dd>
-        <dt>Alloc's Fixes</dt>
-        <dd></dd>
+        <dd>
+          <span ng-if="ftpStatus ">
+          Connected <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Connected">
+          <button ng-click="disconnectFTP()">Disconnect</button>
+        </span>
+        <span ng-if="!ftpStatus ">
+          Disconnected <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Disconnected">
+          <button ng-click="connectFTP()">Connect</button>
+        </span>
     </dl>
 
-    <div>
-        <form>
-        <input type="text" ng-model="cmd"> <input type="submit" value="Send" ng-click="sendCmd(cmd)">
-        </form>
-    </div>
 </div>

@@ -38,6 +38,8 @@ public class TelnetResource {
             return res;
         }, new JsonTransformer());
 
+        get(PROTECTED_URL + "telnet/server-info", (request, response) -> telnetService.getServerInformation(), new JsonTransformer());
+
         post(PROTECTED_URL + "telnet", (request, response) -> {
             if (!telnetService.isAlive()) {
                 telnetService.start();

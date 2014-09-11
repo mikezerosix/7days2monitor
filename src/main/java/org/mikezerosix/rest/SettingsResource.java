@@ -16,7 +16,7 @@ import static spark.Spark.*;
 
 @SuppressWarnings("unchecked")
 public class SettingsResource {
-
+    private long started = System.currentTimeMillis();
     public SettingsResource(SettingsRepository settingsRepository, AppConfiguration appConfiguration, ConnectionRepository connectionRepository) {
 
         before(PROTECTED_URL + "*", (request, response) -> {
@@ -35,6 +35,7 @@ public class SettingsResource {
         });
 
         get(PROTECTED_URL + "settings/connections", (request, response) -> IteratorUtils.toList(connectionRepository.findAll().iterator()), new JsonTransformer());
+        get(PROTECTED_URL + "settings/uptime", (request, response) -> (System.currentTimeMillis()-started), new JsonTransformer());
 
         put(PROTECTED_URL + "settings/connections", (request, response) -> {
             final ConnectionSettings connectionSettings = fromJson(request, ConnectionSettings.class);

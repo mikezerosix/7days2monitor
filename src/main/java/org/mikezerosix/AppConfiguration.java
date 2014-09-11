@@ -9,6 +9,7 @@ import ch.qos.logback.core.FileAppender;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.entities.*;
+import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.rest.*;
 import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.telnet.handlers.ChatHandler;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.sql.SQLException;
 
 @Configuration
@@ -41,6 +43,7 @@ public class AppConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     private static TelnetService telnetService = TelnetService.getInstance();
+    private static FTPService ftpService = FTPService.getInstance();
 
     @Inject
     private SettingsRepository settingsRepository;
@@ -92,7 +95,19 @@ public class AppConfiguration {
                     telnetService.start();
                 }
                 break;
-            //TODO: other connection
+
+            case GAME_FTP:
+                ftpService.config(connectionSettings);
+                if (connectionSettings.isAuto()) {
+                    try {
+                        ftpService.connect();
+                    } catch (IOException e) {
+                        log.error("FTP connection failed", e);
+                    }
+                }
+                break;
+
+                //TODO: other connection
         }
     }
 
@@ -195,6 +210,7 @@ public class AppConfiguration {
     public PlayerResource playerResource() {
         return new PlayerResource(telnetService, playerRepository);
     }
+
     public void settingsChange(Settings settings) {
         switch (settings.getId()) {
             case SETTING_CHAT_HANDLER_ENABLE:
@@ -205,5 +221,9 @@ public class AppConfiguration {
                 }
                 break;
         }
+    }
+
+    public FTPResource ftpResource() {
+        return new FTPResource(ftpService);
     }
 }

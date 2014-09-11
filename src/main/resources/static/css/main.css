@@ -5,7 +5,13 @@
 .top {
 
 }
-
+.centered {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 .top-banner .title {
     font-size: 2em;
     width: 49%;
@@ -13,6 +19,20 @@
     display: inline;
     padding-left: 1em;
     color: #5C395C;
+}
+
+div.login {
+    border: thin solid darkgray;
+    background-color: lightgray;
+}
+
+h2.login {
+    margin: 0.1em;
+}
+
+#login-submit {
+    display: block;
+    margin: 0.2em;
 }
 
 .top-banner .logout {

@@ -1,7 +1,6 @@
 package org.mikezerosix.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.mikezerosix.entities.ConnectionSettings;
@@ -15,15 +14,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FTPServiceTest {
     public static final Logger log = LoggerFactory.getLogger(FTPServiceTest.class);
 
     private static ConnectionSettings connectionSettings = new ConnectionSettings();
-    private FTPService ftpService;
+    private FTPService ftpService = FTPService.getInstance();
 
     @Before
     public void setUp() throws Exception {
@@ -40,35 +38,21 @@ public class FTPServiceTest {
             e.printStackTrace();
         }
 
-        ftpService = new FTPService(connectionSettings);
+        ftpService.config(connectionSettings);
 
     }
 
     @Test
     public void testConnect() throws Exception {
         ftpService.connect();
-        long start = System.currentTimeMillis();
-        try {
-            final FTPClient ftp = ftpService.getFtp();
-            final String status = ftp.getStatus();
 
-            log.info("status: " + status);
-            log.info("connected: " + ftp.isConnected());
-            log.info("available: " + ftp.isAvailable());
-            log.info("system: " + ftp.getSystemType());
-            log.info("help: " + ftp.listHelp());
-            log.info("list: " + ftp.list());
+    }
 
-            log.info("wd: " + ftp.printWorkingDirectory());
+    @Test
+    public void testLS() throws Exception {
+        ftpService.connect();
 
-            ftp.initiateListParsing();
-            final FTPFile[] ftpFiles = ftp.listDirectories();
-            log.info("files: " + ftpFiles.length);
-            log.info("reply: " + ftp.getReplyString());
-        } catch (Exception e) {
-           log.error("listing files took: " + (System.currentTimeMillis() - start) + "ms");
-            e.printStackTrace();
-        }
 
+        assertThat(ftpService.listFiles("/").length, not(0));
     }
 }

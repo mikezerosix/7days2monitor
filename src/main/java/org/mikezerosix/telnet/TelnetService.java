@@ -4,6 +4,7 @@ import org.apache.commons.net.telnet.*;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.rest.LoginResource;
 import org.mikezerosix.telnet.commands.TelnetCommand;
+import org.mikezerosix.telnet.handlers.ServerGreetingHandler;
 import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,12 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private static List<TelnetOutputHandler> handlers = new ArrayList<>();
     private static ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
     private static TelnetCommand runningCommand = null;
+    private ServerInformation serverInformation;
     private ConnectionSettings connectionSettings;
     private long waitTime = 500;
 
     private TelnetService() {
         super();
-
     }
 
     public static synchronized TelnetService getInstance() {
@@ -53,30 +54,26 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         this.connectionSettings = connectionSettings;
     }
 
+    public ServerInformation getServerInformation() {
+        return serverInformation;
+    }
+
     @Override
     public void run() {
         log.info("** Starting TelnetService");
         telnet = new TelnetClient();
+        serverInformation = new ServerInformation();
         loggedIn = false;
-
 
         try {
             connect();
-
-            while (!telnet.isConnected()) {
-                Thread.sleep(1000);
-                log.info("    ...waiting for connection");
-                if (--connectionTimeoutSeconds < 0) {
-                    log.error("ERROR: Connection timed out. Another connection might have taken the telnet.");
-                    throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
-                }
-            }
+            waitForConnection();
             readUntil(CONNECTED_WITH_7_DTD_SERVER, null);
             loggedIn = true;
             log.info("Connection established");
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
-            while (telnet.isConnected()) {
+            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
+            readServerInfo( bufferedReader);
+            while (isConnected()) {
                 runCommand();
 
                 final String line = bufferedReader.readLine();
@@ -107,8 +104,33 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
             log.error("IO error", e);
             loggedIn = false;
             throw new RuntimeException(e);
+        } finally {
+            loggedIn = false;
+            telnet = null;
         }
 
+    }
+
+    private void readServerInfo(BufferedReader bufferedReader) throws IOException, InterruptedException {
+        ServerGreetingHandler handler = new ServerGreetingHandler(serverInformation);
+        int lineCounter = 0;
+        while (isConnected() && handler.getHits() < 9 && lineCounter < 16) {
+            lineCounter++;
+            String line = bufferedReader.readLine();
+            handler.handleInput(line);
+            Thread.sleep(waitTime);
+        }
+    }
+
+    private void waitForConnection() throws InterruptedException {
+        while (!telnet.isConnected()) {
+            Thread.sleep(1000);
+            log.info("    ...waiting for connection");
+            if (--connectionTimeoutSeconds < 0) {
+                log.error("ERROR: Connection timed out. Another connection might have taken the telnet.");
+                throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
+            }
+        }
     }
 
     public boolean isConnected() {
@@ -147,7 +169,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private void readUntil(String stopPhrase, String errorPhrase) throws IOException, InterruptedException {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input));
         log.info("...waiting for stopPhrase: " + stopPhrase);
-        while (true) {
+        while (isConnected()) {
             String line = bufferedReader.readLine();
             if (line.equals(stopPhrase)) {
                 log.info("Received stopPhrase: " + stopPhrase);
@@ -222,6 +244,22 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private void commandHandleInput(String line) {
         if (runningCommand != null) {
             runningCommand.handleInput(line);
+        }
+    }
+
+    public class ServerInformation {
+        public String version;
+        public String compatibility;
+        public String ip;
+        public int port;
+        public int maxPlayers;
+        public String mode;
+        public String world;
+        public String game;
+        public int difficulty;
+        public boolean allocsExtension;
+
+        private ServerInformation() {
         }
     }
 }

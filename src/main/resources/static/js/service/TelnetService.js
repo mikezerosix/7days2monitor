@@ -1,45 +1,49 @@
 'use strict';
 
-sevenMonitor.factory('TelnetService',function( $q, $http) {
+sevenMonitor.factory('TelnetService', function ($q, $http) {
 
-   var status = function () {
-       return $http.get('/protected/telnet/status');
-   };
+    var status = function () {
+        return $http.get('/protected/telnet/status');
+    };
 
-   var connect = function () {
-      return $http.post('/protected/telnet');
-   };
+    var serverInfo = function () {
+        return $http.get('/protected/telnet/server-info');
+    };
 
-   var disconnect = function () {
-       return $http.delete('/protected/telnet');
-   };
 
-   var chat = function () {
-       return $http.get('/protected/telnet/chat');
-   };
+    var connect = function () {
+        return $http.post('/protected/telnet');
+    };
 
-   var raw = function () {
-       return $http.get('/protected/telnet/raw');
-   };
+    var disconnect = function () {
+        return $http.delete('/protected/telnet');
+    };
+
+    var chat = function () {
+        return $http.get('/protected/telnet/chat');
+    };
+
+    var raw = function () {
+        return $http.get('/protected/telnet/raw');
+    };
 
     var say = function (msg) {
-       return $http.post('/protected/telnet/say', msg);
-   };
+        return $http.post('/protected/telnet/say', msg);
+    };
 
-     var sendCmd = function (cmd) {
+    var sendCmd = function (cmd) {
         return $http.post('/protected/telnet/send-cmd', cmd);
     };
 
 
-
-
-   return {
+    return {
         status: status,
+        serverInfo: serverInfo,
         connect: connect,
         disconnect: disconnect,
         raw: raw,
         chat: chat,
         say: say,
         sendCmd: sendCmd
-   };
+    };
 });

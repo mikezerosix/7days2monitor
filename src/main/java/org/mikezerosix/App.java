@@ -14,6 +14,7 @@ public class App {
     private static UserResource userResource;
     private static TelnetResource telnetResource;
     private static PlayerResource playerResource;
+    private static FTPResource ftpResource;
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
@@ -28,6 +29,7 @@ public class App {
         userResource = app.userResource();
         telnetResource = app.telnetResource();
         playerResource = app.playerResource();
+        ftpResource = app.ftpResource();
 
         System.out.println("HTTP service running in port: " + port);
 

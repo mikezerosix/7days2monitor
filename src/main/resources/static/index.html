@@ -20,6 +20,7 @@
     <script src="js/service/SettingsService.js"></script>
     <script src="js/service/TelnetService.js"></script>
     <script src="js/service/PlayerService.js"></script>
+    <script src="js/service/FTPService.js"></script>
 
     <script src="js/controller/LoginCtrl.js"></script>
     <script src="js/controller/MenuCtrl.js"></script>
@@ -32,19 +33,19 @@
 
 </head>
 <body>
-<div ng-if="authorized === false" ng-controller="LoginCtrl">
-    <h2>Login</h2>
-    <form ng-submit="submit()">
+<div ng-if="authorized === false" ng-controller="LoginCtrl" class="centered login">
+    <h2 class="login">Login</h2>
+    <form id="login" ng-submit="submit()">
         <input ng-model="user.name" type="text" name="user" placeholder="Username" />
         <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
-        <input type="submit" value="Submit"/>
+        <input id="login-submit" type="submit" value="Submit"/>
     </form>
 </div>
-<div ng-if="authorized" class="root top" ng-controller="MenuCtrl">
+<div class="root top" ng-controller="MenuCtrl">
     <div class="top-banner">
         <div class="title">7 Days to monitor</div>
 
-        <div class="logout">
+        <div ng-if="authorized" class="logout">
             <a ng-click="selectTab('settings')"><img src="/img/settings-32.png" alt="Settings" /> </a>
             <a ng-show="authorized" ng-click="logout()"><img src="/img/sign-out-32.png" alt="Settings" />Log out</a>
         </div>
@@ -52,13 +53,13 @@
 
     <div style="float: none;"></div>
 
-    <tabset>
+    <tabset ng-if="authorized">
         <tab ng-click="selectTab('main')"> <tab-heading><img src="/img/home-16.png"> Home</tab-heading> </tab>
         <tab ng-click="selectTab('players')"> <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
         <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
         <tab ng-click="selectTab('requests')"> <tab-heading><img src="/img/16/request-16.png"> Request</tab-heading> </tab>
     </tabset>
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
 </div>
 
 <div id="content" ng-if="authorized" style="witdh: 100%" class="root content">
