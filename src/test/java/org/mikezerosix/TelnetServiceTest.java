@@ -36,6 +36,7 @@ public class TelnetServiceTest {
 
        // telnetService.addHandler(new AllHandler(System.out.));
         telnetService.start();
+        telnetService.connect();
         while (!telnetService.isConnected()) {
             Thread.sleep(1000);
         }

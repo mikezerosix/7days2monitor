@@ -30,23 +30,24 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
         .error(function (status) {
             $scope.$broadcast('status_error', 'Reading Telnet status failed, error ' + status);
         });
-    $scope.connectTelnet = function () {
-        TelnetService.connect()
-            .success(function (data) {
-                $scope.telnetStatus = data;
-            })
-            .error(function (status) {
-                $scope.$broadcast('status_error', 'Reading Telnet connect failed, error ' + status);
-            });
-    };
-    $scope.disconnectTelnet = function () {
-        TelnetService.disconnect()
-            .success(function (data) {
-                $scope.telnetStatus = data;
-            })
-            .error(function (status) {
-                $scope.$broadcast('status_error', 'Reading Telnet disconnect failed, error ' + status);
-            });
+    $scope.toggleTelnet = function () {
+        if ($scope.telnetStatus.alive) {
+            TelnetService.disconnect()
+                .success(function (data) {
+                    $scope.telnetStatus = data;
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading Telnet disconnect failed, error ' + status);
+                });
+        } else {
+            TelnetService.connect()
+                .success(function (data) {
+                    $scope.telnetStatus = data;
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading Telnet connect failed, error ' + status);
+                });
+        }
     };
 
     $scope.ftpStatus;
@@ -58,23 +59,24 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
             $scope.ftpStatus = false;
             $scope.$broadcast('status_error', 'Reading FTP status failed, error ' + status);
         });
-    $scope.connectFTP = function () {
-        FTPService.connect()
-            .success(function (data) {
-                $scope.ftpStatus = data;
-            })
-            .error(function (status) {
-                $scope.$broadcast('status_error', 'Reading FTP connect failed, error ' + status);
-            });
+    $scope.toggleFTP = function () {
+        if ($scope.ftpStatus) {
+            FTPService.connect()
+                .success(function (data) {
+                    $scope.ftpStatus = data;
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading FTP connect failed, error ' + status);
+                });
+        } else {
+            FTPService.disconnect()
+                .success(function (data) {
+                    $scope.ftpStatus = data;
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading FTP disconnect failed, error ' + status);
+                });
+        }
     };
 
-    $scope.disconnectFTP = function () {
-        FTPService.disconnect()
-            .success(function (data) {
-                $scope.ftpStatus = data;
-            })
-            .error(function (status) {
-                $scope.$broadcast('status_error', 'Reading FTP disconnect failed, error ' + status);
-            });
-    };
 });

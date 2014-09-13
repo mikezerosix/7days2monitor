@@ -1,53 +1,55 @@
-<div id="main-content">
+<div id="main">
 
-<dl class="main-settings">
-        <dt>Monitor uptime</dt>
-        <dd>
-            {{  Math.floor(uptime/1000/60/60/60) }}d
-            {{  Math.floor(uptime/1000/60/60%60) }}h
-            {{  Math.floor(uptime/1000/60%60) }}m
-            {{ Math.floor((uptime/1000)%60) }}s
-
-        </dd>
-
-        <dt>User</dt>
-        <dd> {{authorized}}</dd>
-
-        <fieldset>
-            <legend>Game Server</legend>
-            {{gameServerStatus}}
+    <div class="width-third">
+        <div class="item"><span class="item-label">Uptime</span>{{uptime | asUptime}}</div>
+        <fieldset class="content-block">
+            <legend class="content-block">Game Server</legend>
+            <div ng-if="!gameServerStatus.connected">
+                Not connected
+            </div>
+            <div ng-if="gameServerStatus.connected">
+                <div class="item"><span class="item-label">Game</span>{{gameServerStatus.game}}</div>
+                <div class="item"><span class="item-label">Mode</span>{{gameServerStatus.mode}}</div>
+                <div class="item"><span class="item-label">World</span>{{gameServerStatus.world}}</div>
+                <div class="item"><span class="item-label">Slots</span>{{gameServerStatus.maxPlayers}}</div>
+                <div class="item"><span class="item-label">Difficulty</span>{{gameServerStatus.difficulty}}</div>
+                <div class="item"><span class="item-label">IP</span>{{gameServerStatus.ip}}</div>
+                <div class="item"><span class="item-label">Port</span>{{gameServerStatus.port}}</div>
+                <div class="item"><span class="item-label">Version</span>{{gameServerStatus.version}}</div>
+                <div class="item"><span class="item-label">Compatibility</span>{{gameServerStatus.compatibility}}</div>
+            </div>
         </fieldset>
 
-        <dt>Telnet</dt>
-        <dd>
+        <table class="connections-table">
+            <tr>
+                <td width="20%"><span class="item-label">Telnet</span></td>
+                <td>
+                    <div class="onoffswitch" title="{{telnetStatus}}">
+                    <input type="checkbox" id="telnetonoffswitch" name="onoffswitch" class="onoffswitch-checkbox"
+                           ng-model="telnetStatus.alive" ng-click="toggleTelnet()">
+                    <label class="onoffswitch-label" for="telnetonoffswitch">
+                        <span class="onoffswitch-inner"></span>
+                        <span class="onoffswitch-switch"></span>
+                    </label>
+                    </div>
+                </td>
+                <td><span  >Alloc's Server Fixes</span> <input type="checkbox" ng-model="gameServerStatus.allocsExtension" disabled></td>
+            </tr><tr>
+                <td><span class="item-label">FTP</span></td>
+                <td>
+                    <div class="onoffswitch" title="{{ftpStatus}}">
+                    <input type="checkbox" id="ftponoffswitch" name="onoffswitch" class="onoffswitch-checkbox"
+                           ng-model="ftpStatus" ng-click="toggleFTP()">
+                    <label class="onoffswitch-label" for="myonoffswitch">
+                        <span class="onoffswitch-inner"></span>
+                        <span class="onoffswitch-switch"></span>
+                    </label>
+                    </div>
+                </td>
+                <td> </td>
+            </tr>
+        </table>
 
-        <span ng-if="telnetStatus.alive ">
-          Running <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Running">
-        </span>
-        <span ng-if="!telnetStatus.alive ">
-          Dead <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Dead">
-        </span>
-            ,
-        <span ng-if="telnetStatus.connected ">
-          Connected <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Connected">
-          <button ng-click="disconnectTelnet()">Disconnect</button>
-        </span>
-        <span ng-if="!telnetStatus.connected ">
-          Disconnected <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Disconnected">
-          <button ng-click="connectTelnet()">Connect</button>
-        </span>
-
-        </dd>
-        <dt>FTP</dt>
-        <dd>
-          <span ng-if="ftpStatus ">
-          Connected <img width="20px" height="20px" src="/img/green-ball-48.png" alt="Connected">
-          <button ng-click="disconnectFTP()">Disconnect</button>
-        </span>
-        <span ng-if="!ftpStatus ">
-          Disconnected <img width="20px" height="20px" src="/img/red-ball-48.png" alt="Disconnected">
-          <button ng-click="connectFTP()">Connect</button>
-        </span>
-    </dl>
+    </div>
 
 </div>

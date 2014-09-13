@@ -3,13 +3,12 @@
 sevenMonitor.factory('TelnetService', function ($q, $http) {
 
     var status = function () {
-        return $http.get('/protected/telnet/status');
+        return $http.get('/protected/telnet');
     };
 
     var serverInfo = function () {
         return $http.get('/protected/telnet/server-info');
     };
-
 
     var connect = function () {
         return $http.post('/protected/telnet');

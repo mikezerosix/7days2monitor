@@ -6,6 +6,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
+import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.entities.*;
@@ -61,6 +62,7 @@ public class AppConfiguration {
     @PostConstruct
     public void init() throws SQLException {
         initLogger();
+        telnetService.start();
         initUsers();
         initSettings();
         initConnections();
@@ -91,8 +93,12 @@ public class AppConfiguration {
         switch (connectionSettings.getType()) {
             case GAME_TELNET:
                 telnetService.setConnectionSettings(connectionSettings);
-                if (connectionSettings.isAuto() && !telnetService.isAlive()) {
-                    telnetService.start();
+                if (connectionSettings.isAuto() && !telnetService.isConnected()) {
+                    try {
+                        telnetService.connect();
+                    } catch (Exception e) {
+                        log.error("Failed to call connect() on telnetService ", e);
+                    }
                 }
                 break;
 

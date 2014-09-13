@@ -41,7 +41,10 @@ h2.login {
     display: inline;
     float: right;
 }
+.tab-heading {
+  font-weight: bolder;
 
+}
 #content {
     background-color: snow;
     min-height: 100%;
@@ -72,9 +75,102 @@ h2.login {
     background-position-x: left;
 }
 
-.main-settings td {
-    display: inline;
+
+.width-third {
+    width: 33%;
+    min-width: 30em;
+    margin: 0;
+
 }
+
+/*  MAIN */
+#main {
+    padding: 10px;
+}
+
+fieldset.content-block {
+    border: 2px groove #ddd !important;
+    padding: 0 1em 1em 1em !important;
+    margin: 0 0 1em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+    box-shadow:  0px 0px 0px 0px #000;
+}
+legend.content-block {
+    width: inherit; /* Or auto */
+    padding: 0 10px; /* To give a bit of padding on the left and right */
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+#main .item-label {
+    font-weight: bold;
+    width: 25%;
+    display: inline-block;
+}
+.connections-table td {
+  padding-right: 1em;
+  vertical-align: top;
+}
+.onoffswitch {
+    position: relative; width: 140px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #858383; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 24px; padding: 0; line-height: 24px;
+    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "Connected";
+    padding-left: 10px;
+    background-color: #EEEEEE; color: #858383;
+}
+.onoffswitch-inner:after {
+    content: "Disconnected";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #858383;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 22px; margin: 3px;
+    background: #FC0808;
+    border: 2px solid #858383; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 112px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+    background-color: #0FFF23;
+}
+
+
+
+
+
+
+
+
+
+/*  CHAT */
+
+
+
 
 .chat-messages-pane {
     margin: 8px;

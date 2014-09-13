@@ -20,17 +20,17 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class TelnetService extends Thread implements TelnetNotificationHandler {
     public static final String PLEASE_ENTER_PASSWORD = "Please enter password:";
     public static final String WRONG_PASSWORD = "Password incorrect, please enter password:";
+    public static final long connectionTimeoutSeconds = 10;
+    public static final long waitTime = 500;
     private static final Logger log = LoggerFactory.getLogger(LoginResource.class);
-    private static final long connectionTimeoutSeconds = 10;
-    private static final List<TelnetOutputHandler> handlers = new ArrayList<>();
-    private static final ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
-    private static final long waitTime = 500;
-    private static TelnetClient telnet = null;
-    private static BufferedInputStream input = null;
-    private static PrintStream output = null;
     private static TelnetService instance = null;
-    private static TelnetCommand runningCommand = null;
-    private ServerInformation serverInformation;
+    private final List<TelnetOutputHandler> handlers = new ArrayList<>();
+    private final ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
+    private final TelnetClient telnet = new TelnetClient();
+    private BufferedInputStream input = null;
+    private PrintStream output = null;
+    private TelnetCommand runningCommand = null;
+    private ServerInformation serverInformation = new ServerInformation();
     private ConnectionSettings connectionSettings;
 
     private TelnetService() {
@@ -44,7 +44,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
         return instance;
     }
 
-    public InputStream getInputStream() {
+    private InputStream getInputStream() {
         return telnet.getInputStream();
     }
 
@@ -59,52 +59,48 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     @Override
     public void run() {
         log.info("** Starting TelnetService");
-        telnet = new TelnetClient();
-        serverInformation = new ServerInformation();
 
+        while (!isInterrupted()) {
+            try {
+                monitor();
 
-        try {
-            connect();
-            waitForConnection();
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
-            readServerInfo(bufferedReader);
-
-            log.info("Connection established");
-
-            while (isConnected()) {
-                runCommand();
-
-                final String line = bufferedReader.readLine();
-                commandHandleInput(line);
-                for (TelnetOutputHandler handler : handlers) {
-                    handler.handleInput(line);
-                }
-                Thread.sleep(waitTime);
-
+            } catch (InterruptedException e) {
+                log.warn("Interrupted ", e);
+            } catch (InterruptedIOException e) {
+                //I assume this is from intention interrupt
+                log.warn("Interrupted IO ", e);
+            } catch (IOException e) {
+                log.error("IO error", e);
+                throw new RuntimeException(e);
+            } finally {
+                serverInformation.connected = false;
             }
-
-            log.info("Telnet shutdown");
-
-        } catch (InvalidTelnetOptionException e) {
-            log.error("Error registering option handlers: " + e.getMessage());
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            log.warn("Interrupted ", e);
-        } catch (InterruptedIOException e) {
-            //I assume this is from intention interrupt
-            log.warn("Interrupted IO ", e);
-        } catch (IOException e) {
-            log.error("IO error", e);
-            throw new RuntimeException(e);
-        } finally {
-            serverInformation.connected = false;
-            telnet = null;
         }
-
     }
 
-    private void readServerInfo(BufferedReader bufferedReader) throws IOException, InterruptedException {
-        ServerGreetingHandler handler = new ServerGreetingHandler(serverInformation);
+    private void monitor() throws IOException, InterruptedException {
+        if (!isMonitoring()) {
+            return;
+        }
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
+        log.info("Telnet Monitor is running");
+        while (isConnected()) {
+            runCommand();
+
+            final String line = bufferedReader.readLine();
+            commandHandleInput(line);
+            for (TelnetOutputHandler handler : handlers) {
+                handler.handleInput(line);
+            }
+            Thread.sleep(waitTime);
+
+        }
+    }
+
+    private ServerInformation readServerInfo() throws IOException, InterruptedException {
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
+        ServerInformation res = new ServerInformation();
+        ServerGreetingHandler handler = new ServerGreetingHandler(res);
         int lineCounter = 0;
         while (isConnected() && handler.getMissingLines() > 0 && lineCounter < 20) {
             lineCounter++;
@@ -112,6 +108,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
             handler.handleInput(line);
             Thread.sleep(waitTime);
         }
+        return res;
     }
 
     private void waitForConnection() throws InterruptedException {
@@ -127,10 +124,14 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     }
 
     public boolean isConnected() {
-        return telnet != null && telnet.isConnected();
+        return isAlive() && telnet.isConnected();
     }
 
-    private boolean connect() throws InterruptedException, IOException, InvalidTelnetOptionException {
+    public boolean isMonitoring() {
+        return isConnected() && serverInformation.connected;
+    }
+
+    public boolean connect() throws InterruptedException, IOException, InvalidTelnetOptionException {
         log.info("Telnet connecting to: " + connectionSettings.getAddress());
         telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, true, false));
         telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
@@ -145,8 +146,18 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
         readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
         write(connectionSettings.getPassword());
-        Thread.sleep(waitTime);
+        waitForConnection();
+        serverInformation = readServerInfo();
+        log.info("Connection established");
+
         return true;
+    }
+
+    public void disconnect() throws IOException {
+        if (!telnet.isConnected()) {
+            telnet.disconnect();
+        }
+        log.info("Telnet disconnected");
     }
 
     public void write(String output) {
