@@ -8,7 +8,6 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
-import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.entities.*;
@@ -17,6 +16,7 @@ import org.mikezerosix.rest.*;
 import org.mikezerosix.telnet.TelnetService;
 import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
+import org.mikezerosix.telnet.handlers.StatHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
@@ -42,7 +42,7 @@ public class AppConfiguration {
     public static final String ADMIN = "admin";
     public static final String SETTING_CURRENT_SERVER = "CURRENT_SERVER";
     public static final String SETTING_CHAT_HANDLER_ENABLE = "CHAT_HANDLER_ENABLE";
-
+    public static final String SETTING_STAT_HANDLER_ENABLE = "STAT_HANDLER_ENABLE";
 
     private static final Logger log = LoggerFactory.getLogger(AppConfiguration.class);
     private static TelnetService telnetService = TelnetService.getInstance();
@@ -60,6 +60,8 @@ public class AppConfiguration {
     @Inject
     private PlayerRepository playerRepository;
 
+    @Inject
+    private StatRepository statRepository;
 
     @PostConstruct
     public void init() throws SQLException {
@@ -115,7 +117,7 @@ public class AppConfiguration {
                 }
                 break;
 
-                //TODO: other connection
+            //TODO: other connection
         }
     }
 
@@ -187,7 +189,6 @@ public class AppConfiguration {
         chatAppender.start();
 
 
-
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(consoleAppender);
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).setLevel(Level.INFO);
 
@@ -224,7 +225,6 @@ public class AppConfiguration {
         return new TelnetResource(telnetService);
     }
 
-
     public PlayerResource playerResource() {
         return new PlayerResource(telnetService, playerRepository);
     }
@@ -238,6 +238,14 @@ public class AppConfiguration {
                     telnetService.removeHandler(ChatHandler.class);
                 }
                 break;
+            case SETTING_STAT_HANDLER_ENABLE:
+                if (Boolean.parseBoolean(settings.getValue())) {
+                    telnetService.addHandler(new StatHandler(statRepository));
+                } else {
+                    telnetService.removeHandler(StatHandler.class);
+                }
+                break;
+
         }
     }
 
@@ -247,5 +255,8 @@ public class AppConfiguration {
 
     public ServerResource serverResource() {
         return new ServerResource();
+    }
+    public StatResource statResource() {
+        return new StatResource(statRepository);
     }
 }

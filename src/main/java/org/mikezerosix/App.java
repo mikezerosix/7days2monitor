@@ -16,6 +16,7 @@ public class App {
     private static PlayerResource playerResource;
     private static FTPResource ftpResource;
     private static ServerResource serverResource;
+    private static StatResource statResource;
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
@@ -32,6 +33,8 @@ public class App {
         playerResource = app.playerResource();
         ftpResource = app.ftpResource();
         serverResource = app.serverResource();
+        statResource = app.statResource();
+
         System.out.println("HTTP service running in port: " + port);
 
     }

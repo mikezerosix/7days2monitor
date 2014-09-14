@@ -66,6 +66,13 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
                 } catch (InterruptedIOException e) {
                     log.warn("Interrupted IO from monitor ", e);
                 } catch (IOException e) {
+
+                    /*
+2014-09-14 17:51:45,527 ERROR [Thread-0] o.m.t.TelnetService [TelnetService.java:69] IO error from monitor
+java.net.SocketException: Connection reset
+
+TODO: auto reconnect
+*/
                     log.error("IO error from monitor", e);
                 } catch (Exception e) {
                     log.error("Mystery error from monitor but we keep on trucking ", e);

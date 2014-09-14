@@ -26,7 +26,7 @@ package org.mikezerosix.telnet.handlers;
 import org.mikezerosix.entities.Player;
 import org.mikezerosix.entities.PlayerRepository;
 import org.mikezerosix.exception.DirtyPlayerException;
-import org.mikezerosix.util.TelentLineUtil;
+import org.mikezerosix.util.TelnetLineUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +36,9 @@ import java.util.regex.Pattern;
 
 public class PlayerLoginHandler implements TelnetOutputHandler {
     public static final Logger log = LoggerFactory.getLogger(PlayerLoginHandler.class);
-    public static final String REQUEST_TO_SPAWN_PLAYER = TelentLineUtil.TIME_STAMP + "RequestToSpawnPlayer: (\\d+), (\\d+), (.*?), (\\d+).*";
+    public static final String REQUEST_TO_SPAWN_PLAYER = TelnetLineUtil.TIME_STAMP + "RequestToSpawnPlayer: (\\d+), (\\d+), (.*?), (\\d+).*";
     private final Pattern pattern2 = Pattern.compile(REQUEST_TO_SPAWN_PLAYER);
-    public static final String AUTHENTICATING_PLAYER = TelentLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";
+    public static final String AUTHENTICATING_PLAYER = TelnetLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";
     private final Pattern pattern1 = Pattern.compile(AUTHENTICATING_PLAYER);
     private PlayerRepository playerRepository;
     private static int AUTHENTICATE = 0;

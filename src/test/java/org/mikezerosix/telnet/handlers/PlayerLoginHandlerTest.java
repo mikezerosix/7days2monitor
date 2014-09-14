@@ -1,4 +1,4 @@
-package org.mikezerosix.telnet.handlers.handlers;
+package org.mikezerosix.telnet.handlers;
 
 import org.junit.Test;
 import org.mikezerosix.entities.PlayerRepository;

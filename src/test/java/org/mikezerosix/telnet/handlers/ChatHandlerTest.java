@@ -1,4 +1,4 @@
-package org.mikezerosix.telnet.handlers.handlers;
+package org.mikezerosix.telnet.handlers;
 
 import junit.framework.TestCase;
 import org.junit.Test;

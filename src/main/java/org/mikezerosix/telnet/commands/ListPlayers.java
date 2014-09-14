@@ -1,11 +1,8 @@
 package org.mikezerosix.telnet.commands;
 
 import org.mikezerosix.entities.Player;
-import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
-import org.mikezerosix.util.TelentLineUtil;
+import org.mikezerosix.util.TelnetLineUtil;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +13,7 @@ Total of 1 in the game
 
  */
 public class ListPlayers implements TelnetCommand {
-    private final Pattern pattern = Pattern.compile(TelentLineUtil.TIME_STAMP
+    private final Pattern pattern = Pattern.compile(TelnetLineUtil.TIME_STAMP
             + "(\\d+). id=(\\d+), (.?), pos=\\((.?)\\) ");
 
     private final Pattern finishedPattern = Pattern.compile("\n" +

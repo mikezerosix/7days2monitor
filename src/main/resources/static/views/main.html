@@ -57,15 +57,32 @@
     <div class="width-third">
         <fieldset class="content-block">
             <legend class="content-block">Statistics</legend>
+            <!--var types = ['success', 'info', 'warning', 'danger'];   css: progress-striped active-->
             <div class="item"><span class="item-label">Uptime</span>
-
+                {{uptime | asUptime }}
+            </div>
+            <div class="item"><span class="item-label">Players</span>
+                <progressbar animate="false" value="stat.players/gameServerStatus.maxPlayers" max="1"  type="success">{{stat.players}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">Zombies</span>
+                <progressbar animate="false" value="stat.zombies" max="64"  type="success">{{stat.zombies}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">Entities</span>
+                <progressbar animate="false" value="stat.entities" max="entities2"  type="success">{{stat.entities}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">Items</span>
+                <progressbar animate="false" value="stat.items" max="entities2"  type="success">{{stat.items}} </progressbar>
             </div>
             <div class="item"><span class="item-label">Memory</span>
-                <progressbar animate="false" value="55" type="success"> </progressbar>
+            <progress   max="1200">
+                <bar value="stat.memHeap" type="success"> {{stat.memHeap}}MB </bar>
+                <bar value="stat.memHeap" type="info"> {{stat.memMax}}MB </bar>
+            </progress>
+                {{stat }}
+                <div class="col-sm-4"><progressbar value="55"></progressbar></div>
+                <div class="col-sm-4"><progressbar class="progress-striped" value="22" type="warning">22%</progressbar></div>
+                <div class="col-sm-4"><progressbar class="progress-striped active" max="200" value="166" type="danger"><i>166 / 200</i></progressbar></div>
             </div>
-            <div class="col-sm-4"><progressbar value="55"></progressbar></div>
-            <div class="col-sm-4"><progressbar class="progress-striped" value="22" type="warning">22%</progressbar></div>
-            <div class="col-sm-4"><progressbar class="progress-striped active" max="200" value="166" type="danger"><i>166 / 200</i></progressbar></div>
         </fieldset>
     </div>
     <div class="width-third"> right</div>

@@ -1,6 +1,6 @@
 'use strict';
 
-sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService, TelnetService, FTPService) {
+sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService, TelnetService, FTPService, StatService) {
     $scope.Math = window.Math;
 
     $scope.uptime;
@@ -95,6 +95,19 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
     $scope.readNews();
 
 
-    $scope.stat = {'mem' : 22};
+    $scope.stats =[];
+    $scope.stat = {};
+    $scope.readStats = function () {
+        StatService.getStats()
+            .success(function (data) {
+                $scope.stats = data;
+                $scope.stat = $scope.stats[ $scope.stats.length - 1];
+            })
+            .error(function (status) {
+                alert(status);
+                $scope.$broadcast('status_error', 'Reading Steam GetNewsForApp, error ' + status);
+            });
+    };
+    $scope.readStats();
 
 });
