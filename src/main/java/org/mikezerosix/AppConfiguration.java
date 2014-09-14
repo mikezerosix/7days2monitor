@@ -6,6 +6,8 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.eclipse.jetty.util.security.Credential;
 import org.mikezerosix.actions.ChatLogger;
@@ -170,11 +172,21 @@ public class AppConfiguration {
         chatEncoder.start();
 
 
-        FileAppender<ILoggingEvent> chatAppender = new FileAppender<>();
+        RollingFileAppender<ILoggingEvent> chatAppender = new RollingFileAppender<>();
         chatAppender.setFile("chat.log");
         chatAppender.setEncoder(chatEncoder);
         chatAppender.setContext(loggerContext);
+
+        TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<>();
+        policy.setFileNamePattern("chat.%d");
+        policy.setParent(chatAppender);
+        policy.setContext(loggerContext);
+        policy.start();
+        chatAppender.setRollingPolicy(policy);
+
         chatAppender.start();
+
+
 
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).addAppender(consoleAppender);
         loggerContext.getLogger(Logger.ROOT_LOGGER_NAME).setLevel(Level.INFO);
@@ -231,5 +243,9 @@ public class AppConfiguration {
 
     public FTPResource ftpResource() {
         return new FTPResource(ftpService);
+    }
+
+    public ServerResource serverResource() {
+        return new ServerResource();
     }
 }

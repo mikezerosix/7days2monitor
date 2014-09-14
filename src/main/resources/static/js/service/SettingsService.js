@@ -25,6 +25,9 @@ sevenMonitor.factory('SettingsService', function ($q, $http) {
         return $http.get('/protected/settings/uptime', connection);
     };
 
+    var latest = function () {
+        return $http.get('/protected/server/news');
+    };
 
     return {
         readSettings: readSettings,
@@ -32,7 +35,8 @@ sevenMonitor.factory('SettingsService', function ($q, $http) {
         readUsers: readUsers,
         readConnections: readConnections,
         updateConnection: updateConnection,
-        uptime: uptime
+        uptime: uptime,
+        latest: latest
     };
 
 });

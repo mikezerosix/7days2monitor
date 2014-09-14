@@ -1,11 +1,20 @@
 package org.mikezerosix.steam;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
 /**
  * Created by michael on 30.8.2014.
- *
- *  http://steamcommunity.com/dev/registerkey
- *
- *  https://developer.valvesoftware.com/wiki/Steam_Web_API
+ * <p/>
+ * http://steamcommunity.com/dev/registerkey
+ * <p/>
+ * https://developer.valvesoftware.com/wiki/Steam_Web_API
  */
 public class SteamAPI {
 
@@ -13,6 +22,12 @@ public class SteamAPI {
 
     public SteamAPI(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    protected static JsonNode readJsonNode(String uri) throws IOException {
+        final Response response = Request.Get(uri).execute();
+        final InputStream inputStream = response.returnResponse().getEntity().getContent();
+        return new ObjectMapper().readTree(inputStream);
     }
 
     public String GetPlayerSummaries(String steamId) {
@@ -54,5 +69,10 @@ steamid
     public String GetOwnedGames(String steamId) {
         String url = " http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + apiKey + "&steamid=" + steamId;
         throw new UnsupportedOperationException("todo: returns nothing useful");
+    }
+
+    public JsonNode getGameNews() throws IOException {
+        String url = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=251570&count=1&maxlength=300&format=json";
+        return readJsonNode(url);
     }
 }

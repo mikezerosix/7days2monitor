@@ -31,7 +31,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
             $scope.$broadcast('status_error', 'Reading Telnet status failed, error ' + status);
         });
     $scope.toggleTelnet = function () {
-        if ($scope.telnetStatus.alive) {
+        if ($scope.telnetStatus.monitoring && $scope.telnetStatus.connected) {
             TelnetService.disconnect()
                 .success(function (data) {
                     $scope.telnetStatus = data;
@@ -59,6 +59,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
             $scope.ftpStatus = false;
             $scope.$broadcast('status_error', 'Reading FTP status failed, error ' + status);
         });
+
     $scope.toggleFTP = function () {
         if ($scope.ftpStatus) {
             FTPService.connect()
@@ -78,5 +79,22 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
                 });
         }
     };
+
+
+    $scope.news = {};
+    $scope.readNews = function () {
+        SettingsService.latest()
+            .success(function (data) {
+                $scope.news = data;
+            })
+            .error(function (status) {
+                alert(status);
+                $scope.$broadcast('status_error', 'Reading Steam GetNewsForApp, error ' + status);
+            });
+    };
+    $scope.readNews();
+
+
+    $scope.stat = {'mem' : 22};
 
 });

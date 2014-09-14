@@ -4,10 +4,10 @@
         <div class="item"><span class="item-label">Uptime</span>{{uptime | asUptime}}</div>
         <fieldset class="content-block">
             <legend class="content-block">Game Server</legend>
-            <div ng-if="!gameServerStatus.connected">
-                Not connected
-            </div>
-            <div ng-if="gameServerStatus.connected">
+            <h2 ng-if="!telnetStatus.alive">Telnet connection Dead, whole monitor app needs restart</h2>
+            <h2 ng-if="!telnetStatus.connected">Telnet disconnected</h2>
+            <h2 ng-if="telnetStatus.connected && !telnetStatus.monitoring">Telnet connecting...</h2>
+            <div ng-if="telnetStatus.alive && telnetStatus.connected && telnetStatus.monitoring">
                 <div class="item"><span class="item-label">Game</span>{{gameServerStatus.game}}</div>
                 <div class="item"><span class="item-label">Mode</span>{{gameServerStatus.mode}}</div>
                 <div class="item"><span class="item-label">World</span>{{gameServerStatus.world}}</div>
@@ -17,6 +17,9 @@
                 <div class="item"><span class="item-label">Port</span>{{gameServerStatus.port}}</div>
                 <div class="item"><span class="item-label">Version</span>{{gameServerStatus.version}}</div>
                 <div class="item"><span class="item-label">Compatibility</span>{{gameServerStatus.compatibility}}</div>
+                <div class="item"><span class="item-label">Latest news</span><a ng-show="news.appnews.newsitems[0]" href="{{news.appnews.newsitems[0].url}}" target="_blank">{{news.appnews.newsitems[0].title}}</a> </div>
+
+                <input type="button" ng-click="readNews()" value="Read news"/>
             </div>
         </fieldset>
 
@@ -26,7 +29,7 @@
                 <td>
                     <div class="onoffswitch" title="{{telnetStatus}}">
                     <input type="checkbox" id="telnetonoffswitch" name="onoffswitch" class="onoffswitch-checkbox"
-                           ng-model="telnetStatus.alive" ng-click="toggleTelnet()">
+                           ng-model="telnetStatus.monitoring" ng-click="toggleTelnet()">
                     <label class="onoffswitch-label" for="telnetonoffswitch">
                         <span class="onoffswitch-inner"></span>
                         <span class="onoffswitch-switch"></span>
@@ -51,5 +54,19 @@
         </table>
 
     </div>
+    <div class="width-third">
+        <fieldset class="content-block">
+            <legend class="content-block">Statistics</legend>
+            <div class="item"><span class="item-label">Uptime</span>
 
+            </div>
+            <div class="item"><span class="item-label">Memory</span>
+                <progressbar animate="false" value="55" type="success"> </progressbar>
+            </div>
+            <div class="col-sm-4"><progressbar value="55"></progressbar></div>
+            <div class="col-sm-4"><progressbar class="progress-striped" value="22" type="warning">22%</progressbar></div>
+            <div class="col-sm-4"><progressbar class="progress-striped active" max="200" value="166" type="danger"><i>166 / 200</i></progressbar></div>
+        </fieldset>
+    </div>
+    <div class="width-third"> right</div>
 </div>

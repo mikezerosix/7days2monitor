@@ -80,7 +80,8 @@ h2.login {
     width: 33%;
     min-width: 30em;
     margin: 0;
-
+    display: inline-block;
+    vertical-align: top;
 }
 
 /*  MAIN */

@@ -15,7 +15,7 @@ import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
 import static spark.Spark.get;
 
 public class PlayerResource {
-    private static final Logger log = LoggerFactory.getLogger(TelnetResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerResource.class);
 
     public PlayerResource(TelnetService telnetService, PlayerRepository playerRepository) {
 

@@ -25,9 +25,9 @@ Difficulty:  4
 */
 public class ServerGreetingHandler implements TelnetOutputHandler {
     public static final Logger log = LoggerFactory.getLogger(ServerGreetingHandler.class);
-    private static Pattern[] patterns = new Pattern[10];
+    private static Pattern[] patterns = new Pattern[11];
     private TelnetService.ServerInformation serverInformation;
-    private int missingLines = 10;
+
 
     static {
         patterns[0] = Pattern.compile("\\*\\*\\* Connected with 7DTD server\\.");
@@ -39,7 +39,8 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
         patterns[6] = Pattern.compile("World: (.*)");
         patterns[7] = Pattern.compile("Game name: (.*)");
         patterns[8] = Pattern.compile("Difficulty: (\\d+)");
-        patterns[9] = Pattern.compile("\\* Allocs server fixes loaded");
+        patterns[9] = Pattern.compile("\\*\\*\\* Allocs server fixes loaded");
+        patterns[10] = Pattern.compile("Press \\'help\\' to get a list of all commands. Press \\'exit\\' to end session\\.");
     }
 
     public ServerGreetingHandler(TelnetService.ServerInformation serverInformation) {
@@ -61,7 +62,6 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
         Matcher[] matchers = matcher(input);
         for (int i = 0; i < matchers.length; i++) {
             if (matchers[i].matches()) {
-                missingLines--;
                 switch (i) {
                     case 0:
                         serverInformation.connected = true;
@@ -94,14 +94,12 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
                     case 9:
                         serverInformation.allocsExtension = true;
                         break;
+                    case 10:
+                        serverInformation.help = true;
+                        break;
                 }
-
             }
-
         }
     }
 
-    public int getMissingLines() {
-        return missingLines;
-    }
 }
