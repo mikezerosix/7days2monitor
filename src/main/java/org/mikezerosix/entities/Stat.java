@@ -22,6 +22,7 @@ public class Stat {
     int chunks;
     int gco;
     double fps;
+    long recorded = System.currentTimeMillis();
 
     public long getId() {
         return id;
@@ -117,5 +118,13 @@ public class Stat {
 
     public void setEntities2(int entities2) {
         this.entities2 = entities2;
+    }
+
+    public long getRecorded() {
+        return recorded;
+    }
+
+    public void setRecorded(long recorded) {
+        this.recorded = recorded;
     }
 }

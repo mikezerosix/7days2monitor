@@ -1,12 +1,16 @@
 <div id="main">
 
     <div class="width-third">
-        <div class="item"><span class="item-label">Uptime</span>{{uptime | asUptime}}</div>
         <fieldset class="content-block">
             <legend class="content-block">Game Server</legend>
-            <h2 ng-if="!telnetStatus.alive">Telnet connection Dead, whole monitor app needs restart</h2>
-            <h2 ng-if="!telnetStatus.connected">Telnet disconnected</h2>
-            <h2 ng-if="telnetStatus.connected && !telnetStatus.monitoring">Telnet connecting...</h2>
+            <div ng-if="!telnetStatus.alive" style="text-align: center;"><h2>Telnet connection is Dead</h2>
+                <div style="width: 100%;text-align: center;"><b>Monitor application needs restart !</b><img src="/img/tomb-256.png"></div>
+                <div style="font-family:  Monospaced">
+                    &quot;The bats have left the bell tower<br/>The victims have been bled<br/>Red velvet lines the black box<br/>Bela Lugosi's dead&quot;
+                </div>
+            </div>
+            <div ng-if="!telnetStatus.connected"><h4>Telnet disconnected</h4>If you just re-connected, then be patient it takes a minute or two for system to establish connection.</div>
+            <div ng-if="telnetStatus.connected && !telnetStatus.monitoring"><h4>Telnet connecting...</h4>Be patient it takes a minute or two for system to establish connection.</div>
             <div ng-if="telnetStatus.alive && telnetStatus.connected && telnetStatus.monitoring">
                 <div class="item"><span class="item-label">Game</span>{{gameServerStatus.game}}</div>
                 <div class="item"><span class="item-label">Mode</span>{{gameServerStatus.mode}}</div>
@@ -17,9 +21,10 @@
                 <div class="item"><span class="item-label">Port</span>{{gameServerStatus.port}}</div>
                 <div class="item"><span class="item-label">Version</span>{{gameServerStatus.version}}</div>
                 <div class="item"><span class="item-label">Compatibility</span>{{gameServerStatus.compatibility}}</div>
-                <div class="item"><span class="item-label">Latest news</span><a ng-show="news.appnews.newsitems[0]" href="{{news.appnews.newsitems[0].url}}" target="_blank">{{news.appnews.newsitems[0].title}}</a> </div>
+                <div class="item"><span class="item-label">Latest news</span><a ng-show="news.appnews.newsitems[0]" href="{{news.appnews.newsitems[0].url}}" target="_blank">{{news.appnews.newsitems[0].title}}</a>
+                    <img src="/img/16/refresh-16.png" ng-click="readNews()" title="Refresh"/></div>
 
-                <input type="button" ng-click="readNews()" value="Read news"/>
+
             </div>
         </fieldset>
 
@@ -43,10 +48,11 @@
                     <div class="onoffswitch" title="{{ftpStatus}}">
                     <input type="checkbox" id="ftponoffswitch" name="onoffswitch" class="onoffswitch-checkbox"
                            ng-model="ftpStatus" ng-click="toggleFTP()">
-                    <label class="onoffswitch-label" for="myonoffswitch">
+                    <label class="onoffswitch-label" for="ftponoffswitch">
                         <span class="onoffswitch-inner"></span>
                         <span class="onoffswitch-switch"></span>
                     </label>
+
                     </div>
                 </td>
                 <td> </td>
@@ -59,31 +65,59 @@
             <legend class="content-block">Statistics</legend>
             <!--var types = ['success', 'info', 'warning', 'danger'];   css: progress-striped active-->
             <div class="item"><span class="item-label">Uptime</span>
-                {{uptime | asUptime }}
+                {{stat.uptime*60*60 | asUptime }} ({{stat.uptime}})
             </div>
             <div class="item"><span class="item-label">Players</span>
                 <progressbar animate="false" value="stat.players/gameServerStatus.maxPlayers" max="1"  type="success">{{stat.players}} </progressbar>
             </div>
             <div class="item"><span class="item-label">Zombies</span>
+                <!--_TODO: max from settings.xml ? -->
                 <progressbar animate="false" value="stat.zombies" max="64"  type="success">{{stat.zombies}} </progressbar>
             </div>
             <div class="item"><span class="item-label">Entities</span>
-                <progressbar animate="false" value="stat.entities" max="entities2"  type="success">{{stat.entities}} </progressbar>
+                <!--_TODO: max ? -->
+                <progressbar animate="false" value="stat.entities" max="500"  type="success">{{stat.entities}} </progressbar>
             </div>
             <div class="item"><span class="item-label">Items</span>
-                <progressbar animate="false" value="stat.items" max="entities2"  type="success">{{stat.items}} </progressbar>
+                <!--_TODO: max ? -->
+                <progressbar animate="false" value="stat.items" max="500"  type="success">{{stat.items}} </progressbar>
             </div>
+            <!--_TODO: max from settings MAX_MEM_MB ? -->
             <div class="item"><span class="item-label">Memory</span>
-            <progress   max="1200">
-                <bar value="stat.memHeap" type="success"> {{stat.memHeap}}MB </bar>
-                <bar value="stat.memHeap" type="info"> {{stat.memMax}}MB </bar>
-            </progress>
-                {{stat }}
-                <div class="col-sm-4"><progressbar value="55"></progressbar></div>
-                <div class="col-sm-4"><progressbar class="progress-striped" value="22" type="warning">22%</progressbar></div>
-                <div class="col-sm-4"><progressbar class="progress-striped active" max="200" value="166" type="danger"><i>166 / 200</i></progressbar></div>
+                <progress   max="1200">
+                    <bar value="stat.memHeap" type="success"> {{stat.memHeap}}MB </bar>
+                    <bar value="stat.memHeap" type="danger"> {{stat.memMax}}MB </bar>
+                </progress>
+            </div>
+            <div class="item"><span class="item-label">Chunks</span>
+                <!--_TODO: max ? -->
+                <progressbar animate="false" value="stat.chunks" max="2000" type="success">{{stat.chunks}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">GCO</span>
+                <!--_TODO: max ? -->
+                <progressbar animate="false" value="stat.gco" max="200" type="success">{{stat.gco}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">FPS</span>
+                <!--_TODO: max ? -->
+                <progressbar animate="false" value="stat.fps" max="200" type="success">{{stat.fps}} </progressbar>
+            </div>
+            <div class="item"><span class="item-label">Heartbeat</span>
+                <!--_TODO: max ? -->
+                <img src="img/heart_beat_128.png" width="30px" height="30px" >
             </div>
         </fieldset>
     </div>
-    <div class="width-third"> right</div>
+    <div class="width-third">
+        <fieldset class="content-block">
+            <legend class="content-block">Monitor</legend>
+            <div class="item"><span class="item-label">Uptime</span>{{uptime | asUptime}}</div>
+            <h4>Events</h4>
+            <div class="event-filter">All<input type="radio" name="event-type">
+            Events<input type="radio" name="event-type">
+            Alerts<input type="radio" name="event-type">
+            Errors<input type="radio" name="event-type">
+            </div>
+                <select class="event-list" multiple ></select>
+        </fieldset>
+
 </div>

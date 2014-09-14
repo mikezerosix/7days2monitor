@@ -122,7 +122,11 @@ TODO: auto reconnect
             if (line != null && !line.isEmpty()) {
                 commandHandleInput(line);
                 for (TelnetOutputHandler handler : handlers) {
-                    handler.handleInput(line);
+                    try {
+                        handler.handleInput(line);
+                    } catch (Exception e) {
+                        log.error("Handler :" + handler.getClass().getName() + " threw exception "  + e.getMessage() , e);
+                    }
                 }
             } else {
                 safeSleep(waitTime*2);

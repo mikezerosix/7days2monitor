@@ -57,8 +57,9 @@ h2.login {
     bottom: 0;
     width: 100%;
     border: 1px solid lightgrey;
-    height: 1.1em;
+    height: 1.5em;
     background-color: seashell;
+    padding-left: 2em;
 }
 
 .settings-col {
@@ -66,19 +67,42 @@ h2.login {
     width: 32%;
     float: left;
 }
-
-.ok {
-    background-image: url('/img/green-ball-48.png');
+.status-msg {
+    display: inline-block;
+    width: 50%;
+}
+.status-init {
+    background-image: url('/img/48/grey_ball-48.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+}
+.status-ok {
+    background-image: url('/img/48/green_ball-48.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+}
+.status-warn {
+    background-image: url('/img/48/yellow_ball-48.png');
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: left;
+}
+.status-error {
+    background-image: url('/img/48/red_ball-48.png');
     background-color: transparent;
     background-repeat: no-repeat;
     background-size: contain;
     background-position-x: left;
 }
 
-
 .width-third {
     width: 33%;
-    min-width: 30em;
+    min-width: 20em;
     margin: 0;
     display: inline-block;
     vertical-align: top;
@@ -105,8 +129,9 @@ legend.content-block {
 
 #main .item-label {
     font-weight: bold;
-    width: 25%;
+    width: 7em;
     display: inline-block;
+    float: left;
 }
 .connections-table td {
   padding-right: 1em;
@@ -160,6 +185,9 @@ legend.content-block {
     background-color: #0FFF23;
 }
 
+.event-list {
+    width: 100%;
+}
 
 
 
