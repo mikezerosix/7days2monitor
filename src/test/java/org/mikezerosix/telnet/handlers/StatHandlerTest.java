@@ -35,7 +35,7 @@ public class StatHandlerTest {
         assertThat(st.getMemHeap(), is(142.0));
         assertThat(st.getMemMax(), is(384.2));
         assertThat(st.getChunks() , is(9));
-        assertThat(st.getGco() , is(1));
+        assertThat(st.getCgo() , is(1));
         assertThat(st.getPlayers() , is(2));
         assertThat(st.getZombies() , is(3));
         assertThat(st.getEntities() , is(4));

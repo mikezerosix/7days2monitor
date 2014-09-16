@@ -20,7 +20,7 @@ public class Stat {
     double memHeap;
     double memMax;
     int chunks;
-    int gco;
+    int cgo;
     double fps;
     long recorded = System.currentTimeMillis();
 
@@ -96,12 +96,12 @@ public class Stat {
         this.chunks = chunks;
     }
 
-    public int getGco() {
-        return gco;
+    public int getCgo() {
+        return cgo;
     }
 
-    public void setGco(int gco) {
-        this.gco = gco;
+    public void setCgo(int cgo) {
+        this.cgo = cgo;
     }
 
     public double getFps() {

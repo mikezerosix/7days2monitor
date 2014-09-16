@@ -61,7 +61,7 @@ public class StatHandler implements TelnetOutputHandler {
         stat.setMemHeap(Double.parseDouble(matcher.group(3)));
         stat.setMemMax(Double.parseDouble(matcher.group(4)));
         stat.setChunks(Integer.parseInt(matcher.group(5)));
-        stat.setGco(Integer.parseInt(matcher.group(6)));
+        stat.setCgo(Integer.parseInt(matcher.group(6)));
         stat.setPlayers(Integer.parseInt(matcher.group(7)));
         stat.setZombies(Integer.parseInt(matcher.group(8)));
         stat.setEntities(Integer.parseInt(matcher.group(9)));
