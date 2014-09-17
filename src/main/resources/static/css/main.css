@@ -261,6 +261,7 @@ li.chat-line {
     height: 100% width : 100 % align : center;
     vertical-align: middle;
     position: absolute;
+    text-align: center;
 }
 
 .loading {

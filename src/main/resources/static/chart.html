@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>7 days to monitor - Stats</title>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-resource.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/chart.js"></script>
+</head>
+<body>
+<div ng-controller="ChartsCtrl">
+
+    <div id="dashboarddiv">
+        <div id="chartdiv"></div>
+        <div id="controlsdiv"></div>
+    </div>
+    <input type="button" ng-click="hideColumns(5)" value="Hide 5">
+    <input type="button" ng-click="hideColumns(6)" value="Hide 6">
+    <input type="button" ng-click="hideColumns(8)" value="Hide 8">
+</div>
+</body>
+</html>
