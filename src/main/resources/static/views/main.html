@@ -81,7 +81,7 @@
             <div class="item"><span class="item-label">NPCs</span>
                 <!--_TODO: max ? -->
                 <progressbar type="success" animate="false" value="stat.current.entities/stat.max[2]" max="1" title="{{stat.current.entities}} of max {{stat.max[2]}}">
-                    <span ng-class="{'grey': stat.current.entities/stat.max[2] < 0.04}">{{stat.current.entities}}</span>
+                    <span ng-class="{'grey': stat.current.entities/stat.max[2] < 0.04 || stat.max[2] == 0}">{{stat.current.entities}}</span>
                 </progressbar>
             </div>
             <div class="item"><span class="item-label">Entities</span>
@@ -106,28 +106,28 @@
             <div class="item"><span class="item-label">FPS</span>
                 <!--_TODO: max ? -->
                 <progressbar type="success" animate="false" value="stat.current.fps/stat.max[9]" max="1" title="{{stat.current.fps}} of max {{stat.max[9]}}">
-                    <span ng-class="{'grey': stat.current.fps/stat.max[9] < 0.04}"> {{stat.current.fps}} </span>
+                    <span ng-class="{'grey': stat.current.fps/stat.max[9] < 0.04 || stat.max[9] == 0}"> {{stat.current.fps}} </span>
                 </progressbar>
             </div>
             <div class="item"><span class="item-label">Chunks</span>
                 <!--_TODO: max ? -->
                 <progressbar type="success" animate="false" value="stat.current.chunks/stat.max[7]" max="1" title="{{stat.current.chunks}} of {{stat.max[7]}}">
-                    <span ng-class="{'grey': stat.current.chunks/stat.max[7] < 0.04}">{{stat.current.chunks}} </span>
+                    <span ng-class="{'grey': stat.current.chunks/stat.max[7] < 0.04 || stat.max[7] == 0}">{{stat.current.chunks}} </span>
                 </progressbar>
             </div>
             <div class="item"><span class="item-label">GCO</span>
                 <!--_TODO: max ? -->
                 <progressbar type="success" animate="false" value="stat.current.cgo/stat.max[8]" max="1" title="{{stat.current.cgo}} of max {{stat.max[8]}}">
-                    <span ng-class="{'grey': stat.current.cgo/stat.max[8] < 0.04}">{{stat.current.cgo}}</span>
+                    <span ng-class="{'grey': stat.current.cgo/stat.max[8] < 0.04 || stat.max[8] == 0}">{{stat.current.cgo}}</span>
                 </progressbar>
             </div>
             <div class="item"><span class="item-label">Heartbeat</span>
                 <!--_TODO: max ? -->
-                <div ng-if="heartbeat < 40" class="heartbeat-box">
-                    <img src="img/heart_beat_128.png" width="{{32-heartbeat}}px" height="{{32-heartbeat}}px" title="{{heartbeat}}s" >
+                <div ng-if="heartbeat <= 35" class="heartbeat-box">
+                    <img src="img/heart_beat_128.png" width="{{35-heartbeat}}px" height="{{35-heartbeat}}px" title="{{heartbeat}}s" >
                 </div>
-                <div ng-if="heartbeat >= 40" style="heartbeat-box">
-                    <img src="img/skull-32.png" width="32px" height="32px" title="{{heartbeat}}s" >
+                <div ng-if="heartbeat > 35" style="heartbeat-box">
+                    <img src="img/32/skull-32.png" width="32px" height="32px" title="{{heartbeat}}s" >
                 </div>
             </div>
         </fieldset>

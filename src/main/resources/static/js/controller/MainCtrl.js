@@ -108,7 +108,9 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
             StatService.getStats()
                 .success(function (data) {
                     $scope.stat = data;
-                    $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
+                    if (typeof $scope.stat !== 'undefined' && typeof $scope.stat.current !== 'undefined') {
+                      $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
+                    }
                 })
                 .error(function (status) {
                     $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
