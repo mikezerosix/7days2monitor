@@ -1,26 +1,57 @@
 'use strict';
 
-google.load('visualization', '1', {
-    packages: ['corechart', 'controls'],
-    'language': 'en_UK'
-});
+google.load('visualization', '1', { packages: ['corechart', 'controls'], 'language': 'en_UK'});
 
-google.setOnLoadCallback(function () {
-    angular.bootstrap(document.body, ['chartsApp']);
-});
+google.setOnLoadCallback(function () { angular.bootstrap(document.body, ['chartsApp']); });
 
-angular.module('chartsApp', []).
-    controller('ChartsCtrl', ['$scope', '$http', function ($scope, $http) {
-
-        $http.get('/protected/stats/days/3')
-            .success(function (data) {
-                parseData(data);
-            })
-            .error(function (status) {
-                alert('Failed reading chart data error ' + status);
-            });
-
+angular.module('chartsApp', [])
+    .controller('ChartsCtrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
+        var readData = function () {
+            $http.get('/protected/stats/days/3')
+                .success(function (data) {
+                    parseData(data);
+                })
+                .error(function (status) {
+                    alert('Failed reading chart data error ' + status);
+                });
+            //$timeout(function () { readData(); }, 1000*30);
+        };
+        readData();
         var dashboard = new google.visualization.Dashboard(document.getElementById('dashboarddiv'));
+
+        var chart = new google.visualization.ChartWrapper({
+            'chartType': 'LineChart',
+            'containerId': 'chartdiv',
+            'options':  {
+                dateFormat: 'dd.MM.yy hh:mm',
+                height: 800,
+                is3D: true,
+                chartArea:{left:40,top:40,width:'90%',height:'90%'},
+                hAxis: {format: 'dd.MM.yyyy HH:mm'},
+                vAxis: {'minValue': 0, viewWindow: {min: 0}},
+                title: 'Server stats'
+            }
+        });
+
+        var recordedRangeSlider = new google.visualization.ControlWrapper({
+            'controlType': 'ChartRangeFilter',
+            'containerId': 'controlsdiv',
+            'options': {
+                'filterColumnLabel': 'Recorded',
+                'ui':  { chartOptions: {
+                    dateFormat: 'dd.MM.yy hh:mm',
+                    height: 100,
+                    is3D: true,
+                    chartArea:{left:40,top:0,width:'90%',height:'100%'},
+                    hAxis:  { 'textPosition': 'none'},
+                    'vAxis': {
+                        'textPosition': 'none',
+                        'gridlines': {'color': 'none'}
+                    }
+                }}
+            }
+        });
+        dashboard.bind(recordedRangeSlider, chart);
 
         var parseData = function (jsonData) {
             var data = new google.visualization.DataTable();
@@ -56,28 +87,13 @@ angular.module('chartsApp', []).
 
 
             $scope.dataview = new google.visualization.DataView(data);
-            draw();
+            dashboard.draw($scope.dataview);
         };
 
-        $scope.hideColumns = function(colToHide) {
-            alert('hiding '+colToHide );
-            $scope.dataview.hideColumns([colToHide]);
-            // you can also use dataview.setColumns([1,2]) to show only selected columns and hide the rest
-            draw();
+        $scope.shownCols = [0];
+        $scope.hideColumns = function() {
+            $scope.dataview.setColumns($scope.shownCols.filter(function(n){ return n != undefined }) );
+            dashboard.draw($scope.dataview);
         };
-        $scope.logScale = false;
-        var draw = function() {
-            var chart = new google.visualization.LineChart(document.getElementById('chartdiv'));
-            chart.draw($scope.dataview, {
-                dateFormat: 'dd.MM.yy hh:mm',
-                height: 800,
-                is3D: true,
-                chartArea:{left:40,top:40,width:'90%',height:'80%'},
-                explorer: {},
-                hAxis:  {format: 'dd.MM.yyyy hh:mm'},
-                vAxis: {logScale: $scope.logScale, minValue: 0},
-                title: 'Server stats'
-            });
-        }
 
     }]);

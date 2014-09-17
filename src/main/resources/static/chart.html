@@ -16,9 +16,19 @@
         <div id="chartdiv"></div>
         <div id="controlsdiv"></div>
     </div>
-    <input type="button" ng-click="hideColumns(5)" value="Hide 5">
-    <input type="button" ng-click="hideColumns(6)" value="Hide 6">
-    <input type="button" ng-click="hideColumns(8)" value="Hide 8">
+    <div id="togglediv">
+        <input type="checkbox" ng-model="shownCols[1]" ng-true-value="1" ng-change="hideColumns()">Uptime (h)
+        <input type="checkbox" ng-model="shownCols[2]" ng-true-value="2" ng-change="hideColumns()">Players
+        <input type="checkbox" ng-model="shownCols[3]" ng-true-value="3" ng-change="hideColumns()">Zombies
+        <input type="checkbox" ng-model="shownCols[4]" ng-true-value="4" ng-change="hideColumns()">NPCs
+        <input type="checkbox" ng-model="shownCols[5]" ng-true-value="5" ng-change="hideColumns()">Entities
+        <input type="checkbox" ng-model="shownCols[6]" ng-true-value="6" ng-change="hideColumns()">Items
+        <input type="checkbox" ng-model="shownCols[7]" ng-true-value="7" ng-change="hideColumns()">Mem Heap
+        <input type="checkbox" ng-model="shownCols[8]" ng-true-value="8" ng-change="hideColumns()">Mem Max
+        <input type="checkbox" ng-model="shownCols[9]" ng-true-value="9" ng-change="hideColumns()">Chunks
+        <input type="checkbox" ng-model="shownCols[10]" ng-true-value="10" ng-change="hideColumns()">CGO
+        <input type="checkbox" ng-model="shownCols[11]" ng-true-value="11" ng-change="hideColumns()">FPS
+    </div>
 </div>
 </body>
 </html>
