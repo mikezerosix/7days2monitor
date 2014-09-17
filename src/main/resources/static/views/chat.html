@@ -1,4 +1,5 @@
 <div id="chat-content">
+    <div class="chat-top">
     <div id="chat-messages" class="chat-messages-pane">
         <ul id="chat-listing">
             <li class="chat-line" ng-repeat="msg in chatLog track by $index">{{msg}}</li>
@@ -7,6 +8,11 @@
             <img class="loading" src="/img/processing-32.png" height="64px" width="64px"> loading...
         </div>
         <span id="lastMessage"></span>
+    </div>
+    <div class="chat-players">
+        <h2>Players</h2>
+
+    </div>
     </div>
     <div class="chat-bottom">
         <label>Say</label>

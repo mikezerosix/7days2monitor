@@ -38,7 +38,7 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
         patterns[5] = Pattern.compile("Game mode: (.*)");
         patterns[6] = Pattern.compile("World: (.*)");
         patterns[7] = Pattern.compile("Game name: (.*)");
-        patterns[8] = Pattern.compile("Difficulty: (\\d+)");
+        patterns[8] = Pattern.compile("Difficulty:\\s+(\\d+)");
         patterns[9] = Pattern.compile("\\*\\*\\* Allocs server fixes loaded");
         patterns[10] = Pattern.compile("Press \\'help\\' to get a list of all commands. Press \\'exit\\' to end session\\.");
     }

@@ -11,9 +11,9 @@ public interface StatRepository extends CrudRepository<Stat, Long> {
 
 
     @Query("SELECT s FROM Stat s where s.id = (SELECT max(s.id) FROM Stat s) order by s.id desc")
-    public List<Stat> getLastStat(Pageable pageable);
+    public Stat getLastStat();
 
-    @Query("SELECT 0, max(s.players), max(s.zombies), max(s.entities), max(s.entities2), max(s.items), max(s.memHeap), max(s.memMax), max(s.chunks), max(s.cgo), max(s.fps) FROM Stat s")
+    @Query("SELECT max(s.players), max(s.zombies), max(s.entities), max(s.entities2), max(s.items), max(s.memHeap), max(s.memMax), max(s.chunks), max(s.cgo), max(s.fps) FROM Stat s")
     public Object[] getMaxStat();
 
     @Override

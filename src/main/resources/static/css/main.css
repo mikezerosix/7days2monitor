@@ -108,6 +108,21 @@ h2.login {
     vertical-align: top;
 }
 
+
+.black {
+    color: #000000;
+}
+
+.silver {
+    color: silver;
+}
+.grey {
+    color: rgb(90, 90, 90);
+}
+
+.green {
+   color: #00b84f;
+}
 /*  MAIN */
 #main {
     padding: 10px;
@@ -189,6 +204,12 @@ legend.content-block {
     width: 100%;
 }
 
+.heartbeat-box {
+    width: 33px;
+    height: 33px;
+    display: inline-block;
+    text-align: center;
+}
 
 
 
@@ -211,10 +232,14 @@ legend.content-block {
     padding-right: 5px;
     visibility: visible;
     border: thin solid gray;
+    width: 80%;
 }
 
 #chat-listing {
     display: initial;
+}
+.chat-players {
+    width: 20%;
 }
 
 li.chat-line {

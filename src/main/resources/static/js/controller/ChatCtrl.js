@@ -13,6 +13,7 @@ sevenMonitor
              lastLine = $scope.chatLog[$scope.chatLog.lenght-1];
         }
         $timeout(function() {
+             $scope.$emit('show_loading', '');
              TelnetService.chat(lastLine)
                 .success(function (data) {
                    $scope.chatLog = data;
@@ -24,6 +25,7 @@ sevenMonitor
                     return false;
                 });
                  $scope.loading = false;
+                 $scope.$emit('hide_loading', '');
                readChat();
            }, 1000);
          $scope.processing = false;

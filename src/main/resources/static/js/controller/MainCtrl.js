@@ -1,6 +1,6 @@
 'use strict';
 
-sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService, TelnetService, FTPService, StatService) {
+sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, SettingsService, TelnetService, FTPService, StatService) {
     $scope.Math = window.Math;
 
     $scope.uptime;
@@ -11,6 +11,8 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
         .error(function (status) {
             $scope.$emit('status_error', 'Reading uptime failed, error ' + status);
         });
+
+    $scope.difficultyLabels = ['Easiest','Easy','Normal','Hard','Hardest'];
 
     $scope.gameServerStatus = {};
     TelnetService.serverInfo()
@@ -53,7 +55,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
     $scope.ftpStatus;
     FTPService.isConnected()
         .success(function (data) {
-            $scope.ftpStatus = (data== 'true');
+            $scope.ftpStatus = (data == 'true');
         })
         .error(function (status) {
             $scope.ftpStatus = false;
@@ -64,7 +66,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
         if ($scope.ftpStatus) {
             FTPService.connect()
                 .success(function (data) {
-                    $scope.ftpStatus = data ;
+                    $scope.ftpStatus = data;
                 })
                 .error(function (status) {
                     $scope.$emit('status_error', 'Reading FTP connect failed, error ' + status);
@@ -83,36 +85,45 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, SettingsService
 
     $scope.news = {};
     $scope.readNews = function () {
+        $scope.$emit('show_loading', 'readNews');
         SettingsService.latest()
             .success(function (data) {
                 $scope.news = data;
                 $scope.$emit('status_info', 'Read Steam News For 7 Days to Die');
             })
             .error(function (status) {
-                alert(status);
                 $scope.$emit('status_error', 'Error(' + status + ') Reading Steam News For 7 Days to Die');
             });
+        $scope.$emit('hide_loading', 'readNews');
     };
     $scope.readNews();
 
 
-    $scope.stats =[];
     $scope.stat = {};
-    $scope.readStats = function () {
-        StatService.getStats()
-            .success(function (data) {
-                $scope.stats = data;
-                $scope.stat = $scope.stats[ $scope.stats.length - 1];
-            })
-            .error(function (status) {
-                $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
-            });
+    $scope.heartbeat = 999999;
+    var pollStats = function () {
+        $scope.heartbeat++;
+        if ($scope.heartbeat >= 30 && $scope.heartbeat%5) {
+            $scope.$emit('show_loading', 'pollStats');
+            StatService.getStats()
+                .success(function (data) {
+                    $scope.stat = data;
+                    $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
+                })
+                .error(function (status) {
+                    $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
+                });
+            $scope.$emit('hide_loading', 'pollStats');
+        }
+        $timeout(function () {
+            pollStats();
+        }, 1000);
     };
-    $scope.readStats();
+    pollStats();
 
-
-    $scope.testEmit = function() {
+    $scope.testEmit = function () {
         console.log('sending emit');
         $scope.$emit('status_error', 'ERR test ');
     }
+
 });

@@ -16,7 +16,7 @@
                 <div class="item"><span class="item-label">Mode</span>{{gameServerStatus.mode}}</div>
                 <div class="item"><span class="item-label">World</span>{{gameServerStatus.world}}</div>
                 <div class="item"><span class="item-label">Slots</span>{{gameServerStatus.maxPlayers}}</div>
-                <div class="item"><span class="item-label">Difficulty</span>{{gameServerStatus.difficulty}}</div>
+                <div class="item"><span class="item-label">Difficulty</span>{{difficultyLabels[gameServerStatus.difficulty]}} ({{gameServerStatus.difficulty}})</div>
                 <div class="item"><span class="item-label">IP</span>{{gameServerStatus.ip}}</div>
                 <div class="item"><span class="item-label">Port</span>{{gameServerStatus.port}}</div>
                 <div class="item"><span class="item-label">Version</span>{{gameServerStatus.version}}</div>
@@ -65,45 +65,70 @@
             <legend class="content-block">Statistics</legend>
             <!--var types = ['success', 'info', 'warning', 'danger'];   css: progress-striped active-->
             <div class="item"><span class="item-label">Uptime</span>
-                {{stat.uptime*60*60 | asUptime }} ({{stat.uptime}})
+                {{stat.current.uptime*1000 | asUptime }}
             </div>
             <div class="item"><span class="item-label">Players</span>
-                <progressbar animate="false" value="stat.players/gameServerStatus.maxPlayers" max="1"  type="success">{{stat.players}} </progressbar>
+                <progressbar type="success" animate="false" value="stat.current.players/gameServerStatus.maxPlayers" max="1" title="{{stat.current.players}} of max {{gameServerStatus.maxPlayers}}">
+                   <span ng-class="{'grey': stat.current.players/gameServerStatus.maxPlayers < 0.04}">{{stat.current.players}}</span>
+                </progressbar>
             </div>
             <div class="item"><span class="item-label">Zombies</span>
                 <!--_TODO: max from settings.xml ? -->
-                <progressbar animate="false" value="stat.zombies" max="64"  type="success">{{stat.zombies}} </progressbar>
+                <progressbar type="success" animate="false" value="stat.current.zombies" max="64" title="{{stat.current.zombies}} of max 64">
+                    <span ng-class="{'grey': stat.current.zombies/64 < 0.04}">{{stat.current.zombies}}</span>
+                </progressbar>
+            </div>
+            <div class="item"><span class="item-label">NPCs</span>
+                <!--_TODO: max ? -->
+                <progressbar type="success" animate="false" value="stat.current.entities/stat.max[2]" max="1" title="{{stat.current.entities}} of max {{stat.max[2]}}">
+                    <span ng-class="{'grey': stat.current.entities/stat.max[2] < 0.04}">{{stat.current.entities}}</span>
+                </progressbar>
             </div>
             <div class="item"><span class="item-label">Entities</span>
                 <!--_TODO: max ? -->
-                <progressbar animate="false" value="stat.entities" max="500"  type="success">{{stat.entities}} </progressbar>
+                <progressbar type="success" animate="false" value="stat.current.entities2/stat.max[3]" max="1" title="{{stat.current.entities2}} of max {{stat.max[3]}}">
+                    <span ng-class="{'grey': stat.current.entities2/stat.max[3] < 0.04}">{{stat.current.entities2}}</span>
+                </progressbar>
             </div>
             <div class="item"><span class="item-label">Items</span>
                 <!--_TODO: max ? -->
-                <progressbar animate="false" value="stat.items" max="500"  type="success">{{stat.items}} </progressbar>
+                <progressbar type="success" animate="false" value="stat.current.items/stat.max[4]" max="1" title="{{stat.current.items}} of max {{stat.max[4]}}">
+                    <span ng-class="{'grey': stat.current.items/stat.max[4] < 0.04}">{{stat.current.items}}</span>
+                </progressbar>
             </div>
             <!--_TODO: max from settings MAX_MEM_MB ? -->
             <div class="item"><span class="item-label">Memory</span>
-                <progress   max="1200">
-                    <bar value="stat.memHeap" type="success"> {{stat.memHeap}}MB </bar>
-                    <bar value="stat.memHeap" type="danger"> {{stat.memMax}}MB </bar>
+                <progress max="1200" title="{{stat.current.memHeap}} / {{stat.current.memMax}} of max 1200">
+                    <bar type="warning" value="stat.current.memHeap"> <span ng-class="{'grey': stat.current.memHeap/1200 < 0.04}">{{stat.current.memHeap}}MB</span> </bar>
+                    <bar type="success" value="stat.current.memMax-stat.current.memHeap"> <span ng-class="{'grey': stat.current.memMax/1200 < 0.04}"> {{stat.current.memMax}}MB</span> </bar>
                 </progress>
-            </div>
-            <div class="item"><span class="item-label">Chunks</span>
-                <!--_TODO: max ? -->
-                <progressbar animate="false" value="stat.chunks" max="2000" type="success">{{stat.chunks}} </progressbar>
-            </div>
-            <div class="item"><span class="item-label">GCO</span>
-                <!--_TODO: max ? -->
-                <progressbar animate="false" value="stat.cgo" max="200" type="success">{{stat.cgo}} </progressbar>
             </div>
             <div class="item"><span class="item-label">FPS</span>
                 <!--_TODO: max ? -->
-                <progressbar animate="false" value="stat.fps" max="200" type="success">{{stat.fps}} </progressbar>
+                <progressbar type="success" animate="false" value="stat.current.fps/stat.max[9]" max="1" title="{{stat.current.fps}} of max {{stat.max[9]}}">
+                    <span ng-class="{'grey': stat.current.fps/stat.max[9] < 0.04}"> {{stat.current.fps}} </span>
+                </progressbar>
+            </div>
+            <div class="item"><span class="item-label">Chunks</span>
+                <!--_TODO: max ? -->
+                <progressbar type="success" animate="false" value="stat.current.chunks/stat.max[7]" max="1" title="{{stat.current.chunks}} of {{stat.max[7]}}">
+                    <span ng-class="{'grey': stat.current.chunks/stat.max[7] < 0.04}">{{stat.current.chunks}} </span>
+                </progressbar>
+            </div>
+            <div class="item"><span class="item-label">GCO</span>
+                <!--_TODO: max ? -->
+                <progressbar type="success" animate="false" value="stat.current.cgo/stat.max[8]" max="1" title="{{stat.current.cgo}} of max {{stat.max[8]}}">
+                    <span ng-class="{'grey': stat.current.cgo/stat.max[8] < 0.04}">{{stat.current.cgo}}</span>
+                </progressbar>
             </div>
             <div class="item"><span class="item-label">Heartbeat</span>
                 <!--_TODO: max ? -->
-                <img src="img/heart_beat_128.png" width="30px" height="30px" >
+                <div ng-if="heartbeat < 40" class="heartbeat-box">
+                    <img src="img/heart_beat_128.png" width="{{32-heartbeat}}px" height="{{32-heartbeat}}px" title="{{heartbeat}}s" >
+                </div>
+                <div ng-if="heartbeat >= 40" style="heartbeat-box">
+                    <img src="img/skull-32.png" width="32px" height="32px" title="{{heartbeat}}s" >
+                </div>
             </div>
         </fieldset>
     </div>

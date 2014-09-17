@@ -2,6 +2,7 @@
 
 sevenMonitor
     .controller('StatusCtrl', function ($scope, $rootScope) {
+        $scope.isLoading = false;
         $scope.messages = [];
         $scope.status = {'state': 'status-init', 'msg': 'ok'};
 
@@ -21,6 +22,16 @@ sevenMonitor
             $scope.status.state = 'status-ok';
             $scope.status.msg = message;
             $scope.messages.push(status);
+        });
+
+        $rootScope.$on('show_loading', function (event, message) {
+           //console.log('show loading ');
+            $scope.isLoading = true;
+        });
+
+        $rootScope.$on('hide_loading', function (event, message) {
+           //console.log('hide loading ');
+            $scope.isLoading = false;
         });
 
         $scope.showMessages = function() {

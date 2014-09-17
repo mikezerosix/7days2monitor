@@ -33,7 +33,7 @@ public class StatRepositoryTest {
 
     @Test
     public void testGetLastStat() throws Exception {
-        final List<Stat> lastStat = statRepository.getLastStat(new PageRequest(0, 1));
+        final Stat lastStat = statRepository.getLastStat();
     }
 
     @Test
