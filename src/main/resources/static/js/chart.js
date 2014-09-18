@@ -24,9 +24,9 @@ angular.module('chartsApp', [])
             'containerId': 'chartdiv',
             'options':  {
                 dateFormat: 'dd.MM.yy hh:mm',
-                height: 800,
+                height: 700,
                 is3D: true,
-                chartArea:{left:40,top:40,width:'90%',height:'90%'},
+                chartArea:{left:40,top:40,width:'85%',height:'90%'},
                 hAxis: {format: 'dd.MM.yyyy HH:mm'},
                 vAxis: {'minValue': 0, viewWindow: {min: 0}},
                 title: 'Server stats'
@@ -42,7 +42,7 @@ angular.module('chartsApp', [])
                     dateFormat: 'dd.MM.yy hh:mm',
                     height: 100,
                     is3D: true,
-                    chartArea:{left:40,top:0,width:'90%',height:'100%'},
+                    chartArea:{left:40,top:0,width:'85%',height:'100%'},
                     hAxis:  { 'textPosition': 'none'},
                     'vAxis': {
                         'textPosition': 'none',
