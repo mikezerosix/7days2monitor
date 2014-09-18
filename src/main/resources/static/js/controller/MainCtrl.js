@@ -84,17 +84,28 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
 
 
     $scope.news = {};
+
     $scope.readNews = function () {
         $scope.$emit('show_loading', 'readNews');
-        SettingsService.latest()
+        SettingsService.latestSteam()
             .success(function (data) {
-                $scope.news = data;
+                $scope.news.steam = data.appnews.newsitems[0];
                 $scope.$emit('status_info', 'Read Steam News For 7 Days to Die');
             })
             .error(function (status) {
                 $scope.$emit('status_error', 'Error(' + status + ') Reading Steam News For 7 Days to Die');
             });
-        $scope.$emit('hide_loading', 'readNews');
+        SettingsService.latestTumbl()
+        .success(function (data) {
+          $scope.news.tumbl = data.posts[0];
+          $scope.$emit('status_info', 'Read Tumbl News For 7 Days to Die');
+        })
+        .error(function (status) {
+            console.log('error:'+ status );
+          $scope.$emit('status_error', 'Error(' + status + ') Reading Tumbl News For 7 Days to Die');
+        });
+
+      $scope.$emit('hide_loading', 'readNews');
     };
     $scope.readNews();
 

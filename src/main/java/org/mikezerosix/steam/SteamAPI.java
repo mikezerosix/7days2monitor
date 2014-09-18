@@ -7,28 +7,32 @@ import org.apache.http.client.fluent.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 /**
  * Created by michael on 30.8.2014.
- * <p/>
+ * <p>
  * http://steamcommunity.com/dev/registerkey
- * <p/>
+ * <p>
  * https://developer.valvesoftware.com/wiki/Steam_Web_API
  */
 public class SteamAPI {
 
     private String apiKey;
-
-    public SteamAPI(String apiKey) {
-        this.apiKey = apiKey;
-    }
+    private static final String GAME_NEWS_URL = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=251570&count=1&maxlength=300&format=json";
+    private static final long CACHE_TIME = 1000 * 60 * 30;
+    private static long cacheTTL = System.currentTimeMillis();
+    private static JsonNode cache;
 
     protected static JsonNode readJsonNode(String uri) throws IOException {
         final Response response = Request.Get(uri).execute();
         final InputStream inputStream = response.returnResponse().getEntity().getContent();
         return new ObjectMapper().readTree(inputStream);
     }
+
+    public SteamAPI(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
 
     public String GetPlayerSummaries(String steamId) {
         String url = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + apiKey + "&steamids=" + steamId;
@@ -72,7 +76,10 @@ steamid
     }
 
     public JsonNode getGameNews() throws IOException {
-        String url = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=251570&count=1&maxlength=300&format=json";
-        return readJsonNode(url);
+        if (System.currentTimeMillis() > cacheTTL) {
+            cache = readJsonNode(GAME_NEWS_URL);
+            cacheTTL = System.currentTimeMillis() + CACHE_TIME;
+        }
+        return cache;
     }
 }
