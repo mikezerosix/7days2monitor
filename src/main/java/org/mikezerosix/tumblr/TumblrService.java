@@ -1,4 +1,4 @@
-package org.mikezerosix.tumbl;
+package org.mikezerosix.tumblr;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

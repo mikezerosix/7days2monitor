@@ -1,7 +1,7 @@
 package org.mikezerosix.rest;
 
 import org.mikezerosix.steam.SteamAPI;
-import org.mikezerosix.tumbl.TumblrService;
+import org.mikezerosix.tumblr.TumblrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
