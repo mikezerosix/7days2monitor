@@ -9,5 +9,5 @@ You can connect to application at port 9090 with web browser. Default user/pw is
 
 To get any functionality you need to go to settings and enter telnet connection settings and then turn on chat and stat monitoring 
 
-+ connect to telent on main-page. 
+Then go to main page and connect to telnet
 
