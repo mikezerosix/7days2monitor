@@ -2,9 +2,14 @@ package org.mikezerosix.telnet.handlers;
 
 import org.mikezerosix.entities.Stat;
 import org.mikezerosix.entities.StatRepository;
+import org.mikezerosix.service.StatService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import java.util.PrimitiveIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,10 +37,10 @@ public class StatHandler implements TelnetOutputHandler {
             + "(\\d+),"
             + "(\\d+)";
     private final Pattern pattern = Pattern.compile(STAT_TRIGGER);
-    private StatRepository statRepository;
+    private StatService statService;
 
-    public StatHandler(StatRepository statRepository) {
-        this.statRepository = statRepository;
+    public StatHandler(StatService statService) {
+        this.statService = statService;
     }
 
     @Override
@@ -50,7 +55,7 @@ public class StatHandler implements TelnetOutputHandler {
         if (matcher.find()) {
             log.debug("Matching stat line : " + input);
             Stat stat = getStat(matcher);
-            statRepository.save(stat);
+            statService.record(stat);
         }
     }
 

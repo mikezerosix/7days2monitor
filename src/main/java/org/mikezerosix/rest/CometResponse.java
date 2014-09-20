@@ -3,7 +3,7 @@ package org.mikezerosix.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
+import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.get;
 
 public class CometResponse {
@@ -11,6 +11,10 @@ public class CometResponse {
 
     public CometResponse() {
 
+
+    }
+
+    public void registerRoutes() {
 
         get(PROTECTED_URL + "/comet", (request, response) -> "");
 

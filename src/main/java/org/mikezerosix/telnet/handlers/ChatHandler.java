@@ -12,15 +12,15 @@ import java.util.regex.Pattern;
 167612.300 GMSG: ShoC: they know where I am... eeek
 */
 public class ChatHandler implements TelnetOutputHandler {
-    public static final Logger log = LoggerFactory.getLogger(ChatHandler.class);
-    public static final String GMSG = TelnetLineUtil.TIME_STAMP +"GMSG:\\s(.*)";
+    private static final Logger log = LoggerFactory.getLogger(ChatHandler.class);
+    public static final String GMSG = TelnetLineUtil.TIME_STAMP + "GMSG:\\s(.*)";
     private final Pattern pattern = Pattern.compile(GMSG);
 
     private ChatLogger chatLogger = new ChatLogger();
 
     @Override
     public Matcher[] matcher(String line) {
-        return new Matcher[] {pattern.matcher(line)} ;
+        return new Matcher[]{pattern.matcher(line)};
     }
 
     @Override

@@ -1,42 +1,115 @@
 package org.mikezerosix;
 
+import org.apache.commons.cli.*;
 import org.mikezerosix.rest.*;
+import org.mikezerosix.service.SettingsService;
+import org.mikezerosix.service.UserService;
+import org.mikezerosix.telnet.TelnetRunner;
+import org.mikezerosix.util.SessionUtil;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
-import static spark.Spark.staticFileLocation;
+import javax.inject.Inject;
+
+import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
+import static spark.Spark.*;
 import static spark.SparkBase.setPort;
 
+@Component
 public class App {
+    private static int port = 9090;
+    private static String password = "x";
 
-    static String user = null;
-    private static LoginResource loginResource;
-    private static SettingsResource settingsResource;
-    private static UserResource userResource;
-    private static TelnetResource telnetResource;
-    private static PlayerResource playerResource;
-    private static FTPResource ftpResource;
-    private static ServerResource serverResource;
-    private static StatResource statResource;
+    @Inject
+    private SettingsService settingsService;
+    @Inject
+    private TelnetRunner telnetRunner;
+    @Inject
+    private UserService userService;
+
+    @Inject
+    private SettingsResource settingsResource;
+
+    @Inject
+    private LoginResource loginResource;
+    @Inject
+    private UserResource userResource;
+    @Inject
+    private TelnetResource telnetResource;
+    @Inject
+    private ServerResource serverResource;
+    @Inject
+    private StatResource statResource;
+    @Inject
+    private PlayerResource playerResource;
+    @Inject
+    private FTPResource ftpResource;
 
     public static void main(String[] args) {
+        readArgs(args);
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
-        AppConfiguration app = context.getBean(AppConfiguration.class);
+        App app = context.getBean(App.class);
+        app.start();
+    }
 
-        int port = app.getPort();
-        setPort(port);
-        staticFileLocation("/static");
+    private static void readArgs(String[] args) {
+        HelpFormatter f = new HelpFormatter();
 
-        loginResource = app.loginResource();
-        settingsResource = app.settingsResource();
-        userResource = app.userResource();
-        telnetResource = app.telnetResource();
-        playerResource = app.playerResource();
-        ftpResource = app.ftpResource();
-        serverResource = app.serverResource();
-        statResource = app.statResource();
+        Options opt = new Options();
 
-        System.out.println("HTTP service running in port: " + port);
+        opt.addOption("h", false, "Print help for this application");
+        opt.addOption("p", true, "The port to use");
+        opt.addOption("l", true, "The login password for 'admin' user.");
+
+        BasicParser parser = new BasicParser();
+        try {
+            CommandLine cl = parser.parse(opt, args);
+
+            if (cl.hasOption('h')) {
+                f.printHelp("OptionsTip", opt);
+            } else {
+                if (cl.hasOption('p')) {
+                    port = Integer.parseInt(cl.getOptionValue("p"));
+                }
+                if (cl.hasOption('l')) {
+                    password = cl.getOptionValue("l");
+                }
+            }
+        } catch (ParseException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
 
     }
 
+    private void start() {
+        userService.init(password);
+
+        telnetRunner.start();
+
+        settingsService.init();
+
+        startHTTP();
+
+        System.out.println("HTTP service running in port: " + port);
+    }
+
+    private void startHTTP() {
+        setPort(port);
+        staticFileLocation("/static");
+
+        before(PROTECTED_URL + "*", (request, response) -> {
+            if (!SessionUtil.isLoggedIn(request)) {
+                halt(401, "You are not welcome here");
+            }
+        });
+
+        settingsResource.registerRoutes();
+        loginResource.registerRoutes();
+        userResource.registerRoutes();
+        telnetResource.registerRoutes();
+        serverResource.registerRoutes();
+        statResource.registerRoutes();
+        playerResource.registerRoutes();
+        ftpResource.registerRoutes();
+    }
 }

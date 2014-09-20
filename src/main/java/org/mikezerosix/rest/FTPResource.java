@@ -4,23 +4,23 @@ import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.rest.transformers.JsonTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Response;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
+import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.*;
 
 @SuppressWarnings("unchecked")
 public class FTPResource {
     private static final Logger log = LoggerFactory.getLogger(FTPResource.class);
+    private FTPService ftpService;
 
     public FTPResource(FTPService ftpService) {
+
+        this.ftpService = ftpService;
+    }
+
+    public void registerRoutes() {
 
         get(PROTECTED_URL + "ftp", (request, response) -> ftpService.isConnected(), new JsonTransformer());
 

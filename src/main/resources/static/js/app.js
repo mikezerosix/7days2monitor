@@ -65,7 +65,7 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
             return   Math.floor(uptime/1000/60/60/60) + ' days '
         + Math.floor(uptime/1000/60/60%60) + ' hours '
         + Math.floor(uptime/1000/60%60) + ' min '
-        + Math.floor((uptime/1000)%60) + ' s';
+        + Math.floor((uptime/1000)%60) + ' s ' + ( Number.isNaN(uptime)?'  - Batman !!!!!':'');
         }
     });
 

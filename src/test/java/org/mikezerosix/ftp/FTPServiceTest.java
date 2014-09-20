@@ -1,8 +1,8 @@
 package org.mikezerosix.ftp;
 
-import org.apache.commons.net.ftp.FTPClient;
 import org.junit.Before;
 import org.junit.Test;
+import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.entities.ConnectionType;
 import org.slf4j.Logger;
@@ -21,7 +21,8 @@ public class FTPServiceTest {
     public static final Logger log = LoggerFactory.getLogger(FTPServiceTest.class);
 
     private static ConnectionSettings connectionSettings = new ConnectionSettings();
-    private FTPService ftpService = FTPService.getInstance();
+    private FTPService ftpService = new FTPService(new CometSharedMessageQueue());
+
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +39,7 @@ public class FTPServiceTest {
             e.printStackTrace();
         }
 
-        ftpService.config(connectionSettings);
+        ftpService.setConnectionSettings(connectionSettings);
 
     }
 

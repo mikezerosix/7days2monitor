@@ -1,6 +1,7 @@
 package org.mikezerosix.telnet;
 
 import org.apache.commons.net.telnet.*;
+import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.telnet.commands.TelnetCommand;
 import org.mikezerosix.telnet.handlers.ServerGreetingHandler;
@@ -16,13 +17,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 /**
  * http://www.java2s.com/Code/Java/Network-Protocol/ExampleofuseofTelnetClient.htm
  */
-public class TelnetService extends Thread implements TelnetNotificationHandler {
+public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     public static final String PLEASE_ENTER_PASSWORD = "Please enter password:";
     public static final String WRONG_PASSWORD = "Password incorrect, please enter password:";
     public static final long connectionTimeoutSeconds = 10;
     public static final long waitTime = 500;
-    private static final Logger log = LoggerFactory.getLogger(TelnetService.class);
-    private static TelnetService instance = null;
+    private static final Logger log = LoggerFactory.getLogger(TelnetRunner.class);
+    private static TelnetRunner instance = null;
     private final List<TelnetOutputHandler> handlers = new ArrayList<>();
     private final ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
     private final TelnetClient telnet = new TelnetClient();
@@ -31,16 +32,11 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
     private TelnetCommand runningCommand = null;
     private ServerInformation serverInformation = new ServerInformation();
     private ConnectionSettings connectionSettings;
+    private CometSharedMessageQueue cometSharedMessageQueue;
 
-    private TelnetService() {
+    public TelnetRunner(CometSharedMessageQueue cometSharedMessageQueue) {
         super();
-    }
-
-    public static synchronized TelnetService getInstance() {
-        if (instance == null) {
-            instance = new TelnetService();
-        }
-        return instance;
+        this.cometSharedMessageQueue = cometSharedMessageQueue;
     }
 
     private InputStream getInputStream() {
@@ -57,7 +53,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
 
     @Override
     public void run() {
-        log.info("** Starting TelnetService");
+        log.info("** Starting TelnetRunner");
         initTelnetOptions();
         while (!isInterrupted()) {
             if (isMonitoring()) {
@@ -68,7 +64,7 @@ public class TelnetService extends Thread implements TelnetNotificationHandler {
                 } catch (IOException e) {
 
                     /*
-2014-09-14 17:51:45,527 ERROR [Thread-0] o.m.t.TelnetService [TelnetService.java:69] IO error from monitor
+2014-09-14 17:51:45,527 ERROR [Thread-0] o.m.t.TelnetRunner [TelnetRunner.java:69] IO error from monitor
 java.net.SocketException: Connection reset
 
 TODO: auto reconnect
@@ -104,7 +100,7 @@ TODO: auto reconnect
             log.error("Failed to initialize Telnet ", e);
             throw new RuntimeException(e);
         } catch (IOException e) {
-            log.error("Failed to config Telnet ", e);
+            log.error("Failed to setConnectionSettings Telnet ", e);
             throw new RuntimeException(e);
         }
     }

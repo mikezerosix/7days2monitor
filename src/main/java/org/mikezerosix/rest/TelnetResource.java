@@ -1,9 +1,7 @@
 package org.mikezerosix.rest;
 
-import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.mikezerosix.rest.transformers.JsonTransformer;
-import org.mikezerosix.telnet.TelnetService;
-import org.mikezerosix.util.SessionUtil;
+import org.mikezerosix.telnet.TelnetRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Response;
@@ -17,51 +15,48 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mikezerosix.AppConfiguration.PROTECTED_URL;
+import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.*;
-
 @SuppressWarnings("unchecked")
 public class TelnetResource {
     private static final Logger log = LoggerFactory.getLogger(TelnetResource.class);
+    private TelnetRunner telnetRunner;
 
-    public TelnetResource(TelnetService telnetService) {
+    public TelnetResource(TelnetRunner telnetRunner) {
+        this.telnetRunner = telnetRunner;
+    }
 
-        before(PROTECTED_URL + "*", (request, response) -> {
-            if (!SessionUtil.isLoggedIn(request)) {
-                halt(401, "You are not welcome here");
-            }
-        });
-
-        get(PROTECTED_URL + "telnet", (request, response) -> getStatus(telnetService) , new JsonTransformer());
+    public void registerRoutes() {
+        get(PROTECTED_URL + "telnet", (request, response) -> getStatus(telnetRunner), new JsonTransformer());
 
         post(PROTECTED_URL + "telnet", (request, response) -> {
-            if (!telnetService.isConnected()) {
+            if (!telnetRunner.isConnected()) {
                 try {
-                    telnetService.connect();
+                    telnetRunner.connect();
                 } catch (Exception e) {
-                    log.error("Failed to call connect() on telnetService ", e);
+                    log.error("Failed to call connect() on telnetRunner ", e);
                     response.status(500);
                 }
             }
-            return getStatus(telnetService);
+            return getStatus(telnetRunner);
         });
 
         delete(PROTECTED_URL + "telnet", (request, response) -> {
-            if (telnetService.isConnected()) {
+            if (telnetRunner.isConnected()) {
                 try {
-                    telnetService.disconnect();
+                    telnetRunner.disconnect();
                 } catch (Exception e) {
-                    log.error("Failed to call disconnect() on telnetService ", e);
+                    log.error("Failed to call disconnect() on telnetRunner ", e);
                     response.status(500);
                 }
             }
-            return getStatus(telnetService);
+            return getStatus(telnetRunner);
         });
 
-        get(PROTECTED_URL + "telnet/server-info", (request, response) -> telnetService.getServerInformation(), new JsonTransformer());
+        get(PROTECTED_URL + "telnet/server-info", (request, response) -> telnetRunner.getServerInformation(), new JsonTransformer());
 
         get(PROTECTED_URL + "telnet/raw", (request, response) -> {
-            if (telnetService.isAlive()) {
+            if (telnetRunner.isAlive()) {
                 log.warn("raw is not supported , needs web sockets ");
             }
             return returnDeadConnectionError(response);
@@ -89,38 +84,37 @@ public class TelnetResource {
 
         post(PROTECTED_URL + "telnet/say", (request, response) -> {
             String say = "say " + request.body();
-            if (telnetService.isAlive()) {
-                telnetService.write(say);
+            if (telnetRunner.isAlive()) {
+                telnetRunner.write(say);
                 return true;
             }
             return returnDeadConnectionError(response);
         });
 
         post(PROTECTED_URL + "telnet/send-cmd", (request, response) -> {
-            String cmd =  request.body();
-            if (telnetService.isAlive()) {
+            String cmd = request.body();
+            if (telnetRunner.isAlive()) {
                 log.info("sending cmd: " + cmd);
-                telnetService.write(cmd);
+                telnetRunner.write(cmd);
                 return true;
             }
             return returnDeadConnectionError(response);
         });
 
 
-
     }
 
-    private Map<String, Boolean> getStatus(TelnetService telnetService) {
+    private Map<String, Boolean> getStatus(TelnetRunner telnetRunner) {
         Map<String, Boolean> res = new HashMap<>();
-        res.put("alive", telnetService.isAlive());
-        res.put("connected", telnetService.isConnected());
-        res.put("monitoring", telnetService.isMonitoring());
+        res.put("alive", telnetRunner.isAlive());
+        res.put("connected", telnetRunner.isConnected());
+        res.put("monitoring", telnetRunner.isMonitoring());
         return res;
     }
 
     private String returnDeadConnectionError(Response response) {
-       log.warn("calling dead telnet connection");
-       response.status(500);
-       return "telnet connection is dead";
-   }
+        log.warn("calling dead telnet connection");
+        response.status(500);
+        return "telnet connection is dead";
+    }
 }

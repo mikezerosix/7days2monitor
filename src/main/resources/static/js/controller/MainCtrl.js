@@ -95,9 +95,9 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
             .error(function (status) {
                 $scope.$emit('status_error', 'Error(' + status + ') Reading Steam News For 7 Days to Die');
             });
-        SettingsService.latestTumbl()
+        SettingsService.latestTumblr()
         .success(function (data) {
-          $scope.news.tumbl = data.posts[0];
+          $scope.news.tumblr = data.posts[0];
           $scope.$emit('status_info', 'Read Tumbl News For 7 Days to Die');
         })
         .error(function (status) {

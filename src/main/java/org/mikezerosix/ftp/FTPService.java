@@ -4,6 +4,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,25 +19,19 @@ public class FTPService {
     public static final Logger log = LoggerFactory.getLogger(FTPService.class);
     private FTPClient ftp;
     private ConnectionSettings connectionSettings;
-    private static FTPService instance;
+    private CometSharedMessageQueue cometSharedMessageQueue;
 
-    public static FTPService getInstance() {
-        if (instance == null) {
-            instance = new FTPService();
-        }
-        return instance;
-    }
-
-    private FTPService() {
+    public FTPService(CometSharedMessageQueue cometSharedMessageQueue) {
+        this.cometSharedMessageQueue = cometSharedMessageQueue;
         this.ftp = new FTPClient();
         ftp.setControlKeepAliveTimeout(300);
 
     }
 
-    public void config(ConnectionSettings connectionSettings) {
+    public void setConnectionSettings(ConnectionSettings connectionSettings) {
         this.connectionSettings = connectionSettings;
         FTPClientConfig config = new FTPClientConfig(FTPClientConfig.SYST_UNIX);
-        //config.setXXX(YYY); // change required options
+        //setConnectionSettings.setXXX(YYY); // change required options
         ftp.configure(config);
     }
 

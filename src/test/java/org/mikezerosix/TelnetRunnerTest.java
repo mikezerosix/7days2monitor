@@ -4,12 +4,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.entities.ConnectionType;
-import org.mikezerosix.telnet.TelnetService;
+import org.mikezerosix.telnet.TelnetRunner;
 
 import java.io.*;
 import java.util.Properties;
 
-public class TelnetServiceTest {
+public class TelnetRunnerTest {
     private static ConnectionSettings connectionSettings = new ConnectionSettings();
 
     @BeforeClass
@@ -31,17 +31,17 @@ public class TelnetServiceTest {
     @Test
     public void testRun() throws Exception {
 
-        TelnetService telnetService = TelnetService.getInstance();
-        telnetService.setConnectionSettings(connectionSettings);
+        TelnetRunner telnetRunner = new TelnetRunner(null);
+        telnetRunner.setConnectionSettings(connectionSettings);
 
-       // telnetService.addHandler(new AllHandler(System.out.));
-        telnetService.start();
-        telnetService.connect();
-        while (!telnetService.isConnected()) {
+       // telnetRunner.addHandler(new AllHandler(System.out.));
+        telnetRunner.start();
+        telnetRunner.connect();
+        while (!telnetRunner.isConnected()) {
             Thread.sleep(1000);
         }
         Thread.sleep(5000);
-        telnetService.interrupt();
+        telnetRunner.interrupt();
 
     }
 

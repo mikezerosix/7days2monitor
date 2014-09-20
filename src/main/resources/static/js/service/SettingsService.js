@@ -29,7 +29,7 @@ sevenMonitor.factory('SettingsService', function($q, $http) {
     return $http.get('/protected/server/news/steam');
   };
 
-  var latestTumbl = function() {
+  var latestTumblr = function() {
     return $http.get('/protected/server/news/tumblr');
   };
 
@@ -41,7 +41,7 @@ sevenMonitor.factory('SettingsService', function($q, $http) {
     updateConnection: updateConnection,
     uptime: uptime,
     latestSteam: latestSteam,
-    latestTumbl: latestTumbl
+    latestTumblr: latestTumblr
   };
 
 });

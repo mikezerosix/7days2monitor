@@ -1,6 +1,6 @@
 package org.mikezerosix.telnet.handlers;
 
-import org.mikezerosix.telnet.TelnetService;
+import org.mikezerosix.telnet.TelnetRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ Difficulty:  4
 public class ServerGreetingHandler implements TelnetOutputHandler {
     public static final Logger log = LoggerFactory.getLogger(ServerGreetingHandler.class);
     private static Pattern[] patterns = new Pattern[11];
-    private TelnetService.ServerInformation serverInformation;
+    private TelnetRunner.ServerInformation serverInformation;
 
 
     static {
@@ -43,7 +43,7 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
         patterns[10] = Pattern.compile("Press \\'help\\' to get a list of all commands. Press \\'exit\\' to end session\\.");
     }
 
-    public ServerGreetingHandler(TelnetService.ServerInformation serverInformation) {
+    public ServerGreetingHandler(TelnetRunner.ServerInformation serverInformation) {
         this.serverInformation = serverInformation;
     }
 
