@@ -44,6 +44,8 @@ public class App {
     private PlayerResource playerResource;
     @Inject
     private FTPResource ftpResource;
+    @Inject
+    private CometResource cometResource;
 
     public static void main(String[] args) {
         readArgs(args);
@@ -59,7 +61,7 @@ public class App {
 
         opt.addOption("h", false, "Print help for this application");
         opt.addOption("p", true, "The port to use");
-        opt.addOption("l", true, "The login password for 'admin' user.");
+        opt.addOption("l", true, "The initial login password for 'admin' user (only works if user DB is empty).");
 
         BasicParser parser = new BasicParser();
         try {
@@ -83,8 +85,6 @@ public class App {
 
     private void start() {
         userService.init(password);
-
-        telnetRunner.start();
 
         settingsService.init();
 
@@ -111,5 +111,7 @@ public class App {
         statResource.registerRoutes();
         playerResource.registerRoutes();
         ftpResource.registerRoutes();
+        cometResource.registerRoutes();
+
     }
 }

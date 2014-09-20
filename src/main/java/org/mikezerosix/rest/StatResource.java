@@ -1,8 +1,8 @@
 package org.mikezerosix.rest;
 
 import com.google.common.collect.Lists;
-import org.mikezerosix.entities.Stat;
 import org.mikezerosix.entities.StatRepository;
+import org.mikezerosix.rest.data.StatReport;
 import org.mikezerosix.rest.transformers.JsonTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ public class StatResource {
     }
 
     public void registerRoutes() {
-
         get(PROTECTED_URL + "stats/days/:days", (request, response) ->
                 Lists.newArrayList(statRepository.findAll())
                 , new JsonTransformer());
@@ -26,18 +25,7 @@ public class StatResource {
         get(PROTECTED_URL + "stats", (request, response) ->
                 new StatReport(statRepository.getLastStat(), statRepository.getMaxStat())
                 , new JsonTransformer());
-
     }
 
-    private class StatReport {
-        public Stat current;
-        public Object[] max;
-        public long ts = System.currentTimeMillis();
-
-        public StatReport(Stat current, Object[] max) {
-            this.current = current;
-            this.max = max;
-        }
-    }
 
 }

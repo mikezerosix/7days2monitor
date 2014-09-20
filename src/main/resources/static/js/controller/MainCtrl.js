@@ -116,27 +116,38 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
         $scope.heartbeat++;
         if ($scope.heartbeat >= 30 && $scope.heartbeat%5) {
             $scope.$emit('show_loading', 'pollStats');
-            StatService.getStats()
-                .success(function (data) {
-                    $scope.stat = data;
-                    if (typeof $scope.stat !== 'undefined' && typeof $scope.stat.current !== 'undefined') {
-                      $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
-                    }
-                })
-                .error(function (status) {
-                    $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
-                });
+
             $scope.$emit('hide_loading', 'pollStats');
         }
         $timeout(function () {
             pollStats();
         }, 1000);
     };
-    pollStats();
+  // pollStats();
+    StatService.getStats()
+        .success(function (data) {
+            $scope.stat = data;
+            if (typeof $scope.stat !== 'undefined' && typeof $scope.stat.current !== 'undefined') {
+                $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
+            }
+        })
+        .error(function (status) {
+            $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
+        });
 
-    $scope.testEmit = function () {
-        console.log('sending emit');
-        $scope.$emit('status_error', 'ERR test ');
-    }
+    var heartbeat = function () {
+        $scope.heartbeat++;
 
+        $timeout(function () {
+            heartbeat();
+        }, 1000);
+    };
+    heartbeat();
+    $scope.$on('STAT', function (event, message) {
+       $scope.stat = message.data;
+       console.log('on stat  ' + JSON.stringify(message));
+        if (typeof message.timestamp != 'undefined' && typeof $scope.stat != 'undefined' && typeof $scope.stat.current != 'undefined') {
+            $scope.heartbeat = window.Math.round((message.timestamp - $scope.stat.current.recorded) / 1000);
+        }
+});
 });

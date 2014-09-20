@@ -1,16 +1,22 @@
 package org.mikezerosix.comet;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public class CometMessage {
+    private long timestamp = System.currentTimeMillis();
     private MessageTarget messageTarget;
     private String type;
-    private JsonNode data;
+    private Object data;
 
-    public CometMessage(MessageTarget messageTarget, String type, JsonNode data) {
+    public CometMessage(MessageTarget messageTarget, String type, Object data) {
         this.messageTarget = messageTarget;
         this.type = type;
         this.data = data;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

@@ -30,7 +30,7 @@ sevenMonitor
 
         $scope.selectTab = function (path) {
             $location.path("/" + path).replace();
-        }
+        };
 
         $scope.credits = "Credits: Michael Holopainen (design, lead dev), moztr (contrribution), by PC,Duesseldorf (icons@iconfinder), proto.io (on/off flipswitch)  "
 

@@ -1,7 +1,14 @@
 'use strict';
 
 sevenMonitor
-    .controller('StatusCtrl', function ($scope, $rootScope) {
+    .controller('StatusCtrl', function ($scope, $rootScope, CometService) {
+
+        $scope.$watch(function() {
+            return $rootScope.authorized;
+        }, function() {
+            CometService.start();
+        }, true);
+
         $scope.isLoading = false;
         $scope.messages = [];
         $scope.status = {'state': 'status-init', 'msg': 'ok'};

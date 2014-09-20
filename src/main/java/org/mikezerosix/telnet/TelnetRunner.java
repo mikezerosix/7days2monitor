@@ -9,6 +9,7 @@ import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +34,17 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     private ServerInformation serverInformation = new ServerInformation();
     private ConnectionSettings connectionSettings;
     private CometSharedMessageQueue cometSharedMessageQueue;
+    private boolean shuttingDown = false;
+    private boolean starting = false;
 
     public TelnetRunner(CometSharedMessageQueue cometSharedMessageQueue) {
         super();
         this.cometSharedMessageQueue = cometSharedMessageQueue;
+    }
+
+    @PostConstruct
+    public void init() {
+        start();
     }
 
     private InputStream getInputStream() {
@@ -188,8 +196,10 @@ TODO: auto reconnect
 
     public void disconnect() throws IOException {
         if (telnet.isConnected()) {
+            shuttingDown = true;
             telnet.disconnect();
         }
+
         log.info("Telnet disconnected");
     }
 
@@ -264,6 +274,12 @@ TODO: auto reconnect
         commands.put(cmd);
     }
 
+    public String getStatus() {
+        if (isMonitoring()) {
+            return "monitoring";
+        }
+        return "dead";
+    }
     private void runCommand() {
         if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();

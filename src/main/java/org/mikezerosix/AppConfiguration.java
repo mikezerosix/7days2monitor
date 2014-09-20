@@ -94,8 +94,6 @@ public class AppConfiguration {
     }
 
 
-
-
     /* Routes */
     //TODO: change to use monitoringService
 
@@ -139,4 +137,8 @@ public class AppConfiguration {
         return new FTPResource(ftpService);
     }
 
+    @Bean
+    public CometResource cometResource(CometSharedMessageQueue cometSharedMessageQueue) {
+        return new CometResource(cometSharedMessageQueue);
+    }
 }
