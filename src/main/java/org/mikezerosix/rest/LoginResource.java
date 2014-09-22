@@ -1,10 +1,14 @@
 package org.mikezerosix.rest;
 
+import com.google.common.collect.Maps;
 import org.mikezerosix.entities.User;
 import org.mikezerosix.entities.UserRepository;
+import org.mikezerosix.rest.transformers.JsonTransformer;
 import org.mikezerosix.util.SessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static org.mikezerosix.util.JsonUtil.fromJson;
@@ -22,8 +26,9 @@ public class LoginResource {
     public void registerRoutes() {
 
         get("/public/login", (request, response) -> {
-            return SessionUtil.getSessionUser(request) != null;
-        });
+            final User sessionUser = SessionUtil.getSessionUser(request);
+            return getUserData(sessionUser);
+        }, new JsonTransformer());
 
         post("/public/login", (request, response) -> {
             final User requestUser = fromJson(request, User.class);
@@ -35,13 +40,21 @@ public class LoginResource {
             }
             log.info("User:" + user.getName() + " logged in");
             SessionUtil.setSessionUser(request, user);
-            return true;
-        });
+            return getUserData(user);
+
+        }, new JsonTransformer());
 
         delete(PROTECTED_URL + "login", (request, response) -> {
             SessionUtil.setSessionUser(request, null);
             return "Logged out";
         });
+    }
+
+    private Map<String, String> getUserData(User sessionUser) {
+        Map<String, String> useData = Maps.newHashMap();
+        useData.put("user", sessionUser.getName());
+        useData.put("role", sessionUser.getName());
+        return useData;
     }
 
 }

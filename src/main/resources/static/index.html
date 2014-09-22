@@ -47,12 +47,12 @@
 </div>
 <div class="root top" ng-controller="MenuCtrl">
     <div class="top-banner">
-        <div class="title">7 Days to monitor - {{serverName}}</div>
+        <div class="title">7 Days to monitor - {{serverName}} </div>
 
         <div ng-if="authorized" class="logout">
             <a ng-click="selectTab('settings')"><img src="/img/settings-32.png" alt="Settings" /> </a>
             <select class="user-menu">
-                <option>Admin</option>
+                <option>{{authorized.user}}</option>
                 <option>Log out</option>
                 <option>Help</option>
                 <option>About</option>

@@ -21,7 +21,6 @@ public class ServerResource {
 
     public void registerRoutes() {
         //TODO: refactor some storage and poller for latest version data
-
         get(PROTECTED_URL + "/server/news/steam", (request, response) -> {
                     try {
                         return steamAPI.getGameNews();
@@ -41,5 +40,6 @@ public class ServerResource {
                     }
                 }
         );
+
     }
 }

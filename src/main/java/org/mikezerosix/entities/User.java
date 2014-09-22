@@ -1,9 +1,6 @@
 package org.mikezerosix.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -16,12 +13,18 @@ public class User {
 
     @NotNull
     private String name;
+
     @NotNull
     private String password;
 
     private Date lastLogin;
 
     private String lastLoginIP;
+
+    private UserRole role = UserRole.NONE;
+
+    @OneToOne(fetch = FetchType.EAGER, optional = true)
+    private Player player;
 
     public Long getId() {
         return id;
@@ -61,5 +64,21 @@ public class User {
 
     public void setLastLoginIP(String lastLoginIP) {
         this.lastLoginIP = lastLoginIP;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
