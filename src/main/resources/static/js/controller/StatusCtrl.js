@@ -12,7 +12,8 @@ sevenMonitor
     $scope.isLoading = false;
     $scope.messages = [];
     $scope.status = {'state': 'status-init', 'msg': 'ok'};
-
+    $rootScope.errors = [];
+        
     $rootScope.$on('status_error', function(event, message) {
       $scope.status.state = 'status-error';
       $scope.status.msg = message;
@@ -31,6 +32,10 @@ sevenMonitor
       addMsg(message);
     });
 
+    $rootScope.$on('ERROR', function (event, message) {
+        $rootScope.errors.push(message);
+    });
+        
     $rootScope.$on('show_loading', function(event, message) {
       //console.log('show loading ');
       $scope.isLoading = true;

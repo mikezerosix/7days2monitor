@@ -29,6 +29,7 @@ public class LoginResource {
             final User sessionUser = SessionUtil.getSessionUser(request);
             if (sessionUser == null ) {
                 response.status(401);
+                return null;
             }
             return getUserData(sessionUser);
         }, new JsonTransformer());
@@ -54,7 +55,6 @@ public class LoginResource {
     }
 
     private User getUserData(User sessionUser) {
-
         User user = new User();
         user.setId(sessionUser.getId());
         user.setName(sessionUser.getName());

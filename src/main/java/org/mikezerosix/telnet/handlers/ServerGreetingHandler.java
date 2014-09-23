@@ -28,7 +28,6 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
     private static Pattern[] patterns = new Pattern[11];
     private TelnetRunner.ServerInformation serverInformation;
 
-
     static {
         patterns[0] = Pattern.compile("\\*\\*\\* Connected with 7DTD server\\.");
         patterns[1] = Pattern.compile("\\*\\*\\* Server version: (.*?) Compatibility Version: (.*?)");
@@ -64,7 +63,7 @@ public class ServerGreetingHandler implements TelnetOutputHandler {
             if (matchers[i].matches()) {
                 switch (i) {
                     case 0:
-                        serverInformation.connected = true;
+
                         break;
                     case 1:
                         serverInformation.version = matchers[i].group(1).trim();

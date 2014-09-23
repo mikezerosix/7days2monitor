@@ -2,7 +2,7 @@ package org.mikezerosix.comet;
 
 public enum MessageTarget {
     ERROR,
-    TELNET,
+    TELNET_STATUS,
     FTP,
     STAT,
     CHAT,

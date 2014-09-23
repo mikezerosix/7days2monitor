@@ -85,11 +85,8 @@ public class App {
 
     private void start() {
         userService.init(password);
-
-        settingsService.init();
-
         startHTTP();
-
+        settingsService.init();
         System.out.println("HTTP service running in port: " + port);
     }
 

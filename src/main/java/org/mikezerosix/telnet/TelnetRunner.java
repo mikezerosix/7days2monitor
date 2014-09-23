@@ -1,7 +1,9 @@
 package org.mikezerosix.telnet;
 
 import org.apache.commons.net.telnet.*;
+import org.mikezerosix.comet.CometMessage;
 import org.mikezerosix.comet.CometSharedMessageQueue;
+import org.mikezerosix.comet.MessageTarget;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.telnet.commands.TelnetCommand;
 import org.mikezerosix.telnet.handlers.ServerGreetingHandler;
@@ -34,8 +36,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     private ServerInformation serverInformation = new ServerInformation();
     private ConnectionSettings connectionSettings;
     private CometSharedMessageQueue cometSharedMessageQueue;
-    private boolean shuttingDown = false;
-    private boolean starting = false;
+    private TelnetStatus status = TelnetStatus.DEAD;
 
     public TelnetRunner(CometSharedMessageQueue cometSharedMessageQueue) {
         super();
@@ -44,6 +45,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
     @PostConstruct
     public void init() {
+        initTelnetOptions();
         start();
     }
 
@@ -59,43 +61,8 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         return serverInformation;
     }
 
-    @Override
-    public void run() {
-        log.info("** Starting TelnetRunner");
-        initTelnetOptions();
-        while (!isInterrupted()) {
-            if (isMonitoring()) {
-                try {
-                    monitor();
-                } catch (InterruptedIOException e) {
-                    log.warn("Interrupted IO from monitor ", e);
-                } catch (IOException e) {
-
-                    /*
-2014-09-14 17:51:45,527 ERROR [Thread-0] o.m.t.TelnetRunner [TelnetRunner.java:69] IO error from monitor
-java.net.SocketException: Connection reset
-
-TODO: auto reconnect
-*/
-                    log.error("IO error from monitor", e);
-                } catch (Exception e) {
-                    log.error("Mystery error from monitor but we keep on trucking ", e);
-                } finally {
-                    log.warn("monitoring ended ");
-                    serverInformation.connected = false;
-                }
-            }
-            safeSleep(waitTime * 2);
-        }
-        log.warn("Telnet service thread interrupted and terminating. ");
-    }
-
-    private void safeSleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            log.warn("Safe Sleep interrupted", e);
-        }
+    public TelnetStatus getStatus() {
+        return status;
     }
 
     private void initTelnetOptions() {
@@ -113,12 +80,66 @@ TODO: auto reconnect
         }
     }
 
-    private void monitor() throws IOException {
-        if (!isMonitoring()) {
-            return;
+    @Override
+    public void run() {
+        try {
+            statusChange(TelnetStatus.DISCONNECTED);
+            while (!isInterrupted()) {
+                if (status.equals(TelnetStatus.CONNECTED)) {
+                    try {
+                        monitor();
+                    } catch (IOException e) {
+                        //Disconnect throws  java.net.SocketException: Connection reset
+                        if (!status.equals(TelnetStatus.DISCONNECTING)) {
+                            log.error("IO error from monitor, this is fatal, disconnecting ", e);
+                            try {
+                                disconnect();
+                            } catch (IOException ie) {
+                                log.warn("monitoring exit calling ");
+                            }
+                        }
+                    } catch (Exception e ) {
+                        log.warn(" caught an Error inside running loop, we keep on trucking ", e );
+                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", "Error from monitor :" + e.getMessage()));
+                    }
+                } else if (status.equals(TelnetStatus.DISCONNECTING) && !isConnected()) {
+                    statusChange(TelnetStatus.DISCONNECTED);
+                } else if (status.equals(TelnetStatus.MONITORING)) {
+                    statusChange(isConnected() ? TelnetStatus.CONNECTED : TelnetStatus.DISCONNECTED);
+                    //TODO auto re-connect here
+                }
+                safeSleep(waitTime * 2);
+            }
+        } finally {
+            statusChange(TelnetStatus.DEAD);
         }
+    }
+
+    // DEAD --> DISCONNECTED -> CONNECTING --> LOGGING_IN --> CONNECTED --> MONITORING
+    //                        ^                                           |
+    //                        |                                           v
+    //                           <-                               DISCONNECTING
+
+    private void statusChange(TelnetStatus newStatus) {
+        if (!newStatus.equals(status)) {
+            cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.TELNET_STATUS, "", newStatus));
+            status = newStatus;
+            log.info("** Telnet status change to: " + newStatus.name());
+        }
+
+    }
+
+    private void safeSleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            log.warn("Safe Sleep interrupted", e);
+        }
+    }
+
+    private void monitor() throws IOException {
+        statusChange(TelnetStatus.MONITORING);
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
-        log.info("Telnet Monitor is running");
         while (isConnected()) {
             runCommand();
 
@@ -129,11 +150,13 @@ TODO: auto reconnect
                     try {
                         handler.handleInput(line);
                     } catch (Exception e) {
-                        log.error("Handler :" + handler.getClass().getName() + " threw exception "  + e.getMessage() , e);
+                        String msg = "Handler :" + handler.getClass().getName() + " threw exception " + e.getMessage();
+                        log.error(msg, e);
+                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", msg));
                     }
                 }
             } else {
-                safeSleep(waitTime*2);
+                safeSleep(waitTime * 2);
             }
         }
     }
@@ -162,6 +185,8 @@ TODO: auto reconnect
             log.info("    ...waiting for connection");
             if (++counter > connectionTimeoutSeconds) {
                 log.error("ERROR: Connection timed out. Another connection might have taken the telnet.");
+                statusChange(TelnetStatus.DISCONNECTED);
+                cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", "ERROR: Connection timed out. Another connection might have taken the telnet."));
                 throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
             }
         }
@@ -171,42 +196,37 @@ TODO: auto reconnect
         return isAlive() && telnet.isConnected();
     }
 
-    public boolean isMonitoring() {
-        return isConnected() && serverInformation.connected;
-    }
-
     public void connect() throws IOException {
         if (!telnet.isConnected()) {
+            statusChange(TelnetStatus.CONNECTING);
             log.info("Telnet connecting to: " + connectionSettings.getAddress());
             telnet.connect(connectionSettings.getAddress(), connectionSettings.getPort());
             safeSleep(waitTime);
             input = new BufferedInputStream(telnet.getInputStream());
             output = new PrintStream(telnet.getOutputStream());
 
+            statusChange(TelnetStatus.LOGGING_IN);
             readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
             write(connectionSettings.getPassword());
             waitForConnection();
-            serverInformation = readServerInfo();
-            log.info("Connection established");
-        } else {
-            log.info("Telnet already connected to: " + connectionSettings.getAddress());
-        }
 
+            serverInformation = readServerInfo();
+            statusChange(TelnetStatus.CONNECTED);
+            log.info("Connection established");
+        }
     }
 
     public void disconnect() throws IOException {
         if (telnet.isConnected()) {
-            shuttingDown = true;
+            statusChange(TelnetStatus.DISCONNECTING);
+            safeSleep(500);
             telnet.disconnect();
         }
-
-        log.info("Telnet disconnected");
     }
 
     public void write(String output) {
         this.output.println(output);
         this.output.flush();
-
     }
 
     private void readUntil(String stopPhrase, String errorPhrase) throws IOException {
@@ -227,7 +247,7 @@ TODO: auto reconnect
 
     @Override
     public void receivedNegotiation(int i, int i2) {
-       log.info("Received negotiation " + i + "," +i2);
+        log.info("Received negotiation " + i + "," + i2);
     }
 
     public void addHandler(TelnetOutputHandler handler) {
@@ -265,21 +285,6 @@ TODO: auto reconnect
         return false;
     }
 
-    public void sendCommand(TelnetCommand cmd) throws InterruptedException {
-        for (TelnetCommand command : commands) {
-            if (command.getCommand().equals(cmd.getCommand())) {
-                return;
-            }
-        }
-        commands.put(cmd);
-    }
-
-    public String getStatus() {
-        if (isMonitoring()) {
-            return "monitoring";
-        }
-        return "dead";
-    }
     private void runCommand() {
         if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();
@@ -287,7 +292,6 @@ TODO: auto reconnect
                 write(runningCommand.getCommand());
             }
         }
-
     }
 
     private void commandHandleInput(String line) {
@@ -296,8 +300,17 @@ TODO: auto reconnect
         }
     }
 
+    public enum TelnetStatus {
+        DEAD,
+        DISCONNECTED,
+        CONNECTING,
+        LOGGING_IN,
+        CONNECTED,
+        MONITORING,
+        DISCONNECTING
+    }
+
     public class ServerInformation {
-        public boolean connected;
         public String version;
         public String compatibility;
         public String ip;

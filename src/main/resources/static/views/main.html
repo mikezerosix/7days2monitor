@@ -3,16 +3,16 @@
     <div class="width-third">
         <fieldset class="content-block">
             <legend class="content-block">Game Server</legend>
-            <div ng-if="!telnetStatus.alive" style="text-align: center;"><h2>Telnet connection is Dead</h2>
+            <div ng-if="telnetStatus == 'DEAD'" style="text-align: center;"><h2>Telnet connection is Dead</h2>
                 <h4><b>Monitor application needs restart !</b></h4>
                 <div style="width: 100%;text-align: center;"><img src="/img/tomb-256.png"></div>
                 <div style="font-family:  monospace">
                      The bats have left the bell tower.<br/>The victims have been bled.<br/>Red velvet lines, the black box<br/>Bela Lugosi's dead
                 </div>
             </div>
-            <div ng-if="!telnetStatus.connected"><h4>Telnet disconnected</h4>If you just re-connected, then be patient it takes a minute or two for system to establish connection.</div>
-            <div ng-if="telnetStatus.connected && !telnetStatus.monitoring"><h4>Telnet connecting...</h4>Be patient it takes a minute or two for system to establish connection.</div>
-            <div ng-if="telnetStatus.alive && telnetStatus.connected && telnetStatus.monitoring">
+            <div ng-if="telnetStatus == 'DISCONNECTED'"><h4>Telnet disconnected</h4>If you just re-connected, then be patient it takes a minute or two for system to establish connection.</div>
+            <div ng-if="telnetStatus == 'CONNECTING' || telnetStatus == 'LOGGING_IN'"><h4>Telnet connecting...</h4>Be patient it takes a minute or two for system to establish connection.</div>
+            <div ng-if="telnetStatus == 'MONITORING' || telnetStatus == 'CONNECTED'">
                 <div class="item"><span class="item-label">Game</span>{{gameServerStatus.game}}</div>
                 <div class="item"><span class="item-label">Mode</span>{{gameServerStatus.mode}}</div>
                 <div class="item"><span class="item-label">World</span>{{gameServerStatus.world}}</div>
@@ -37,7 +37,7 @@
                 <td>
                     <div class="onoffswitch" title="{{telnetStatus}}">
                     <input type="checkbox" id="telnetonoffswitch" name="onoffswitch" class="onoffswitch-checkbox"
-                           ng-model="telnetStatus.monitoring" ng-click="toggleTelnet()">
+                           ng-model="telnetSwitch" ng-click="toggleTelnet()">
                     <label class="onoffswitch-label" for="telnetonoffswitch">
                         <span class="onoffswitch-inner"></span>
                         <span class="onoffswitch-switch"></span>
@@ -145,7 +145,9 @@
             Alerts<input type="radio" name="event-type">
             Errors<input type="radio" name="event-type">
             </div>
-                <select class="event-list" multiple ></select>
+                <select class="event-list" multiple >
+                    <option ng-repeat="error in errors"/>
+                </select>
         </fieldset>
     </div>
 </div>

@@ -1,8 +1,8 @@
 'use strict';
 
-sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, SettingsService, TelnetService, FTPService, StatService) {
+sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $timeout, SettingsService, TelnetService, FTPService, StatService) {
     $scope.Math = window.Math;
-
+    $scope.errors = $rootScope.errors;
     $scope.uptime;
     SettingsService.uptime()
         .success(function (data) {
@@ -23,17 +23,21 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
             $scope.$emit('status_error', 'Reading GameServer status failed, error ' + status);
         });
 
-
+    $scope.telnetSwitch = false;
     $scope.telnetStatus;
     TelnetService.status()
         .success(function (data) {
             $scope.telnetStatus = data;
+            $scope.telnetSwitch = ($scope.telnetStatus == 'MONITORING' || $scope.telnetStatus == 'CONNECTED');
         })
         .error(function (status) {
             $scope.$emit('status_error', 'Reading Telnet status failed, error ' + status);
         });
+
+
     $scope.toggleTelnet = function () {
-        if ($scope.telnetStatus.monitoring && $scope.telnetStatus.connected) {
+        console.log('toggle telnet');
+        if ($scope.telnetSwitch) {
             TelnetService.disconnect()
                 .success(function (data) {
                     $scope.telnetStatus = data;
@@ -103,7 +107,6 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
                 $scope.$emit('status_info', 'Read Tumbl News For 7 Days to Die');
             })
             .error(function (status) {
-                console.log('error:' + status);
                 $scope.$emit('status_error', 'Error(' + status + ') Reading Tumbl News For 7 Days to Die');
             });
 
@@ -112,7 +115,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
     $scope.readSteamNews();
     $scope.readTumblrNews();
 
-    $scope.stat = {};
+
     $scope.heartbeat = 999999;
     var heartbeat = function () {
         $scope.heartbeat++;
@@ -122,11 +125,24 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
         }, 1000);
     };
     heartbeat();
+    $scope.stat = {};
+    StatService.getStats().success(function (data) {
+        $scope.stat = data;
+        $scope.heartbeat = (data.ts - data.current.recorded) / 1000;
+    }).error(function (data, status) {
+        $scope.$emit('status_error', 'Error(' + status + ') Reading initial stats failed.');
+    });
     $scope.$on('STAT', function (event, message) {
         $scope.stat = message.data;
         console.log('on stat  ' + JSON.stringify(message));
         if (typeof message.timestamp != 'undefined' && typeof $scope.stat != 'undefined' && typeof $scope.stat.current != 'undefined') {
             $scope.heartbeat = window.Math.round((message.timestamp - $scope.stat.current.recorded) / 1000);
         }
+    });
+    $scope.$on('TELNET_STATUS', function (event, message) {
+        $scope.telnetStatus = message.data;
+        $scope.telnetSwitch = ($scope.telnetStatus == 'MONITORING' || $scope.telnetStatus == 'CONNECTED');
+
+        console.log('on TELNET_STATUS  ' + JSON.stringify(message));
     });
 });

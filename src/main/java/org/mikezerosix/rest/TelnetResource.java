@@ -11,12 +11,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.*;
+
 @SuppressWarnings("unchecked")
 public class TelnetResource {
     private static final Logger log = LoggerFactory.getLogger(TelnetResource.class);
@@ -27,10 +26,10 @@ public class TelnetResource {
     }
 
     public void registerRoutes() {
-        get(PROTECTED_URL + "telnet", (request, response) -> getStatus(telnetRunner), new JsonTransformer());
+        get(PROTECTED_URL + "telnet", (request, response) -> telnetRunner.getStatus().name());
 
         post(PROTECTED_URL + "telnet", (request, response) -> {
-            if (!telnetRunner.isConnected()) {
+            if (telnetRunner.getStatus().equals(TelnetRunner.TelnetStatus.DISCONNECTED)) {
                 try {
                     telnetRunner.connect();
                 } catch (Exception e) {
@@ -38,32 +37,23 @@ public class TelnetResource {
                     response.status(500);
                 }
             }
-            return getStatus(telnetRunner);
+            return telnetRunner.getStatus().name();
         });
 
         delete(PROTECTED_URL + "telnet", (request, response) -> {
-            if (telnetRunner.isConnected()) {
-                try {
-                    telnetRunner.disconnect();
-                } catch (Exception e) {
-                    log.error("Failed to call disconnect() on telnetRunner ", e);
-                    response.status(500);
-                }
+            try {
+                telnetRunner.disconnect();
+            } catch (Exception e) {
+                log.error("Failed to call disconnect() on telnetRunner ", e);
+                response.status(500);
             }
-            return getStatus(telnetRunner);
+            return telnetRunner.getStatus().name();
         });
 
         get(PROTECTED_URL + "telnet/server-info", (request, response) -> telnetRunner.getServerInformation(), new JsonTransformer());
 
-        get(PROTECTED_URL + "telnet/raw", (request, response) -> {
-            if (telnetRunner.isAlive()) {
-                log.warn("raw is not supported , needs web sockets ");
-            }
-            return returnDeadConnectionError(response);
-        });
-
         get(PROTECTED_URL + "telnet/chat", (request, response) -> {
-            //TODO: Java WatchService for chat file , also store last read at client
+            //TODO: a lot
             String lastRead = request.params("lastRead");
             String days = request.params("days");
             List<String> lines = new ArrayList<>();
@@ -102,14 +92,6 @@ public class TelnetResource {
         });
 
 
-    }
-
-    private Map<String, Boolean> getStatus(TelnetRunner telnetRunner) {
-        Map<String, Boolean> res = new HashMap<>();
-        res.put("alive", telnetRunner.isAlive());
-        res.put("connected", telnetRunner.isConnected());
-        res.put("monitoring", telnetRunner.isMonitoring());
-        return res;
     }
 
     private String returnDeadConnectionError(Response response) {
