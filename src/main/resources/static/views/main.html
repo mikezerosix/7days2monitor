@@ -23,9 +23,9 @@
                 <div class="item"><span class="item-label">Version</span>{{gameServerStatus.version}}</div>
                 <div class="item"><span class="item-label">Compatibility</span>{{gameServerStatus.compatibility}}</div>
                 <div class="item"><span class="item-label">Steam news</span><a ng-show="news.steam" href="{{news.steam.url}}" target="_blank">{{news.steam.title}}</a>
-                    <img src="/img/16/refresh-16.png" ng-click="readNews()" title="Refresh"/></div>
+                    <img src="/img/16/refresh-16.png" ng-click="readSteamNews()" title="Refresh"/></div>
                 <div class="item"><span class="item-label">Tumblr news</span><a ng-show="news.tumblr" href="{{news.tumblr.url}}" target="_blank">{{news.tumblr.slug}}</a>
-                    <img src="/img/16/refresh-16.png" ng-click="readNews()" title="Refresh"/></div>
+                    <img src="/img/16/refresh-16.png" ng-click="readTumblrNews()" title="Refresh"/></div>
 
 
             </div>

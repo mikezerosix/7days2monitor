@@ -227,7 +227,7 @@ TODO: auto reconnect
 
     @Override
     public void receivedNegotiation(int i, int i2) {
-
+       log.info("Received negotiation " + i + "," +i2);
     }
 
     public void addHandler(TelnetOutputHandler handler) {

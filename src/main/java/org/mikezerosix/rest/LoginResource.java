@@ -27,6 +27,9 @@ public class LoginResource {
 
         get("/public/login", (request, response) -> {
             final User sessionUser = SessionUtil.getSessionUser(request);
+            if (sessionUser == null ) {
+                response.status(401);
+            }
             return getUserData(sessionUser);
         }, new JsonTransformer());
 
@@ -50,11 +53,14 @@ public class LoginResource {
         });
     }
 
-    private Map<String, String> getUserData(User sessionUser) {
-        Map<String, String> useData = Maps.newHashMap();
-        useData.put("user", sessionUser.getName());
-        useData.put("role", sessionUser.getName());
-        return useData;
+    private User getUserData(User sessionUser) {
+
+        User user = new User();
+        user.setId(sessionUser.getId());
+        user.setName(sessionUser.getName());
+        user.setRole(sessionUser.getRole());
+        user.setPlayer(sessionUser.getPlayer());
+        return user;
     }
 
 }

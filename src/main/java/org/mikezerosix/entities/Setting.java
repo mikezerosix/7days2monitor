@@ -5,15 +5,15 @@ import javax.persistence.Id;
 
 
 @Entity
-public class Settings {
+public class Setting {
     @Id
     private String id;
     private String value;
 
-    public Settings() {
+    public Setting() {
     }
 
-    public Settings(String id, String value) {
+    public Setting(String id, String value) {
         this.id = id;
         this.value = value;
     }

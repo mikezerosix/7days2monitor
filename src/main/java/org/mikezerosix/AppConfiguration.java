@@ -98,8 +98,8 @@ public class AppConfiguration {
     //TODO: change to use monitoringService
 
     @Bean
-    public SettingsResource settingsResource(SettingsRepository settingsRepository) {
-        return new SettingsResource(settingsRepository, connectionRepository);
+    public SettingsResource settingsResource(SettingsService settingsService) {
+        return new SettingsResource(settingsService);
     }
 
     @Bean

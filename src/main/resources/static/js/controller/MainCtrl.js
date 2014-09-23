@@ -12,7 +12,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
             $scope.$emit('status_error', 'Reading uptime failed, error ' + status);
         });
 
-    $scope.difficultyLabels = ['Easiest','Easy','Normal','Hard','Hardest'];
+    $scope.difficultyLabels = ['Easiest', 'Easy', 'Normal', 'Hard', 'Hardest'];
 
     $scope.gameServerStatus = {};
     TelnetService.serverInfo()
@@ -85,7 +85,7 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
 
     $scope.news = {};
 
-    $scope.readNews = function () {
+    $scope.readSteamNews = function () {
         $scope.$emit('show_loading', 'readNews');
         SettingsService.latestSteam()
             .success(function (data) {
@@ -95,46 +95,25 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
             .error(function (status) {
                 $scope.$emit('status_error', 'Error(' + status + ') Reading Steam News For 7 Days to Die');
             });
-        SettingsService.latestTumblr()
-        .success(function (data) {
-          $scope.news.tumblr = data.posts[0];
-          $scope.$emit('status_info', 'Read Tumbl News For 7 Days to Die');
-        })
-        .error(function (status) {
-            console.log('error:'+ status );
-          $scope.$emit('status_error', 'Error(' + status + ') Reading Tumbl News For 7 Days to Die');
-        });
-
-      $scope.$emit('hide_loading', 'readNews');
     };
-    $scope.readNews();
+    $scope.readTumblrNews = function () {
+        SettingsService.latestTumblr()
+            .success(function (data) {
+                $scope.news.tumblr = data.posts[0];
+                $scope.$emit('status_info', 'Read Tumbl News For 7 Days to Die');
+            })
+            .error(function (status) {
+                console.log('error:' + status);
+                $scope.$emit('status_error', 'Error(' + status + ') Reading Tumbl News For 7 Days to Die');
+            });
 
+        $scope.$emit('hide_loading', 'readNews');
+    };
+    $scope.readSteamNews();
+    $scope.readTumblrNews();
 
     $scope.stat = {};
     $scope.heartbeat = 999999;
-    var pollStats = function () {
-        $scope.heartbeat++;
-        if ($scope.heartbeat >= 30 && $scope.heartbeat%5) {
-            $scope.$emit('show_loading', 'pollStats');
-
-            $scope.$emit('hide_loading', 'pollStats');
-        }
-        $timeout(function () {
-            pollStats();
-        }, 1000);
-    };
-  // pollStats();
-    StatService.getStats()
-        .success(function (data) {
-            $scope.stat = data;
-            if (typeof $scope.stat !== 'undefined' && typeof $scope.stat.current !== 'undefined') {
-                $scope.heartbeat = window.Math.round(($scope.stat.ts - $scope.stat.current.recorded) / 1000);
-            }
-        })
-        .error(function (status) {
-            $scope.$emit('status_error', 'Reading Steam GetNewsForApp, error ' + status);
-        });
-
     var heartbeat = function () {
         $scope.heartbeat++;
 
@@ -144,10 +123,10 @@ sevenMonitor.controller('MainCtrl', function ($scope, $q, $http, $timeout, Setti
     };
     heartbeat();
     $scope.$on('STAT', function (event, message) {
-       $scope.stat = message.data;
-       console.log('on stat  ' + JSON.stringify(message));
+        $scope.stat = message.data;
+        console.log('on stat  ' + JSON.stringify(message));
         if (typeof message.timestamp != 'undefined' && typeof $scope.stat != 'undefined' && typeof $scope.stat.current != 'undefined') {
             $scope.heartbeat = window.Math.round((message.timestamp - $scope.stat.current.recorded) / 1000);
         }
-});
+    });
 });

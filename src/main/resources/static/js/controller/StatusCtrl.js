@@ -16,19 +16,19 @@ sevenMonitor
         $rootScope.$on('status_error', function (event, message) {
             $scope.status.state = 'status-error';
             $scope.status.msg = message;
-            $scope.messages.push(status);
+            $scope.messages.push($scope.status);
         });
 
         $rootScope.$on('status_warn', function (event, message) {
             $scope.status.state = 'status-warn';
             $scope.status.msg = message;
-            $scope.messages.push(status);
+            $scope.messages.push($scope.status);
         });
 
         $rootScope.$on('status_info', function (event, message) {
             $scope.status.state = 'status-ok';
             $scope.status.msg = message;
-            $scope.messages.push(status);
+            $scope.messages.push($scope.status);
         });
 
         $rootScope.$on('show_loading', function (event, message) {
@@ -41,8 +41,13 @@ sevenMonitor
             $scope.isLoading = false;
         });
 
+        $scope.expandStatusMessages = '';
         $scope.showMessages = function() {
-            $scope.status = {'state': 'status-init', 'msg': 'TODO: show messages - functionality'};
+            if ( $scope.expandStatusMessages == ''){
+                $scope.expandStatusMessages =  'status-messages-expanded';
+            } else {
+                $scope.expandStatusMessages = '';
+            }
         }
     });
 

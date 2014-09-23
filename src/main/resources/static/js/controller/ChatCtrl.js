@@ -17,7 +17,7 @@ sevenMonitor
              TelnetService.chat(lastLine)
                 .success(function (data) {
                    $scope.chatLog = data;
-                   $location.hash('lastMessage');
+
                    $anchorScroll();
                 })
                 .error(function (status) {

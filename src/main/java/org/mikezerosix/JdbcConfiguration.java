@@ -1,14 +1,13 @@
 package org.mikezerosix;
 
 import com.jolbox.bonecp.BoneCPDataSource;
-import org.mikezerosix.entities.Settings;
+import org.mikezerosix.entities.Setting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -20,8 +19,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.inject.Provider;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 @ComponentScan
 @EnableJpaRepositories
@@ -60,7 +57,7 @@ public class JdbcConfiguration {
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan(Settings.class.getPackage().getName());
+        factory.setPackagesToScan(Setting.class.getPackage().getName());
         factory.setDataSource(dataSource());
 
         return factory;

@@ -68,34 +68,43 @@ h2.login {
     float: left;
 }
 .status-msg {
+    z-index: 10000000;
     display: inline-block;
     width: 50%;
+    position: absolute;
+    left: 23px;
+    overflow-y: scroll;
+    height: 1.4em;
+    padding: 0;
+    bottom:0;
+    background-color: seashell;
+    border: thin inset cornsilk;
+}
+.status-messages-expanded {
+    height: 20em;
+    position: absolute;
+}
+.status-msg-button {
+    left: 54%;
+    position: absolute;
 }
 .status-init {
-    background-image: url('/img/48/grey_ball-48.png');
-    background-color: transparent;
-    background-repeat: no-repeat;
+    background: transparent url('/img/48/grey_ball-48.png') no-repeat;
     background-size: contain;
     background-position-x: left;
 }
 .status-ok {
-    background-image: url('/img/48/green_ball-48.png');
-    background-color: transparent;
-    background-repeat: no-repeat;
+    background: transparent url('/img/48/green_ball-48.png') no-repeat;
     background-size: contain;
     background-position-x: left;
 }
 .status-warn {
-    background-image: url('/img/48/yellow_ball-48.png');
-    background-color: transparent;
-    background-repeat: no-repeat;
+    background: transparent url('/img/48/yellow_ball-48.png') no-repeat;
     background-size: contain;
     background-position-x: left;
 }
 .status-error {
-    background-image: url('/img/48/red_ball-48.png');
-    background-color: transparent;
-    background-repeat: no-repeat;
+    background: transparent url('/img/48/red_ball-48.png') no-repeat;
     background-size: contain;
     background-position-x: left;
 }

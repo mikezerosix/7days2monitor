@@ -1,6 +1,5 @@
 package org.mikezerosix.service;
 
-import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.telnet.TelnetRunner;
@@ -53,10 +52,7 @@ public class MonitoringService {
     }
 
     public void addHandler(Class handlerClass) {
-        if (handlerClass.getName().equals(StatHandler.class.getName())) {
             telnetRunner.addHandler(statHandler);
-        }
-
     }
 
     public void removeHandler(Class chatHandlerClass) {

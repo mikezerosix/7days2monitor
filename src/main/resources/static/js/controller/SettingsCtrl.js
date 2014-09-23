@@ -18,7 +18,6 @@ sevenMonitor
 
         SettingsService.readSettings()
             .success(function (data) {
-                console.log('settings: ' + data)
                 for (var i = 0; i < data.length; i++) {
                     $scope.settingsIds[i] = data[i].id;
                     $scope.settings[data[i].id] = data[i].value;
@@ -38,7 +37,6 @@ sevenMonitor
             });
 
         $scope.setChatHandlerEnable = function () {
-            console.log('updating CHAT_HANDLER_ENABLE =' + $scope.settings['CHAT_HANDLER_ENABLE']);
             SettingsService.updateSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
                 .success(function (data) {
                     console.log('received: ' + data.id + '=' + data.value);

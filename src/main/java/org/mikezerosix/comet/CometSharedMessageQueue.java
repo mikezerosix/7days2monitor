@@ -13,7 +13,7 @@ public class CometSharedMessageQueue {
 
     public java.util.SortedMap<Long, CometMessage> getQueuedMessages(long lastRead) {
         TreeMap<Long, CometMessage> sorted = new TreeMap<>(cache.asMap());
-        return sorted.tailMap(lastRead);
+        return sorted.tailMap(lastRead, false);
     }
 
     public void addMessage(CometMessage cometMessage) {
