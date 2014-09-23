@@ -79,8 +79,8 @@
 
 </div>
 <div id="footer" ng-controller="StatusCtrl" class="root bottom {{status.state}}">
-    <div class="status-msg {{expandStatusMessages}}"><p ng-repeat="m in messages track by $index">{{m.msg}}</p></div>
-    <img class="status-msg-button" src="/img/16/search-16.png" title="Show all messages" ng-click="showMessages()">
+    <div class="status-msg {{expandStatusMessages}}"><p id="statusMsg{{$index}}" ng-repeat="msg in messages track by $index">{{msg}}</p></div>
+    <img class="status-msg-button" src="/img/16/search-16.png" title="Show all messages" ng-click="showMessages()">{{messages.length}}
     <img ng-show="isLoading" src="/img/16/animated-loader-16.gif" alt="Loading">
 </div>
 </body>

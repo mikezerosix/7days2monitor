@@ -11,33 +11,38 @@ import java.util.List;
 import java.util.SortedMap;
 
 import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
+import static org.mikezerosix.util.SafeUtil.safeSleep;
+import static org.mikezerosix.util.SafeUtil.safeParseLong;
 import static spark.Spark.get;
 
 public class CometResource {
     private static final Logger log = LoggerFactory.getLogger(CometResource.class);
-    private CometSharedMessageQueue cometSharedMessageQueue;
+    private CometSharedMessageQueue queue;
+    public static final int WAIT = 500;
+    public static final int TIMEOUT = 20000;
 
     public CometResource(CometSharedMessageQueue cometSharedMessageQueue) {
-        this.cometSharedMessageQueue = cometSharedMessageQueue;
+        this.queue = cometSharedMessageQueue;
     }
 
     public void registerRoutes() {
 
         get(PROTECTED_URL + "/comet/:timestamp", (request, response) -> {
-            long timestamp = getTimestamp(request.params(":timestamp"));
-            SortedMap<Long, CometMessage> queuedMessages = cometSharedMessageQueue.getQueuedMessages(timestamp);
-            List<CometMessage> messages = new ArrayList<>(queuedMessages.values());
+            List<CometMessage> messages = new ArrayList<>();
+            final long end = TIMEOUT + System.currentTimeMillis();
+            while (System.currentTimeMillis() < end) {
+                SortedMap<Long, CometMessage> queuedMessages = queue.getQueuedMessages(safeParseLong(request.params(":timestamp")));
+                if (queuedMessages.isEmpty()) {
+                    safeSleep(WAIT);
+                } else {
+                    messages.addAll(queuedMessages.values());
+                    break;
+                }
+            }
             return messages;
-        } , new JsonTransformer());
-
+        }, new JsonTransformer());
     }
 
-    private long getTimestamp(String timestamp) {
-        try {
-            return Long.parseLong(timestamp);
-        } catch (Exception e) {
-            log.warn("bad timestamp({}) in comet request, assuming 0", timestamp);
-            return 0L;
-        }
-    }
+
+
 }
