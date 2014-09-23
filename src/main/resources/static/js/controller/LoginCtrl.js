@@ -23,10 +23,8 @@ sevenMonitor
                     for (var i in data) {
                         if (data[i].type == 'GAME_TELNET') {
                             if (data[i].address) {
-                                console.log('telnet host ok : ' + data[i].address);
                                 telnetOK = true;
                             } else {
-                                console.log('telnet host not ok : ' + data[i].address);
                             }
                         }
                     }

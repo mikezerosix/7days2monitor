@@ -36,7 +36,6 @@ sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $ti
 
 
     $scope.toggleTelnet = function () {
-        console.log('toggle telnet');
         if ($scope.telnetSwitch) {
             TelnetService.disconnect()
                 .success(function (data) {
@@ -134,7 +133,6 @@ sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $ti
     });
     $scope.$on('STAT', function (event, message) {
         $scope.stat = message.data;
-        console.log('on stat  ' + JSON.stringify(message));
         if (typeof message.timestamp != 'undefined' && typeof $scope.stat != 'undefined' && typeof $scope.stat.current != 'undefined') {
             $scope.heartbeat = window.Math.round((message.timestamp - $scope.stat.current.recorded) / 1000);
         }
@@ -142,7 +140,5 @@ sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $ti
     $scope.$on('TELNET_STATUS', function (event, message) {
         $scope.telnetStatus = message.data;
         $scope.telnetSwitch = ($scope.telnetStatus == 'MONITORING' || $scope.telnetStatus == 'CONNECTED');
-
-        console.log('on TELNET_STATUS  ' + JSON.stringify(message));
     });
 });

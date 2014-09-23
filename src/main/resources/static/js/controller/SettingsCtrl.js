@@ -39,7 +39,6 @@ sevenMonitor
         $scope.setChatHandlerEnable = function () {
             SettingsService.updateSettings('CHAT_HANDLER_ENABLE', $scope.settings['CHAT_HANDLER_ENABLE'])
                 .success(function (data) {
-                    console.log('received: ' + data.id + '=' + data.value);
                     $scope.settings[data.id] = data.value;
                 })
                 .error(function (status) {
@@ -47,10 +46,8 @@ sevenMonitor
                 });
         };
         $scope.setSetting = function (key) {
-            console.log('updating '+key+' = ' + $scope.settings[key]);
             SettingsService.updateSettings(key, $scope.settings[key])
                 .success(function (data) {
-                    console.log('received: ' + data.id + '=' + data.value);
                     $scope.settings[data.id] = data.value;
                 })
                 .error(function (status) {

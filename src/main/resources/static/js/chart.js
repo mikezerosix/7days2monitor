@@ -92,7 +92,7 @@ angular.module('chartsApp', [])
 
         $scope.shownCols = [0];
         $scope.hideColumns = function() {
-            console.log('hide column: ' +$scope.shownCols.filter(function(n){ return n != undefined && n > -1}) );
+            //console.log('hide column: ' +$scope.shownCols.filter(function(n){ return n != undefined && n > -1}) );
             $scope.dataview.setColumns($scope.shownCols.filter(function(n){ return n != undefined && n > -1 }) );
             dashboard.draw($scope.dataview);
         };

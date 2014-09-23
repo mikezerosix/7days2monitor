@@ -37,7 +37,6 @@ sevenMonitor
    $scope.messageAs;
    $scope.useAs;
     $scope.send = function() {
-      console.log('sending message ' + $scope.message);
       var msg = $scope.message;
       if ($scope.useAs) {
         msg = '[' + $scope.messageAs + '] ' + $scope.message;
@@ -53,7 +52,6 @@ sevenMonitor
     };
 
     $scope.$on('CHAT', function (event, message) {
-      console.log('on chat  ' + JSON.stringify(message));
       //for (var i in message.data) {
         $scope.chatLog += message.data;
       //}
