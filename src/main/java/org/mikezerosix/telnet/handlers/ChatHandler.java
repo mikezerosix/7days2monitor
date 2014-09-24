@@ -16,7 +16,11 @@ public class ChatHandler implements TelnetOutputHandler {
     public static final String GMSG = TelnetLineUtil.TIME_STAMP + "GMSG:\\s(.*)";
     private final Pattern pattern = Pattern.compile(GMSG);
 
-    private ChatLogger chatLogger = new ChatLogger();
+    private final ChatLogger chatLogger;
+
+    public ChatHandler(ChatLogger chatLogger) {
+        this.chatLogger = chatLogger;
+    }
 
     @Override
     public Matcher[] matcher(String line) {

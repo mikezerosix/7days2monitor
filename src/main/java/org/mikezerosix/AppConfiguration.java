@@ -1,5 +1,6 @@
 package org.mikezerosix;
 
+import org.mikezerosix.actions.ChatLogger;
 import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.*;
 import org.mikezerosix.ftp.FTPService;
@@ -9,6 +10,7 @@ import org.mikezerosix.service.SettingsService;
 import org.mikezerosix.service.StatService;
 import org.mikezerosix.service.UserService;
 import org.mikezerosix.telnet.TelnetRunner;
+import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -83,14 +85,24 @@ public class AppConfiguration {
 
     //TODO: maybe add handlerFactory class and pass it to this ?
     @Bean
-    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler) {
-        return new MonitoringService(telnetRunner, ftpService, statHandler);
+    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler, ChatHandler chatHandler) {
+        return new MonitoringService(telnetRunner, ftpService, statHandler, chatHandler);
+    }
+
+    @Bean
+    public ChatLogger chatLogger(CometSharedMessageQueue cometSharedMessageQueue) {
+       return new ChatLogger(cometSharedMessageQueue);
     }
 
     /* Handlers   */
     @Bean
     public StatHandler statHandler(StatService statService) {
         return new StatHandler(statService);
+    }
+
+    @Bean
+    public ChatHandler chatHandler(ChatLogger chatLogger) {
+        return new ChatHandler(chatLogger);
     }
 
 

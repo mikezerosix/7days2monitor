@@ -3,6 +3,7 @@ package org.mikezerosix.service;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.telnet.TelnetRunner;
+import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,13 @@ public class MonitoringService {
     private TelnetRunner telnetRunner;
     private FTPService ftpService;
     private StatHandler statHandler;
+    private ChatHandler chatHandler;
 
-    public MonitoringService(TelnetRunner telnetRunner, FTPService ftpService,  StatHandler statHandler) {
+    public MonitoringService(TelnetRunner telnetRunner, FTPService ftpService,  StatHandler statHandler, ChatHandler chatHandler) {
         this.telnetRunner = telnetRunner;
         this.ftpService = ftpService;
         this.statHandler = statHandler;
+        this.chatHandler = chatHandler;
     }
 
     public void setConnectionSettings(ConnectionSettings connectionSettings) {
@@ -52,7 +55,13 @@ public class MonitoringService {
     }
 
     public void addHandler(Class handlerClass) {
+        if (handlerClass.equals(StatHandler.class)) {
             telnetRunner.addHandler(statHandler);
+        }
+        if (handlerClass.equals(ChatHandler.class)) {
+            telnetRunner.addHandler(chatHandler);
+        }
+
     }
 
     public void removeHandler(Class chatHandlerClass) {

@@ -10,7 +10,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ChatHandlerTest {
-    private ChatHandler chatHandler = new ChatHandler();
+    private ChatHandler chatHandler = new ChatHandler(null);
 
     @Test
     public void testMatch() throws Exception {
