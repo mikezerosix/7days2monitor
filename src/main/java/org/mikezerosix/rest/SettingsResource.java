@@ -32,11 +32,11 @@ public class SettingsResource {
         put(PROTECTED_URL + "settings/connections", (request, response) -> {
             final ConnectionSettings connectionSettings = fromJson(request, ConnectionSettings.class);
             if (settingsService.getConnection(connectionSettings.getId()) != null) {
-                return settingsService.setConnection(connectionSettings);
+                 settingsService.setConnection(connectionSettings);
             } else {
                 response.status(404);
-                return "Error finding connection: " + connectionSettings.getId() ;
             }
+            return true;
         }, new JsonTransformer());
 
     }

@@ -81,7 +81,7 @@
                     <span ng-class="{'grey': stat.current.zombies/stat.max[1] < 0.04 || stat.max[1] == 0}">{{stat.current.zombies}}</span>
                 </progressbar>
             </div>
-            <div class="item" onclick="window.open('chart.html');"><span class="item-label">NPCs</span>
+            <div class="item" onclick="window.open('chart.html');"><span class="item-label">Other</span>
                 <!--_TODO: max ? -->
                 <progressbar type="success" animate="false" value="stat.current.entities/stat.max[2]" max="1" title="{{stat.current.entities}} of max {{stat.max[2]}}">
                     <span ng-class="{'grey': stat.current.entities/stat.max[2] < 0.04 || stat.max[2] == 0}">{{stat.current.entities}}</span>

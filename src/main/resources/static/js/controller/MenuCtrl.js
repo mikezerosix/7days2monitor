@@ -1,11 +1,10 @@
 'use strict';
 
 sevenMonitor
-    .controller('MenuCtrl', function ($scope,  $rootScope, $location, $http) {
-
-        $scope.serverName;
+    .controller('MenuCtrl', function ($scope, $rootScope, $location, $http) {
+        $rootScope.currTab = '' || $rootScope.currTab;
+        $scope.serverName = '';
         $rootScope.$on('serverName', function (event, message) {
-            $scope.status.state = 'status-warn';
             $scope.serverName = message;
         });
 
@@ -31,6 +30,7 @@ sevenMonitor
         $scope.selectTab = function (path) {
             $location.path("/" + path).replace();
         };
+        $scope.currTab = $rootScope.currTab;
 
         $scope.credits = "Credits: Michael Holopainen (design, lead dev), moztr (contrribution), by PC,Duesseldorf (icons@iconfinder), proto.io (on/off flipswitch)  "
 

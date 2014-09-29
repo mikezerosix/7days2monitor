@@ -21,7 +21,7 @@ sevenMonitor
                 .success(function (data) {
                     var telnetOK = false;
                     for (var i in data) {
-                        if (data[i].type == 'GAME_TELNET') {
+                        if (data[i].type == 'Telnet') {
                             if (data[i].address) {
                                 telnetOK = true;
                             } else {

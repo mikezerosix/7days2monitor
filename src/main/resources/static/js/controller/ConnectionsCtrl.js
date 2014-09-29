@@ -1,7 +1,5 @@
 'use strict';
 sevenMonitor.controller('ConnectionsCtrl', function ($scope, $modalInstance, connection) {
-
-
   $scope.connection = connection;
 
   $scope.ok = function () {

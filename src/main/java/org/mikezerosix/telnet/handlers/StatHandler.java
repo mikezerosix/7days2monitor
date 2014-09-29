@@ -39,6 +39,7 @@ public class StatHandler implements TelnetOutputHandler {
     private final Pattern pattern = Pattern.compile(STAT_TRIGGER);
     private StatService statService;
 
+
     public StatHandler(StatService statService) {
         this.statService = statService;
     }
@@ -77,5 +78,9 @@ public class StatHandler implements TelnetOutputHandler {
 
     private long minutes2Seconds(double time) {
         return (long) (60 * time);
+    }
+
+    public void setStatDays(long statDays) {
+        statService.setStatDays(statDays);
     }
 }

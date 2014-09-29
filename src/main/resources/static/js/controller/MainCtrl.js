@@ -1,6 +1,8 @@
 'use strict';
 
 sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $timeout, SettingsService, TelnetService, FTPService, StatService) {
+
+    $rootScope.currTab = 'main' ||  $rootScope.currTab;
     $scope.Math = window.Math;
     $scope.errors = $rootScope.errors;
     $scope.uptime;
@@ -15,14 +17,17 @@ sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $ti
     $scope.difficultyLabels = ['Easiest', 'Easy', 'Normal', 'Hard', 'Hardest'];
 
     $scope.gameServerStatus = {};
-    TelnetService.serverInfo()
-        .success(function (data) {
-            $scope.gameServerStatus = data;
-        })
-        .error(function (status) {
-            $scope.$emit('status_error', 'Reading GameServer status failed, error ' + status);
-        });
-
+    var getServerInfo = function () {
+        TelnetService.serverInfo()
+            .success(function (data) {
+                $scope.gameServerStatus = data;
+                $scope.$emit('serverName', data.game);
+            })
+            .error(function (status) {
+                $scope.$emit('status_error', 'Reading GameServer status failed, error ' + status);
+            });
+    };
+    getServerInfo();
     $scope.telnetSwitch = false;
     $scope.telnetStatus;
     TelnetService.status()
@@ -138,6 +143,9 @@ sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $ti
         }
     });
     $scope.$on('TELNET_STATUS', function (event, message) {
+        if ($scope.telnetStatus != 'MONITORING' && message.data == 'MONITORING') {
+            getServerInfo();
+        }
         $scope.telnetStatus = message.data;
         $scope.telnetSwitch = ($scope.telnetStatus == 'MONITORING' || $scope.telnetStatus == 'CONNECTED');
     });

@@ -18,7 +18,7 @@ public class TelnetRunnerTest {
         File secrets = new File("secrets.properties");
         try {
             prop.load(new InputStreamReader(new FileInputStream(secrets)));
-            connectionSettings.setType(ConnectionType.GAME_TELNET);
+            connectionSettings.setType(ConnectionType.Telnet);
             connectionSettings.setAddress(prop.getProperty("telnetHost"));
             connectionSettings.setPort(Integer.parseInt(prop.getProperty("telnetPort")));
             connectionSettings.setPassword(prop.getProperty("telnetPassword"));

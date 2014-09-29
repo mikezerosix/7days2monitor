@@ -26,7 +26,7 @@ public class MonitoringService {
 
     public void setConnectionSettings(ConnectionSettings connectionSettings) {
         switch (connectionSettings.getType()) {
-            case GAME_TELNET:
+            case Telnet:
                 telnetRunner.setConnectionSettings(connectionSettings);
                 if (connectionSettings.isAuto() && !telnetRunner.isConnected()) {
                     try {
@@ -38,7 +38,7 @@ public class MonitoringService {
                 }
                 break;
 
-            case GAME_FTP:
+            case FTP:
                 ftpService.setConnectionSettings(connectionSettings);
                 if (connectionSettings.isAuto()) {
                     try {
@@ -67,4 +67,9 @@ public class MonitoringService {
     public void removeHandler(Class chatHandlerClass) {
         telnetRunner.removeHandler(chatHandlerClass);
     }
+
+    public void setStatDays(long statDays) {
+        statHandler.setStatDays(statDays);
+    }
+
 }

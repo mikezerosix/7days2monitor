@@ -32,6 +32,7 @@
     <script src="js/controller/MainCtrl.js"></script>
     <script src="js/controller/SettingsCtrl.js"></script>
     <script src="js/controller/ConnectionsCtrl.js"></script>
+    <script src="js/controller/UserCtrl.js"></script>
     <script src="js/controller/ChatCtrl.js"></script>
     <script src="js/controller/PlayersCtrl.js"></script>
 
@@ -66,7 +67,7 @@
 
     <tabset ng-if="authorized">
         <tab ng-click="selectTab('main')"> <tab-heading class="tab-heading"><img src="/img/home-16.png"> Home</tab-heading> </tab>
-        <tab ng-click="selectTab('players')"> <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
+        <tab ng-click="selectTab('players')" > <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
         <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
         <tab ng-click="selectTab('requests')"> <tab-heading><img src="/img/16/request-16.png"> Request</tab-heading> </tab>
     </tabset>

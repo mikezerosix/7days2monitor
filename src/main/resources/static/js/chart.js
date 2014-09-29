@@ -90,11 +90,13 @@ angular.module('chartsApp', [])
             dashboard.draw($scope.dataview);
         };
 
-        $scope.shownCols = [0];
+        $scope.shownCols = [0,1,2,3,4,5,6,7,8,9,10,11];
+
         $scope.hideColumns = function() {
             //console.log('hide column: ' +$scope.shownCols.filter(function(n){ return n != undefined && n > -1}) );
             $scope.dataview.setColumns($scope.shownCols.filter(function(n){ return n != undefined && n > -1 }) );
             dashboard.draw($scope.dataview);
         };
+
 
     }]);

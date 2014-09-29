@@ -1,10 +1,9 @@
 package org.mikezerosix.entities;
 
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public interface StatRepository extends CrudRepository<Stat, Long> {
@@ -18,5 +17,10 @@ public interface StatRepository extends CrudRepository<Stat, Long> {
 
     @Override
     @Query("SELECT s FROM Stat s order by s.id desc")
-    Iterable<Stat> findAll();
+    public Iterable<Stat> findAll();
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Stat s WHERE s.recorded < ?")
+    public void cleanup(long retain);
 }

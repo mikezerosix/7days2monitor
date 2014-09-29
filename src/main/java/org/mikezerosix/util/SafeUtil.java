@@ -22,4 +22,12 @@ public class SafeUtil {
             return 0L;
         }
     }
+    public static int safeParseInteger(String intString) {
+        try {
+            return Integer.parseInt(intString);
+        } catch (Exception e) {
+            log.warn("bad string int value ({}), assuming 0", intString);
+            return 0;
+        }
+    }
 }

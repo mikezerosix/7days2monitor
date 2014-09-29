@@ -7,6 +7,7 @@ import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.HandlerSettingKeys;
 import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
+import org.mikezerosix.util.SafeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class SettingsService {
 
         boolean noConnections = true;
         for (ConnectionSettings connectionSettings : connectionRepository.findAll()) {
-            connectionChange(connectionSettings);
+            monitoringService.setConnectionSettings(connectionSettings);
             noConnections = false;
         }
         if (noConnections) {
@@ -84,17 +85,15 @@ public class SettingsService {
                 }
                 break;
             case STAT_HANDLER_DAYS:
-                if (setting.getValue() != null && Integer.parseInt(setting.getValue()) > 0) {
-
-                } else {
-
-                }
+                long i = SafeUtil.safeParseLong(setting.getValue());
+                monitoringService.setStatDays(i);
                 break;
         }
     }
 
-    public void connectionChange(ConnectionSettings connectionSettings) {
-        monitoringService.setConnectionSettings(connectionSettings);
+    public void setConnection(ConnectionSettings connectionSettings) {
+        ConnectionSettings connectionSettings1 = connectionRepository.save(connectionSettings);
+        monitoringService.setConnectionSettings(connectionSettings1);
     }
 
     public Setting setSetting(Setting setting) {
@@ -120,7 +119,5 @@ public class SettingsService {
         return connectionRepository.findOne(id);
     }
 
-    public ConnectionSettings setConnection(ConnectionSettings connectionSettings) {
-        return connectionRepository.save(connectionSettings);
-    }
+
 }

@@ -30,7 +30,7 @@ public class FTPServiceTest {
         File secrets = new File("secrets.properties");
         try {
             prop.load(new InputStreamReader(new FileInputStream(secrets)));
-            connectionSettings.setType(ConnectionType.GAME_FTP);
+            connectionSettings.setType(ConnectionType.FTP);
             connectionSettings.setAddress(prop.getProperty("ftpHost"));
             connectionSettings.setPort(Integer.parseInt(prop.getProperty("ftpPort")));
             connectionSettings.setUsername(prop.getProperty("ftpUserName"));

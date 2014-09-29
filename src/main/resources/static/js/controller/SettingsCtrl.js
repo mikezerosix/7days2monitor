@@ -8,13 +8,16 @@ sevenMonitor
         $scope.users = [];
         $scope.connections = [];
 
-        SettingsService.readUsers()
-            .success(function (data) {
-                $scope.users = data;
-            })
-            .error(function (status) {
-                alert(status);
-            });
+        var readUsers = function () {
+            SettingsService.readUsers()
+                .success(function (data) {
+                    $scope.users = data;
+                })
+                .error(function (data, status) {
+                    $scope.$emit('status_error', 'Error(' + status + ') reading users: ' + data);
+                });
+        };
+        readUsers();
 
         SettingsService.readSettings()
             .success(function (data) {
@@ -24,16 +27,16 @@ sevenMonitor
                 }
 
             })
-            .error(function (status) {
-                alert(status);
+            .error(function (data, status) {
+                $scope.$emit('status_error', 'Error(' + status + ') reading settings: ' + data);
             });
 
         SettingsService.readConnections()
             .success(function (data) {
                 $scope.connections = data;
             })
-            .error(function (status) {
-                alert(status);
+            .error(function (data, status) {
+                $scope.$emit('status_error', 'Error(' + status + ') reading connection: ' + data);
             });
 
         $scope.setChatHandlerEnable = function () {
@@ -41,8 +44,8 @@ sevenMonitor
                 .success(function (data) {
                     $scope.settings[data.id] = data.value;
                 })
-                .error(function (status) {
-                    alert(status);
+                .error(function (data, status) {
+                    $scope.$emit('status_error', 'Error(' + status + ') enabling chat: ' + data);
                 });
         };
         $scope.setSetting = function (key) {
@@ -50,8 +53,8 @@ sevenMonitor
                 .success(function (data) {
                     $scope.settings[data.id] = data.value;
                 })
-                .error(function (status) {
-                    alert(status);
+                .error(function (data, status) {
+                    $scope.$emit('status_error', 'Error(' + status + ') enabling setting: ' + data);
                 });
         };
 
@@ -70,24 +73,49 @@ sevenMonitor
             });
 
             modalInstance.result.then(function (connection) {
-                alert('connection returned');
                 SettingsService.updateConnection(connection)
                     .success(function (data) {
-
                         SettingsService.readConnections()
                             .success(function (data) {
                                 $scope.connections = data;
                             })
-                            .error(function (status) {
-                                alert(status);
+                            .error(function (data, status) {
+                                $scope.$emit('status_error', 'Error(' + status + ') reading connection: ' + data);
                             });
                     })
-                    .error(function (status) {
-                        alert(status);
+                    .error(function (data, status) {
+                        $scope.$emit('status_error', 'Error(' + status + ') updating connection: ' + data);
                     });
 
                 //TODO: remove
                 $scope.connection = connection;
+            }, function () {
+                // closed
+            });
+        };
+
+        $scope.openUser = function (user) {
+            $scope.user = user;
+            var modalInstance = $modal.open({
+                templateUrl: '/views/user.html',
+                controller: 'UserCtrl',
+                backdrop: 'static',
+                resolve: {
+                    user: function () {
+                        return $scope.user;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (user) {
+                SettingsService.updateUser(user)
+                    .success(function (data) {
+                        readUsers();
+                    })
+                    .error(function (data, status) {
+                        $scope.$emit('status_error', 'Error(' + status + ') updating connection: ' + data);
+                    });
+
             }, function () {
                 // closed
             });

@@ -132,6 +132,16 @@ h2.login {
 .green {
    color: #00b84f;
 }
+
+
+
+/* SETTINGS */
+.tips {
+    background-color: yellowgreen;
+}
+
+
+
 /*  MAIN */
 #main {
     padding: 10px;
