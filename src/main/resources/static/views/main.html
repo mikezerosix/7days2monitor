@@ -45,7 +45,7 @@
                     </div>
                 </td>
                 <td><span  >Alloc's Server Fixes</span> <input type="checkbox" ng-model="gameServerStatus.allocsExtension" disabled></td>
-            </tr><tr>
+            </tr><tr style="display:none;">
                 <td><span class="item-label">FTP</span></td>
                 <td>
                     <div class="onoffswitch" title="{{ftpStatus}}">
@@ -140,7 +140,8 @@
             <legend class="content-block">Monitor</legend>
             <div class="item"><span class="item-label">Uptime</span>{{uptime | asUptime}}</div>
             <h4>Events</h4>
-            <div class="event-filter">All<input type="radio" name="event-type">
+            <div class="event-filter" style="display: none;">
+                All<input type="radio" name="event-type">
             Events<input type="radio" name="event-type">
             Alerts<input type="radio" name="event-type">
             Errors<input type="radio" name="event-type">
