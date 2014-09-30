@@ -5,7 +5,11 @@
         <fieldset ng-if="!loading">
             <legend>2014-10-01</legend>
             <ul id="chat-listing">
-                <li class="chat-line" ng-repeat="msg in chatLog track by $index">{{msg}}</li>
+                <li id="{{msg.time}}" class="chat-line" ng-repeat="msg in chatLog track by $index">
+                   <span class="chat-time">{{msg.time | limitTo:8}}</span>
+                   <span class="chat-from">{{msg.from}}</span>
+                   <span class="chat-msg">{{msg.msg}}</span>
+                </li>
             </ul>
         </fieldset>
 

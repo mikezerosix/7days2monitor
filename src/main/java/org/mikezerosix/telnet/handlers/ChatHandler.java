@@ -32,7 +32,7 @@ public class ChatHandler implements TelnetOutputHandler {
         final Matcher matcher = matcher(input)[0];
         if (matcher.find()) {
             log.debug("chat message: " + input);
-            final String chat = matcher.group(1).trim()+ " " +matcher.group(2).trim().replace(' ', '_');
+            final String chat = matcher.group(1).trim().replace(' ', '_')+ " " +matcher.group(2).trim();
             chatService.log(chat);
         }
     }

@@ -1,59 +1,51 @@
 'use strict';
 
 sevenMonitor
-.controller('ChatCtrl',  function($scope, $q, $http, $timeout, $document, $location, $anchorScroll, SettingsService, TelnetService) {
-   $scope.chatLog = [];
-   $scope.processing = false;
-   $scope.loading = true;
+    .controller('ChatCtrl', function ($scope, $q, $http, $location, $anchorScroll, SettingsService, TelnetService) {
 
-    var readChat = function() {
-      $scope.processing = true;
-      var lastLine;
-      if ($scope.chatLog && $scope.chatLog.lenght > 0) {
-        lastLine = $scope.chatLog[$scope.chatLog.lenght - 1];
-      }
-      $timeout(function() {
-        $scope.$emit('show_loading', '');
-        TelnetService.chat(lastLine)
-          .success(function(data) {
-            $scope.chatLog = data;
+        $scope.chatLog = [];
+        $scope.processing = false;
+        $scope.loading = true;
 
-            // $anchorScroll();
-          })
-          .error(function(status) {
-            $scope.$broadcast('status_error', 'Reading chat failed, error ' + status);
-            return false;
-          });
-        $scope.loading = false;
-        $scope.$emit('hide_loading', '');
+        var readChat = function () {
+            $scope.processing = true;
+            $scope.$emit('show_loading', '');
+            TelnetService.chat()
+                .success(function (data) {
+                    $scope.chatLog = data;
+
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading chat failed, error ' + status);
+                    return false;
+                });
+            $scope.loading = false;
+            $scope.$emit('hide_loading', '');
+            $scope.processing = false;
+        };
+
         readChat();
-      }, 1000);
-      $scope.processing = false;
-    };
 
-   readChat();
+        $scope.message;
+        $scope.useAs;
+        $scope.send = function () {
+            var msg = $scope.message;
+            if ($scope.useAs) {
+                msg = '[' + $scope.authorized.name + '] ' + $scope.message;
+            }
+            TelnetService.say(msg)
+                .success(function (data, status) {
+                    $scope.message = undefined;
+                })
+                .error(function (data, status) {
+                    $scope.$broadcast('status_error', 'Sending chat message failed, error(' + status + '): ' + data);
+                });
+        };
 
-   $scope.message;
-   $scope.messageAs;
-   $scope.useAs;
-    $scope.send = function() {
-      var msg = $scope.message;
-      if ($scope.useAs) {
-        msg = '[' + $scope.messageAs + '] ' + $scope.message;
-      }
-      TelnetService.say(msg)
-        .success(function(data) {
-          $scope.status = data;
-          $scope.message = undefined;
-        })
-        .error(function(data, status) {
-              $scope.$broadcast('status_error', 'Sending chat message failed, error(' + status + '): ' + data);
+        $scope.$on('CHAT', function (event, message) {
+            console.log(JSON.stringify(message));
+            $scope.chatLog.push(message.data);
+            window.scrollTo(0, document.getElementById('lastMessage').offsetTop)
         });
-    };
 
-    $scope.$on('CHAT', function (event, message) {
-      $scope.chatLog += message.data;
-      $document.getElementById('lastMessage' ).scrollIntoView();
     });
-
-});
