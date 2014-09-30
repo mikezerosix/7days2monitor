@@ -14,11 +14,11 @@ public class CometSharedMessageQueueTest {
 
     @Test
     public void testMessage() throws Exception {
-        q.addMessage(new CometMessage(MessageTarget.STAT, "1", "one"));
+        q.addMessage(new CometMessage(MessageTarget.STAT, "one"));
         Thread.sleep(1);
-        q.addMessage(new CometMessage(MessageTarget.STAT, "2", "two"));
+        q.addMessage(new CometMessage(MessageTarget.STAT, "two"));
         Thread.sleep(1);
-        q.addMessage(new CometMessage(MessageTarget.STAT, "3", "three"));
+        q.addMessage(new CometMessage(MessageTarget.STAT, "three"));
         SortedMap<Long, CometMessage> queuedMessages = q.getQueuedMessages(0);
         assertThat(queuedMessages.size(), CoreMatchers.is(3));
         SortedMap<Long, CometMessage> queuedMessages2 = q.getQueuedMessages(queuedMessages.firstKey());

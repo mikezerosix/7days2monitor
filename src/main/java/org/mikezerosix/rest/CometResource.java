@@ -29,11 +29,11 @@ public class CometResource {
 
     public void registerRoutes() {
 
-        get(PROTECTED_URL + "/comet/:timestamp", (request, response) -> {
+        get(PROTECTED_URL + "/comet/:id", (request, response) -> {
             List<CometMessage> messages = Lists.newArrayList();
             final long end = TIMEOUT + System.currentTimeMillis();
             while (System.currentTimeMillis() < end) {
-                SortedMap<Long, CometMessage> queuedMessages = queue.getQueuedMessages(safeParseLong(request.params(":timestamp")));
+                SortedMap<Long, CometMessage> queuedMessages = queue.getQueuedMessages(safeParseLong(request.params(":id")));
                 if (queuedMessages.isEmpty()) {
                     safeSleep(WAIT);
                 } else {

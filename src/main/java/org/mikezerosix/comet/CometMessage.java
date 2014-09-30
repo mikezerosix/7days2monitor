@@ -3,12 +3,11 @@ package org.mikezerosix.comet;
 public class CometMessage {
     private long timestamp = System.currentTimeMillis();
     private MessageTarget messageTarget;
-    private String type;
+    private long index;
     private Object data;
 
-    public CometMessage(MessageTarget messageTarget, String type, Object data) {
+    public CometMessage(MessageTarget messageTarget, Object data) {
         this.messageTarget = messageTarget;
-        this.type = type;
         this.data = data;
     }
 
@@ -28,12 +27,12 @@ public class CometMessage {
         this.messageTarget = messageTarget;
     }
 
-    public String getType() {
-        return type;
+    public long getIndex() {
+        return index;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setIndex(long index) {
+        this.index = index;
     }
 
     public Object getData() {
@@ -43,4 +42,6 @@ public class CometMessage {
     public void setData(Object data) {
         this.data = data;
     }
+
+
 }

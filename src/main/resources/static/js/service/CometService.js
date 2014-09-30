@@ -8,7 +8,7 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
         $http({method: 'GET', url: '/protected/comet/' + $rootScope.lastMessage})
             .success(function (data, status, headers, config) {
                 for (var i in data) {
-                    $rootScope.lastMessage = data[i].timestamp;
+                    $rootScope.lastMessage = data[i].index;
                     $rootScope.$broadcast(data[i].messageTarget, data[i].data);
                 }
                 $timeout(function () {

@@ -33,7 +33,7 @@ public class StatService {
             }
         }
         Object[] maxStat = statRepository.getMaxStat();
-        CometMessage statReport = new CometMessage(MessageTarget.STAT, "StatReport", new StatReport(stat, maxStat));
+        CometMessage statReport = new CometMessage(MessageTarget.STAT, new StatReport(stat, maxStat));
         cometSharedMessageQueue.addMessage(statReport);
     }
 

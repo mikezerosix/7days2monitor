@@ -20,8 +20,9 @@ public class CometSharedMessageQueue {
     }
 
     public void addMessage(CometMessage cometMessage) {
-        cometMessage.setTimestamp(index.getAndIncrement());
-        cache.put(cometMessage.getTimestamp(), cometMessage);
+        cometMessage.setTimestamp(System.currentTimeMillis());
+        cometMessage.setIndex(index.getAndIncrement());
+        cache.put(cometMessage.getIndex(), cometMessage);
     }
 
 }

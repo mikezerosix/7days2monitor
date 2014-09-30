@@ -17,7 +17,7 @@ public class ChatLogger {
     }
 
     public void log(String chat) {
-        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.CHAT, null, chat));
+        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.CHAT, chat));
         chatLogger.info(chat);
     }
 }

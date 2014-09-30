@@ -101,7 +101,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                         }
                     } catch (Exception e ) {
                         log.warn(" caught an Error inside running loop, we keep on trucking ", e );
-                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", "Error from monitor :" + e.getMessage()));
+                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "Error from monitor :" + e.getMessage()));
                     }
                 } else if (status.equals(TelnetStatus.DISCONNECTING) && !isConnected()) {
                     statusChange(TelnetStatus.DISCONNECTED);
@@ -123,7 +123,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
     private void statusChange(TelnetStatus newStatus) {
         if (!newStatus.equals(status)) {
-            cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.TELNET_STATUS, "", newStatus));
+            cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.TELNET_STATUS, newStatus));
             status = newStatus;
             log.info("** Telnet status change to: " + newStatus.name());
         }
@@ -153,7 +153,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                     } catch (Exception e) {
                         String msg = "Handler :" + handler.getClass().getName() + " threw exception " + e.getMessage();
                         log.error(msg, e);
-                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, null, msg));
+                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, msg));
                     }
                 }
             } else {
@@ -166,16 +166,21 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getInputStream()));
         ServerInformation res = new ServerInformation();
         ServerGreetingHandler handler = new ServerGreetingHandler(res);
-        int lineCounter = 0;
-        while (isConnected() && lineCounter < 24) {
-            lineCounter++;
+        long end = System.currentTimeMillis() + (60 * 1000);
+        while (isConnected() && System.currentTimeMillis() < end) {
             String line = bufferedReader.readLine();
+            if (LOGON_SUCCESSFUL.equals(line)) {
+                statusChange(TelnetStatus.CONNECTED);
+            } else if (WRONG_PASSWORD.equals(line)) {
+                throw new RuntimeException(WRONG_PASSWORD);
+            }
             handler.handleInput(line);
             if (res.help) {
                 break;
             }
             safeSleep(waitTime);
         }
+        log.info("read server info");
         return res;
     }
 
@@ -187,7 +192,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
             if (++counter > connectionTimeoutSeconds) {
                 log.error("ERROR: Connection timed out. Another connection might have taken the telnet.");
                 statusChange(TelnetStatus.DISCONNECTED);
-                cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", "ERROR: Connection timed out. Another connection might have taken the telnet."));
+                cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "ERROR: Connection timed out. Another connection might have taken the telnet."));
                 throw new RuntimeException("ERROR: Connection timed out. Another connection might have taken the telnet.");
             }
         }
@@ -210,15 +215,12 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 statusChange(TelnetStatus.LOGGING_IN);
                 readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
                 write(connectionSettings.getPassword());
-                readUntil(LOGON_SUCCESSFUL, WRONG_PASSWORD);
-
                 serverInformation = readServerInfo();
-                statusChange(TelnetStatus.CONNECTED);
                 log.info("Connection established");
             } catch (Exception e) {
                 if (status.equals(TelnetStatus.LOGGING_IN)) {
                     log.error("Failed to connect telnet, sending error message ", e);
-                    cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "error", "Telnet login failed. " + e.getMessage()));
+                    cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "Telnet login failed. " + e.getMessage()));
                 }
                 disconnect();
             }
