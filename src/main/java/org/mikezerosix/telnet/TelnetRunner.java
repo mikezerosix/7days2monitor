@@ -217,6 +217,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 statusChange(TelnetStatus.LOGGING_IN);
                 readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
                 write(connectionSettings.getPassword());
+                //log.debug("entering telnet password: '" + connectionSettings.getPassword() + "'");
                 serverInformation = readServerInfo();
                 log.info("Connection established");
             } catch (Exception e) {
