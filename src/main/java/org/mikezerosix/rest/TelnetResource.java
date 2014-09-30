@@ -75,8 +75,12 @@ public class TelnetResource {
         post(PROTECTED_URL + "telnet/say", (request, response) -> {
             String say = "say " + request.body();
             if (telnetRunner.isAlive()) {
-                telnetRunner.write(say);
-                return true;
+                try {
+                    telnetRunner.write(say);
+                    return true;
+                } catch (IOException e) {
+                    log.error("failed to send command: " + say);
+                }
             }
             return returnDeadConnectionError(response);
         });
@@ -85,8 +89,12 @@ public class TelnetResource {
             String cmd = request.body();
             if (telnetRunner.isAlive()) {
                 log.info("sending cmd: " + cmd);
-                telnetRunner.write(cmd);
-                return true;
+                try {
+                    telnetRunner.write(cmd);
+                    return true;
+                } catch (IOException e) {
+                    log.error("failed to send command: " + cmd );
+                }
             }
             return returnDeadConnectionError(response);
         });

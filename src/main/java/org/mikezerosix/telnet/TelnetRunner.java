@@ -1,5 +1,6 @@
 package org.mikezerosix.telnet;
 
+import com.google.common.base.Charsets;
 import org.apache.commons.net.telnet.*;
 import org.mikezerosix.comet.CometMessage;
 import org.mikezerosix.comet.CometSharedMessageQueue;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -68,10 +70,10 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
     private void initTelnetOptions() {
         try {
-            telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, true, false));
-            telnet.addOptionHandler(new EchoOptionHandler(true, false, true, false));
+            telnet.addOptionHandler(new TerminalTypeOptionHandler("VT100", false, false, false, false));
+            telnet.addOptionHandler(new EchoOptionHandler(false, false, false, false));
             telnet.addOptionHandler(new SuppressGAOptionHandler(true, true, true, true));
-            telnet.setConnectTimeout(5000);
+            //telnet.setConnectTimeout(5000);
         } catch (InvalidTelnetOptionException e) {
             log.error("Failed to initialize Telnet ", e);
             throw new RuntimeException(e);
@@ -216,6 +218,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
                 statusChange(TelnetStatus.LOGGING_IN);
                 readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
+                workaroundForAllocsBug();
                 write(connectionSettings.getPassword());
                 //log.debug("entering telnet password: '" + connectionSettings.getPassword() + "'");
                 serverInformation = readServerInfo();
@@ -229,6 +232,11 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
             }
         }
     }
+    //Alloc broke telnet login
+    private void workaroundForAllocsBug() throws IOException {
+        write("");
+        readUntil(WRONG_PASSWORD, null);
+    }
 
     public void disconnect() throws IOException {
         if (telnet.isConnected()) {
@@ -238,7 +246,11 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         }
     }
 
-    public void write(String output) {
+    public void write(String output) throws IOException {
+       // log.debug("sending : '" + output + "' to telnet.");
+       /* String cmd = output + "\n";
+        byte[] bytes = output.getBytes(Charsets.UTF_8);
+        this.output.write(bytes);*/
         this.output.println(output);
         this.output.flush();
     }
@@ -252,7 +264,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 log.info("Received stopPhrase: " + stopPhrase);
                 return;
             } else if (errorPhrase != null && errorPhrase.equals(line)) {
-                throw new RuntimeException("ErrorPhrase (" + errorPhrase + ") detected");
+                throw new RuntimeException("ErrorPhrase (" + errorPhrase + ") detected instead of " + stopPhrase);
             }
             log.debug("Wrong stopPhrase, ignoring: " + line);
             safeSleep(waitTime);
@@ -299,7 +311,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         return false;
     }
 
-    private void runCommand() {
+    private void runCommand() throws IOException {
         if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();
             if (runningCommand != null) {
