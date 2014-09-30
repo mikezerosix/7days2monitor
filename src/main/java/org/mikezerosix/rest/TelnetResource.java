@@ -52,38 +52,6 @@ public class TelnetResource {
 
         get(PROTECTED_URL + "telnet/server-info", (request, response) -> telnetRunner.getServerInformation(), new JsonTransformer());
 
-        get(PROTECTED_URL + "telnet/chat", (request, response) -> {
-            //TODO: a lot
-            String lastRead = request.params("lastRead");
-            String days = request.params("days");
-            List<String> lines = new ArrayList<>();
-            try {
-                final File file = new File("chat.log");
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lines.add(line);
-                }
-                return lines;
-            } catch (IOException e) {
-                response.status(500);
-                log.error("IO exception on reading chat", e);
-                return e;
-            }
-        }, new JsonTransformer());
-
-        post(PROTECTED_URL + "telnet/say", (request, response) -> {
-            String say = "say " + request.body();
-            if (telnetRunner.isAlive()) {
-                try {
-                    telnetRunner.write(say);
-                    return true;
-                } catch (IOException e) {
-                    log.error("failed to send command: " + say);
-                }
-            }
-            return returnDeadConnectionError(response);
-        });
 
         post(PROTECTED_URL + "telnet/send-cmd", (request, response) -> {
             String cmd = request.body();

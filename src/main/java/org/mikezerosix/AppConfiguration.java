@@ -1,6 +1,6 @@
 package org.mikezerosix;
 
-import org.mikezerosix.actions.ChatLogger;
+import org.mikezerosix.service.ChatService;
 import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.*;
 import org.mikezerosix.ftp.FTPService;
@@ -90,8 +90,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ChatLogger chatLogger(CometSharedMessageQueue cometSharedMessageQueue) {
-       return new ChatLogger(cometSharedMessageQueue);
+    public ChatService chatService(CometSharedMessageQueue cometSharedMessageQueue) {
+       return new ChatService(cometSharedMessageQueue);
     }
 
     /* Handlers   */
@@ -101,8 +101,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public ChatHandler chatHandler(ChatLogger chatLogger) {
-        return new ChatHandler(chatLogger);
+    public ChatHandler chatHandler(ChatService chatService) {
+        return new ChatHandler(chatService);
     }
 
 
@@ -137,6 +137,10 @@ public class AppConfiguration {
     @Bean
     public StatResource statResource() {
         return new StatResource(statRepository);
+    }
+    @Bean
+    public ChatResource chatResource(TelnetRunner telnetRunner) {
+        return new ChatResource(telnetRunner);
     }
 
     @Bean

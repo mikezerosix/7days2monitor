@@ -45,6 +45,9 @@ public class App {
     @Inject
     private FTPResource ftpResource;
     @Inject
+    private ChatResource chatResource;
+
+    @Inject
     private CometResource cometResource;
 
     public static void main(String[] args) {
@@ -106,9 +109,9 @@ public class App {
         telnetResource.registerRoutes();
         serverResource.registerRoutes();
         statResource.registerRoutes();
+        chatResource.registerRoutes();
         playerResource.registerRoutes();
         ftpResource.registerRoutes();
         cometResource.registerRoutes();
-
     }
 }

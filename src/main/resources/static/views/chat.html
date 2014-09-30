@@ -1,9 +1,14 @@
 <div id="chat-content">
     <div class="chat-top">
     <div id="chat-messages" class="chat-messages-pane">
-        <ul id="chat-listing">
-            <li class="chat-line" ng-repeat="msg in chatLog track by $index">{{msg}}</li>
-        </ul>
+
+        <fieldset ng-if="!loading">
+            <legend>2014-10-01</legend>
+            <ul id="chat-listing">
+                <li class="chat-line" ng-repeat="msg in chatLog track by $index">{{msg}}</li>
+            </ul>
+        </fieldset>
+
         <div class="loading-box" ng-if="loading">
             <img class="loading" src="/img/large-loader.gif">
         </div>
@@ -16,10 +21,8 @@
     </div>
     <div class="chat-bottom">
         <label>Say</label>
-        <label>As</label>
-        <input class="use-say-as-input" type="checkbox" ng-model="useAs">
-        <input class="say-as-input" type="text" ng-model="messageAs">
-
+        <input id="asyour" class="use-say-as-input" type="checkbox" ng-model="useAs">
+        <label for="asyour">As yourself</label>
         <input class="say-input" type="text" ng-model="message">
         <input id="" type="button" title="Send" ng-click="send()" value="Send">
         <span ng-show="processing"> <img src="/img/processing-32.png"></span>

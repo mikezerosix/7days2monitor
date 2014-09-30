@@ -46,15 +46,13 @@ sevenMonitor
           $scope.status = data;
           $scope.message = undefined;
         })
-        .error(function(status) {
-          alert(status);
+        .error(function(data, status) {
+              $scope.$broadcast('status_error', 'Sending chat message failed, error(' + status + '): ' + data);
         });
     };
 
     $scope.$on('CHAT', function (event, message) {
-      //for (var i in message.data) {
-        $scope.chatLog += message.data;
-      //}
+      $scope.chatLog += message.data;
       $document.getElementById('lastMessage' ).scrollIntoView();
     });
 

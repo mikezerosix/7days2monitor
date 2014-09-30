@@ -8,8 +8,7 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
-import org.mikezerosix.actions.ChatLogger;
-import org.mikezerosix.rest.CometResource;
+import org.mikezerosix.service.ChatService;
 import org.mikezerosix.telnet.TelnetRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class LogConfiguration {
         chatAppender.setContext(loggerContext);
 
         TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<>();
-        policy.setFileNamePattern("chat.%d");
+        policy.setFileNamePattern("chat_%d.log");
         policy.setParent(chatAppender);
         policy.setContext(loggerContext);
         policy.start();
@@ -67,8 +66,8 @@ public class LogConfiguration {
         loggerContext.getLogger(TelnetRunner.class).addAppender(consoleAppender);
         loggerContext.getLogger(TelnetRunner.class).addAppender(fileAppender);
 
-        loggerContext.getLogger(ChatLogger.class).setLevel(Level.ALL);
-        loggerContext.getLogger(ChatLogger.class).addAppender(chatAppender);
+        loggerContext.getLogger(ChatService.class).setLevel(Level.ALL);
+        loggerContext.getLogger(ChatService.class).addAppender(chatAppender);
     }
 
 }

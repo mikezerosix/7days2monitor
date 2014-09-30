@@ -32,7 +32,7 @@ sevenMonitor.factory('TelnetService', function ($http) {
     };
 
     var chat = function () {
-        return $http.get('/protected/telnet/chat');
+        return $http.get('/protected/chat');
     };
 
     var raw = function () {
@@ -40,7 +40,7 @@ sevenMonitor.factory('TelnetService', function ($http) {
     };
 
     var say = function (msg) {
-        return $http.post('/protected/telnet/say', msg);
+        return $http.post('/protected/chat', msg);
     };
 
     var sendCmd = function (cmd) {
