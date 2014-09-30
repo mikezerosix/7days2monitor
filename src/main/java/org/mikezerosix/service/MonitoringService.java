@@ -33,6 +33,7 @@ public class MonitoringService {
                         telnetRunner.connect();
                     } catch (Exception e) {
                         //TODO: push error to client
+
                         log.error("Failed to call connect() on telnetRunner ", e);
                     }
                 }

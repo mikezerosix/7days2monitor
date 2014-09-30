@@ -9,6 +9,7 @@ import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import org.mikezerosix.actions.ChatLogger;
+import org.mikezerosix.rest.CometResource;
 import org.mikezerosix.telnet.TelnetRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

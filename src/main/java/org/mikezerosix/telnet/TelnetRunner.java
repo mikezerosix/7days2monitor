@@ -26,6 +26,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     public static final long connectionTimeoutSeconds = 10;
     public static final long waitTime = 500;
     private static final Logger log = LoggerFactory.getLogger(TelnetRunner.class);
+    private static final String LOGON_SUCCESSFUL = "Logon successful.";
     private static TelnetRunner instance = null;
     private final List<TelnetOutputHandler> handlers = new ArrayList<>();
     private final ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
@@ -152,7 +153,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                     } catch (Exception e) {
                         String msg = "Handler :" + handler.getClass().getName() + " threw exception " + e.getMessage();
                         log.error(msg, e);
-                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "", msg));
+                        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, null, msg));
                     }
                 }
             } else {
@@ -198,21 +199,29 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
     public void connect() throws IOException {
         if (!telnet.isConnected()) {
-            statusChange(TelnetStatus.CONNECTING);
-            log.info("Telnet connecting to: " + connectionSettings.getAddress());
-            telnet.connect(connectionSettings.getAddress(), connectionSettings.getPort());
-            safeSleep(waitTime);
-            input = new BufferedInputStream(telnet.getInputStream());
-            output = new PrintStream(telnet.getOutputStream());
+            try {
+                statusChange(TelnetStatus.CONNECTING);
+                log.info("Telnet connecting to: " + connectionSettings.getAddress());
+                telnet.connect(connectionSettings.getAddress(), connectionSettings.getPort());
+                waitForConnection();
+                input = new BufferedInputStream(telnet.getInputStream());
+                output = new PrintStream(telnet.getOutputStream());
 
-            statusChange(TelnetStatus.LOGGING_IN);
-            readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
-            write(connectionSettings.getPassword());
-            waitForConnection();
+                statusChange(TelnetStatus.LOGGING_IN);
+                readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
+                write(connectionSettings.getPassword());
+                readUntil(LOGON_SUCCESSFUL, WRONG_PASSWORD);
 
-            serverInformation = readServerInfo();
-            statusChange(TelnetStatus.CONNECTED);
-            log.info("Connection established");
+                serverInformation = readServerInfo();
+                statusChange(TelnetStatus.CONNECTED);
+                log.info("Connection established");
+            } catch (Exception e) {
+                if (status.equals(TelnetStatus.LOGGING_IN)) {
+                    log.error("Failed to connect telnet, sending error message ", e);
+                    cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, "error", "Telnet login failed. " + e.getMessage()));
+                }
+                disconnect();
+            }
         }
     }
 

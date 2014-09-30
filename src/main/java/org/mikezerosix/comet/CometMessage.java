@@ -19,4 +19,28 @@ public class CometMessage {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public MessageTarget getMessageTarget() {
+        return messageTarget;
+    }
+
+    public void setMessageTarget(MessageTarget messageTarget) {
+        this.messageTarget = messageTarget;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 }

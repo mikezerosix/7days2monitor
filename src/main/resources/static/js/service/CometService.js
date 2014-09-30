@@ -9,7 +9,7 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
             .success(function (data, status, headers, config) {
                 for (var i in data) {
                     $rootScope.lastMessage = data[i].timestamp;
-                    $rootScope.$broadcast(data[i].messageTarget, data[i]);
+                    $rootScope.$broadcast(data[i].messageTarget, data[i].data);
                 }
                 $timeout(function () {
                     cometPoll();

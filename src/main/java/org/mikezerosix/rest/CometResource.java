@@ -1,5 +1,6 @@
 package org.mikezerosix.rest;
 
+import com.google.common.collect.Lists;
 import org.mikezerosix.comet.CometMessage;
 import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.rest.transformers.JsonTransformer;
@@ -7,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -28,7 +30,7 @@ public class CometResource {
     public void registerRoutes() {
 
         get(PROTECTED_URL + "/comet/:timestamp", (request, response) -> {
-            List<CometMessage> messages = new ArrayList<>();
+            List<CometMessage> messages = Lists.newArrayList();
             final long end = TIMEOUT + System.currentTimeMillis();
             while (System.currentTimeMillis() < end) {
                 SortedMap<Long, CometMessage> queuedMessages = queue.getQueuedMessages(safeParseLong(request.params(":timestamp")));
