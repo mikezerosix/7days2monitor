@@ -157,7 +157,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                     }
                 }
             } else {
-                safeSleep(waitTime * 2);
+                safeSleep(waitTime);
             }
         }
     }
@@ -174,13 +174,15 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
             } else if (WRONG_PASSWORD.equals(line)) {
                 throw new RuntimeException(WRONG_PASSWORD);
             }
+            log.debug("ServerInformation reading line: " + line);
             handler.handleInput(line);
             if (res.help) {
                 break;
             }
-            safeSleep(waitTime);
+
         }
         log.info("read server info");
+
         return res;
     }
 
