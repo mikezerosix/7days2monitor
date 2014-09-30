@@ -1,7 +1,7 @@
 'use strict';
 
 sevenMonitor
-    .controller('ChatCtrl', function ($scope, $q, $http, $location, $anchorScroll, SettingsService, TelnetService) {
+    .controller('ChatCtrl', function ($scope, $q, $http, $window, SettingsService, TelnetService) {
 
         $scope.chatLog = [];
         $scope.processing = false;
@@ -45,7 +45,11 @@ sevenMonitor
         $scope.$on('CHAT', function (event, message) {
             console.log(JSON.stringify(message));
             $scope.chatLog.push(message.data);
-            window.scrollTo(0, document.getElementById('lastMessage').offsetTop)
+            var el = $window.document.getElementById('lastMessage');
+            if (el) {
+                el.scrollIntoView();
+            }
+
         });
 
     });
