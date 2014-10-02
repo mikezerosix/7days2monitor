@@ -1,3 +1,7 @@
+html, body {
+    height: 100%; width: 100%; margin: 0;
+}
+
 .root {
     background-color: rgba(196, 191, 191, 0.98);
 }
@@ -41,15 +45,22 @@ h2.login {
     display: inline;
     float: right;
 }
+
+#user-box {
+    background: transparent url('/img/16/user-16.png') no-repeat;
+    background-size: contain;
+    background-position-x: left;
+    padding-left: 20px;
+}
 .tab-heading {
   font-weight: bolder;
-
 }
 #content {
     background-color: snow;
     min-height: 100%;
     position: fixed;
     width: 100%;
+    height: 100%;
 }
 
 #footer {
@@ -238,35 +249,40 @@ legend.content-block {
 
 /*  CHAT */
 
-
+#chat-content {
+    height: 100%;
+}
 
 
 .chat-messages-pane {
-    margin: 8px;
-    min-height: 20em;
-    height: 30em;
+    margin: 4px;
     border: 1px solid gray;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding-right: 5px;
+    padding-left: 3px;
     visibility: visible;
-    border: thin solid gray;
     width: 80%;
+    position: fixed;
+    bottom: 50px;
+    top: 90px;
 }
-
-#chat-listing {
-    display: initial;
+.chat-day {
+    margin: 0;
+    padding: 0;
+}
+.chat-listing {
+    padding-left: 0;
 }
 .chat-players {
     width: 18%;
-    position: absolute;
+    position: fixed;
     right: 0;
-    top: 0;
+    top: 65px;
 }
 
 li.chat-line {
     list-style-type: none;
-    margin-left: 1em;
+    margin-left: 0.25em;
 }
 .chat-time {
     font-style: italic;
@@ -286,6 +302,7 @@ li.chat-line {
     border: thin solid lightgray;
     position: fixed;
     width: 100%;
+    bottom: 20px;
 }
 
 .loading-box {

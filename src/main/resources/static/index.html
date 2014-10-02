@@ -51,14 +51,14 @@
         <div class="title">7 Days to monitor - {{serverName}} </div>
 
         <div ng-if="authorized" class="logout">
-            <a ng-click="selectTab('settings')"><img src="/img/settings-32.png" alt="Settings" /> </a>
-            <select class="user-menu">
-                <option>{{authorized.name}}</option>
+            <a ng-click="selectTab('settings')"><img src="/img/16/settings-16.png" alt="Settings" title="Settings" /> </a>
+
+                <span id="user-box" title="Current user: {{authorized.name}}">{{authorized.name}}</span>
              <!--   <option>Log out</option>
                 <option>Help</option>
                 <option>About</option>-->
             </select>
-            <a ng-show="authorized" ng-click="logout()"><img src="/img/sign-out-32.png" alt="Settings" />Log out</a>
+            <a ng-show="authorized" ng-click="logout()"><img src="/img/16/sign-out-16.png" alt="Settings" />Log out</a>
 
         </div>
     </div>
@@ -67,7 +67,9 @@
 
     <tabset ng-if="authorized">
         <tab ng-click="selectTab('main')"> <tab-heading class="tab-heading"><img src="/img/home-16.png"> Home</tab-heading> </tab>
+<!--
         <tab ng-click="selectTab('players')" > <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
+-->
         <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
         <!--        <tab ng-click="selectTab('requests')"> <tab-heading><img src="/img/16/request-16.png"> Request</tab-heading> </tab>
         -->

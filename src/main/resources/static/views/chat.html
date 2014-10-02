@@ -1,34 +1,46 @@
 <div id="chat-content">
-    <div class="chat-top">
     <div id="chat-messages" class="chat-messages-pane">
-
-        <fieldset ng-if="!loading">
-            <legend>2014-10-01</legend>
-            <ul id="chat-listing">
-                <li id="{{msg.time}}" class="chat-line" ng-repeat="msg in chatLog track by $index">
-                   <span class="chat-time">{{msg.time | limitTo:8}}</span>
-                   <span class="chat-from">{{msg.from}}</span>
-                   <span class="chat-msg">{{msg.msg}}</span>
+    <!--    <a ng-click="readOlder">Show older</a>-->
+        <fieldset class="chat-day" ng-if="!loading"  ng-repeat="day in history">
+            <legend class="chat-day">{{day}}</legend>
+            <ul class="chat-listing">
+                <li class="chat-line" ng-repeat="msg in Log track by $index">
+                    <span class="chat-time">{{msg.time | limitTo:8}}</span>
+                    <span class="chat-from">{{msg.from}}</span>
+                    <span class="chat-msg">{{msg.msg}}</span>
                 </li>
             </ul>
+        </fieldset>
+
+        <fieldset class="chat-day" ng-if="!loading">
+            <legend class="chat-day">{{today}}</legend>
+            <ul class="chat-listing">
+                <li class="chat-line" ng-repeat="msg in chatLog track by $index">
+                    <span class="chat-time">{{msg.time | limitTo:8}}</span>
+                    <span class="chat-from">{{msg.from}}</span>
+                    <span class="chat-msg">{{msg.msg}}</span>
+                </li>
+            </ul>
+            <span id="lastMessage">.</span>
         </fieldset>
 
         <div class="loading-box" ng-if="loading">
             <img class="loading" src="/img/large-loader.gif">
         </div>
-        <span id="lastMessage"></span>
     </div>
     <div class="chat-players">
         <h2>Players</h2>
-
+        <ul>
+            <li>TODO</li>
+        </ul>
     </div>
-    </div>
-    <div class="chat-bottom">
+</div>
+<div class="chat-bottom">
+    <form ng-submit="send()">
         <label>Say</label>
         <input id="asyour" class="use-say-as-input" type="checkbox" ng-model="useAs">
         <label for="asyour">As yourself</label>
         <input class="say-input" type="text" ng-model="message">
-        <input id="" type="button" title="Send" ng-click="send()" value="Send">
-        <span ng-show="processing"> <img src="/img/processing-32.png"></span>
-    </div>
+        <input id="" type="button" title="Send" value="Send">
+    </form>
 </div>

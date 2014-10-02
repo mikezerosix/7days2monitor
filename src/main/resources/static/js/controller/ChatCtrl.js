@@ -1,19 +1,23 @@
 'use strict';
 
 sevenMonitor
-    .controller('ChatCtrl', function ($scope, $q, $http, $window, SettingsService, TelnetService) {
-
+    .controller('ChatCtrl', function ($scope, $q, $timeout, $http, $window, SettingsService, TelnetService) {
+        $scope.chatHistory = [];
         $scope.chatLog = [];
+        $scope.today;
         $scope.processing = false;
         $scope.loading = true;
-
-        var readChat = function () {
+        var setToday = function(msg) {
+            $scope.today = msg.date;
+        };
+        $scope.readChat = function () {
             $scope.processing = true;
             $scope.$emit('show_loading', '');
             TelnetService.chat()
                 .success(function (data) {
                     $scope.chatLog = data;
-
+                    setToday(data[data.length-1]);
+                    $timeout( $scope.scrollTo, 100);
                 })
                 .error(function (status) {
                     $scope.$broadcast('status_error', 'Reading chat failed, error ' + status);
@@ -24,8 +28,10 @@ sevenMonitor
             $scope.processing = false;
         };
 
-        readChat();
-
+        $scope.readChat();
+        $scope.readOlder = function () {
+            alert('todo');
+        };
         $scope.message;
         $scope.useAs;
         $scope.send = function () {
@@ -45,11 +51,17 @@ sevenMonitor
         $scope.$on('CHAT', function (event, message) {
             console.log(JSON.stringify(message));
             $scope.chatLog.push(message.data);
+            $scope.scrollTo();
+            if ($scope.today != msg.date) {
+                $scope.readChat();
+            }
+            setToday(message);
+        });
+
+        $scope.scrollTo = function() {
             var el = $window.document.getElementById('lastMessage');
             if (el) {
                 el.scrollIntoView();
             }
-
-        });
-
+        }
     });

@@ -50,7 +50,7 @@ public class LogConfiguration {
         chatAppender.setContext(loggerContext);
 
         TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<>();
-        policy.setFileNamePattern("chat_%d.log");
+        policy.setFileNamePattern("chat.log.%d");
         policy.setParent(chatAppender);
         policy.setContext(loggerContext);
         policy.start();
