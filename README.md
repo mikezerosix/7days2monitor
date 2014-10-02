@@ -13,9 +13,6 @@ Then go to main page and connect to telnet.
 
 More information see project Wiki: 
 https://github.com/mikezerosix/7days2monitor/wiki
- 
-Troubleshooting: 
-1. solution to any problems is: Delete the old files and directories and try again.  
 
 This is freeware (copyleft, GNU GPL, ) and donations are welcome
 
