@@ -1,13 +1,19 @@
 7days2monitor
 =============
 
-7 Days To Die dedicated server monitoring and management app
+Is a 7 Days To Die dedicated server monitoring and management app
 
-Is standalone Java app with embedded DB and HTTP server. Start by running App.main() 
+It is a standalone Java 1.8 app with embedded DB and HTTP server. Run the jar file with Java 1.8 "java -jar 7days2monitor.jar" the jar file will include version number in it's name. 
 
-You can connect to application at port 9090 with web browser. Default user/pw is: admin / x 
+Once the application is running you can use it via web browser. Open http://localhost:9090 in web browser. Default login is: admin / x 
 
-To get any functionality you need to go to settings and enter telnet connection settings and then turn on chat and stat monitoring 
+To get any functionality you need to go to settings and enter telnet connection settings and then turn on chat and stat monitoring in settings page.  
 
-Then go to main page and connect to telnet
+Then go to main page and connect to telnet. 
 
+More information see project Wiki: 
+https://github.com/mikezerosix/7days2monitor/wiki
+
+This is freeware (copyleft, GNU GPL, ) and donations are welcome
+
+[Donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=9HLCX76MCWYEA&lc=FI&item_name=7days2monitor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
