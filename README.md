@@ -11,9 +11,12 @@ To get any functionality you need to go to settings and enter telnet connection 
 
 Then go to main page and connect to telnet. 
 
+More information see project Wiki: 
+
+ 
 Troubleshooting: 
 1. solution to any problems is: Delete the old files and directories and try again.  
 
 This is freeware (copyleft, GNU GPL, ) and donations are welcome
-Donations: 
- https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=9HLCX76MCWYEA&lc=FI&item_name=7days2monitor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
+
+[Donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=9HLCX76MCWYEA&lc=FI&item_name=7days2monitor&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
