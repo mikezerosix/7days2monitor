@@ -52,6 +52,7 @@ sevenMonitor
             console.log(JSON.stringify(message));
             $scope.chatLog.push(message.data);
             $scope.scrollTo();
+            //todo: this is not reliable way to know if the log file has actually rolled !!!
             if ($scope.today != msg.date) {
                 $scope.readChat();
             }
