@@ -36,4 +36,8 @@ public class ChatHandler implements TelnetOutputHandler {
             chatService.log(chat);
         }
     }
+
+    public void setMaxDays(int maxDays) {
+        chatService.setMaxLogDays(maxDays);
+    }
 }

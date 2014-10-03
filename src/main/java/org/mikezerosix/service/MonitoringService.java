@@ -73,4 +73,7 @@ public class MonitoringService {
         statHandler.setStatDays(statDays);
     }
 
+    public void setChatDays(int chatDays) {
+        chatHandler.setMaxDays(chatDays);
+    }
 }

@@ -70,6 +70,10 @@ public class SettingsService {
                     monitoringService.removeHandler(ChatHandler.class);
                 }
                 break;
+            case CHAT_HANDLER_DAYS:
+                int maxChat = SafeUtil.safeParseInteger(setting.getValue());
+                monitoringService.setChatDays(maxChat);
+                break;
             case STAT_HANDLER_ENABLE:
                 if (Boolean.parseBoolean(setting.getValue())) {
                     monitoringService.addHandler(StatHandler.class);
@@ -85,8 +89,8 @@ public class SettingsService {
                 }
                 break;
             case STAT_HANDLER_DAYS:
-                long i = SafeUtil.safeParseLong(setting.getValue());
-                monitoringService.setStatDays(i);
+                long maxStat = SafeUtil.safeParseLong(setting.getValue());
+                monitoringService.setStatDays(maxStat);
                 break;
         }
     }

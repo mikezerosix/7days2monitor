@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 public class LogConfiguration {
 
+    public static final String CHAT_APPENDER = "chatAppender";
+
     public static void init() {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 
@@ -48,11 +50,14 @@ public class LogConfiguration {
         chatAppender.setFile("chat.log");
         chatAppender.setEncoder(chatEncoder);
         chatAppender.setContext(loggerContext);
+        chatAppender.setName(CHAT_APPENDER);
+
 
         TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<>();
-        policy.setFileNamePattern("chat.log.%d");
+        policy.setFileNamePattern("chat_%d{yyyy-MM-dd}.log");
         policy.setParent(chatAppender);
         policy.setContext(loggerContext);
+        policy.setMaxHistory(30);
         policy.start();
         chatAppender.setRollingPolicy(policy);
 
