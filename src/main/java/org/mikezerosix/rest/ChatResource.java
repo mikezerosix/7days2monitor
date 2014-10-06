@@ -24,7 +24,10 @@ public class ChatResource {
     }
 
     public void registerRoutes() {
-        get(PROTECTED_URL + "chat", (request, response) -> {
+
+        get(PROTECTED_URL + "chat/days", (request, response) -> chatService.getDays(), new JsonTransformer());
+
+        get(PROTECTED_URL + "chat/day", (request, response) -> {
             try {
                 return chatService.readMessages();
             } catch (IOException e) {
@@ -34,7 +37,7 @@ public class ChatResource {
             }
         }, new JsonTransformer());
 
-        get(PROTECTED_URL + "chat/:day", (request, response) -> {
+        get(PROTECTED_URL + "chat/day/:day", (request, response) -> {
             try {
                 return chatService.readMessages(request.params("day"));
             } catch (IOException e) {

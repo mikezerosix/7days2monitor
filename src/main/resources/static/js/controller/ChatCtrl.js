@@ -2,36 +2,48 @@
 
 sevenMonitor
     .controller('ChatCtrl', function ($scope, $q, $timeout, $http, $window, SettingsService, TelnetService) {
-        $scope.chatHistory = [];
-        $scope.chatLog = [];
-        $scope.today;
+        $scope.chatDays = [];
+        $scope.today = '';
         $scope.processing = false;
         $scope.loading = true;
-        var setToday = function(msg) {
-            $scope.today = msg.date;
+
+        $scope.readDays = function () {
+            TelnetService.readChatDays()
+                .success(function (data) {
+                    $scope.chatDays = data;
+                })
+                .error(function (status) {
+                    $scope.$broadcast('status_error', 'Reading chat days failed, error ' + status);
+                });
         };
-        $scope.readChat = function () {
+        $scope.readDay = function (day) {
+
             $scope.processing = true;
             $scope.$emit('show_loading', '');
-            TelnetService.chat()
+            TelnetService.readChatDay(day)
                 .success(function (data) {
-                    $scope.chatLog = data;
-                    setToday(data[data.length-1]);
-                    $timeout( $scope.scrollTo, 100);
+                    var scroll = false;
+                    if (typeof day == 'undefined') {
+                        day = data[0].date;
+                        $scope.today = day;
+                        scroll = true;
+                    }
+                    $scope.chatDays[day] = data;
+                    if (scroll) {
+                        $timeout($scope.scrollTo, 100);
+                    }
                 })
                 .error(function (status) {
                     $scope.$broadcast('status_error', 'Reading chat failed, error ' + status);
-                    return false;
+
                 });
             $scope.loading = false;
             $scope.$emit('hide_loading', '');
             $scope.processing = false;
         };
+        $scope.readDays();
+        $scope.readDay();
 
-        $scope.readChat();
-        $scope.readOlder = function () {
-            alert('todo');
-        };
         $scope.message;
         $scope.useAs;
         $scope.send = function () {
@@ -49,17 +61,19 @@ sevenMonitor
         };
 
         $scope.$on('CHAT', function (event, message) {
-            console.log(JSON.stringify(message));
-            $scope.chatLog.push(message.data);
+            //console.log(JSON.stringify(message));
+            var day = message.data.date;
+            $scope.chatDays[day] = $scope.chatDays[day] || [];
+            $scope.chatDays[day].push(message.data);
             $scope.scrollTo();
             //todo: this is not reliable way to know if the log file has actually rolled !!!
-            if ($scope.today != msg.date) {
-                $scope.readChat();
+            if ($scope.today != day) {
+                $scope.readDays();
+                $scope.readDay();
             }
-            setToday(message);
         });
 
-        $scope.scrollTo = function() {
+        $scope.scrollTo = function () {
             var el = $window.document.getElementById('lastMessage');
             if (el) {
                 el.scrollIntoView();

@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.mikezerosix</groupId>
     <artifactId>7days2monitor</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>7days2monitor</name>
@@ -13,7 +12,8 @@
         <url>https://github.com/mikezerosix/7days2monitor</url>
         <connection>scm:git:git@github.com:mikezerosix/7days2monitor.git</connection>
         <developerConnection>scm:git:git@github.com:mikezerosix/7days2monitor.git</developerConnection>
-    </scm>
+      <tag>7days2monitor-0.2</tag>
+  </scm>
     <issueManagement>
         <url>https://github.com/mikezerosix/7days2monitor/issues</url>
         <system>GitHub Issues</system>

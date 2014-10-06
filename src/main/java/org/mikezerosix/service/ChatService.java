@@ -15,9 +15,7 @@ import org.mikezerosix.util.SafeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -86,5 +84,13 @@ public class ChatService {
         return lines;
     }
 
+    public String[] getDays() {
+        File pwd = new File(".");
+        String[] files = pwd.list((dir, name) -> name.startsWith("chat_") && name.endsWith(".log"));
+        for (int i = 0; i < files.length; i++) {
+            files[i] = files[i].substring(5, 15);
+        }
+        return files;
+    }
 
 }

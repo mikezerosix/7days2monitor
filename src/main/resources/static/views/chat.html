@@ -1,32 +1,20 @@
 <div id="chat-content">
     <div id="chat-messages" class="chat-messages-pane">
-    <!--    <a ng-click="readOlder">Show older</a>-->
-        <fieldset class="chat-day" ng-if="!loading"  ng-repeat="day in history">
-            <legend class="chat-day">{{day}}</legend>
-            <ul class="chat-listing">
-                <li class="chat-line" ng-repeat="msg in Log track by $index">
-                    <span class="chat-time">{{msg.time | limitTo:8}}</span>
-                    <span class="chat-from">{{msg.from}}</span>
-                    <span class="chat-msg">{{msg.msg}}</span>
-                </li>
-            </ul>
-        </fieldset>
-
-        <fieldset class="chat-day" ng-if="!loading">
-            <legend class="chat-day">{{today}}</legend>
-            <ul class="chat-listing">
-                <li class="chat-line" ng-repeat="msg in chatLog track by $index">
-                    <span class="chat-time">{{msg.time | limitTo:8}}</span>
-                    <span class="chat-from">{{msg.from}}</span>
-                    <span class="chat-msg">{{msg.msg}}</span>
-                </li>
-            </ul>
-            <span id="lastMessage">.</span>
-        </fieldset>
-
         <div class="loading-box" ng-if="loading">
             <img class="loading" src="/img/large-loader.gif">
         </div>
+        <fieldset class="chat-day" ng-if="!loading"  ng-repeat="day in chatDays">
+            <legend class="chat-day">{{day}}</legend>
+            <a ng-hide="chatDays[day].length > 0" ng-click="readDay(day)">Show</a>
+            <ul class="chat-listing">
+                <li class="chat-line" ng-repeat="msg in chatDays[day] track by $index">
+                    <span class="chat-time">{{msg.time | limitTo:8}}</span>
+                    <span class="chat-from">{{msg.from}}</span>
+                    <span class="chat-msg">{{msg.msg}}</span>
+                </li>
+            </ul>
+        </fieldset>
+        <span id="lastMessage">.</span>
     </div>
     <div class="chat-players">
         <h2>Players</h2>
@@ -41,6 +29,6 @@
         <input id="asyour" class="use-say-as-input" type="checkbox" ng-model="useAs">
         <label for="asyour">As yourself</label>
         <input class="say-input" type="text" ng-model="message">
-        <input id="" type="button" title="Send" value="Send">
+        <input id="" type="submit" title="Send" value="Send">
     </form>
 </div>

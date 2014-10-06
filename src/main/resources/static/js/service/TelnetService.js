@@ -31,8 +31,16 @@ sevenMonitor.factory('TelnetService', function ($http) {
         return $http.delete('/protected/telnet');
     };
 
-    var chat = function () {
-        return $http.get('/protected/chat');
+    var readChatDays = function () {
+        return $http.get('/protected/chat/days');
+    };
+
+    var readChatDay = function (day) {
+        if (typeof day != 'undefined' ) {
+            return $http.get('/protected/chat/day/' + day);
+        } else {
+            return $http.get('/protected/chat/day');
+        }
     };
 
     var raw = function () {
@@ -55,7 +63,8 @@ sevenMonitor.factory('TelnetService', function ($http) {
         connect: connect,
         disconnect: disconnect,
         raw: raw,
-        chat: chat,
+        readChatDays: readChatDays,
+        readChatDay: readChatDay,
         say: say,
         sendCmd: sendCmd
     };
