@@ -8,7 +8,7 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
         $http({method: 'GET', url: '/protected/comet/' + $rootScope.lastMessage})
             .success(function (data, status, headers, config) {
                 for (var i in data) {
-                  $rootScope.lastMessage = data[i].index;
+                    $rootScope.lastMessage = data[i].index;
                     //console.log((new Date()) +  ' received ' + data[i].messageTarget +  'comet message(' + $rootScope.lastMessage + ') ' + JSON.stringify(data[i].data) );
                     $rootScope.$broadcast(data[i].messageTarget, data[i]);
                 }
@@ -17,7 +17,8 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
                 }, 1000);
             })
             .error(function (data, status) {
-                $rootScope.$emit('status_error', 'CometService error(' + status + '):' + data);
+                $rootScope.$emit('status_error', 'CometService error(' + status + '): ' + data);
+                $rootScope.authorized = undefined;
                 $timeout(function () {
                     cometPoll();
                 }, 10000);

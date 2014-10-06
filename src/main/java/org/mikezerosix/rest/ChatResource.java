@@ -1,17 +1,13 @@
 package org.mikezerosix.rest;
 
 
-import com.google.common.collect.Lists;
-import org.mikezerosix.rest.data.ChatMessage;
 import org.mikezerosix.rest.transformers.JsonTransformer;
+import org.mikezerosix.service.ChatService;
 import org.mikezerosix.telnet.TelnetRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 
 import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.get;
@@ -20,15 +16,17 @@ import static spark.Spark.post;
 public class ChatResource {
     private static final Logger log = LoggerFactory.getLogger(ChatResource.class);
     private TelnetRunner telnetRunner;
+    private ChatService chatService;
 
-    public ChatResource(TelnetRunner telnetRunner) {
+    public ChatResource(TelnetRunner telnetRunner, ChatService chatService) {
         this.telnetRunner = telnetRunner;
+        this.chatService = chatService;
     }
 
     public void registerRoutes() {
         get(PROTECTED_URL + "chat", (request, response) -> {
             try {
-                return readMessages("chat.log");
+                return chatService.readMessages();
             } catch (IOException e) {
                 response.status(500);
                 log.error("IO exception on reading chat", e);
@@ -38,7 +36,7 @@ public class ChatResource {
 
         get(PROTECTED_URL + "chat/:day", (request, response) -> {
             try {
-                return readMessages("chat_" + request.params("day") + ".log");
+                return chatService.readMessages(request.params("day"));
             } catch (IOException e) {
                 response.status(500);
                 log.error("IO exception on reading chat", e);
@@ -57,16 +55,6 @@ public class ChatResource {
                 return e;
             }
         });
-    }
-
-    private List<ChatMessage> readMessages(String file) throws IOException {
-        List<ChatMessage> lines = Lists.newArrayList();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            lines.add(new ChatMessage(line));
-        }
-        return lines;
     }
 
 

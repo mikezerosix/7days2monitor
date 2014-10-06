@@ -1,14 +1,10 @@
 package org.mikezerosix;
 
-import org.mikezerosix.service.ChatService;
 import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.entities.*;
 import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.rest.*;
-import org.mikezerosix.service.MonitoringService;
-import org.mikezerosix.service.SettingsService;
-import org.mikezerosix.service.StatService;
-import org.mikezerosix.service.UserService;
+import org.mikezerosix.service.*;
 import org.mikezerosix.telnet.TelnetRunner;
 import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
@@ -67,7 +63,6 @@ public class AppConfiguration {
     }
 
 
-
     @Bean
     public SettingsService settingsService(SettingsRepository settingsRepository, ConnectionRepository connectionRepository, MonitoringService monitoringService) {
         return new SettingsService(settingsRepository, connectionRepository, monitoringService);
@@ -91,7 +86,7 @@ public class AppConfiguration {
 
     @Bean
     public ChatService chatService(CometSharedMessageQueue cometSharedMessageQueue) {
-       return new ChatService(cometSharedMessageQueue);
+        return new ChatService(cometSharedMessageQueue);
     }
 
     /* Handlers   */
@@ -138,9 +133,10 @@ public class AppConfiguration {
     public StatResource statResource() {
         return new StatResource(statRepository);
     }
+
     @Bean
-    public ChatResource chatResource(TelnetRunner telnetRunner) {
-        return new ChatResource(telnetRunner);
+    public ChatResource chatResource(TelnetRunner telnetRunner, ChatService chatService) {
+        return new ChatResource(telnetRunner, chatService);
     }
 
     @Bean

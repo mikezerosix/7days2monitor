@@ -9,6 +9,15 @@
 
     <name>7days2monitor</name>
     <url>http://maven.apache.org</url>
+    <scm>
+        <url>https://github.com/mikezerosix/7days2monitor</url>
+        <connection>scm:git:git@github.com:mikezerosix/7days2monitor.git</connection>
+        <developerConnection>scm:git:git@github.com:mikezerosix/7days2monitor.git</developerConnection>
+    </scm>
+    <issueManagement>
+        <url>https://github.com/mikezerosix/7days2monitor/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -66,15 +75,21 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>install</phase> <!-- bind to the packaging phase -->
+                        <id>make-assembly</id>
+                        <!-- this is used for inheritance merges -->
+                        <phase>install</phase>
+                        <!-- bind to the packaging phase -->
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>
         </plugins>
 
     </build>
@@ -202,16 +217,21 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.7</version>
         </dependency>
 
 
-      <!--  TEST -->
+        <!--  TEST -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
