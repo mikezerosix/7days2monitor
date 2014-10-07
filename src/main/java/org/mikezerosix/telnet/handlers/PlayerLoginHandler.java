@@ -21,78 +21,59 @@ package org.mikezerosix.telnet.handlers;
 
 22207.830 Authenticating player: [FF00FF]Camalot SteamId: 76561197975187104 TicketLen: 1024 Result: OK
 
+59858.590 Authenticating player: Mike06 SteamId: 76561198011842231 TicketLen: 10                      24 Result: OK
+59864.080 RequestToEnterGame: 7/Mike06
+59864.110 GMSG: Mike06 joined the game
+59865.050 RequestToSpawnPlayer: 151327, 7, Mike06, 10
+59865.080 Created player with id=151327
+59865.090 Adding observed entity: 7, (-511.6, 4.0, -644.5), 10
+
+
+
+
+
 * */
 
-import org.mikezerosix.entities.Player;
-import org.mikezerosix.entities.PlayerRepository;
-import org.mikezerosix.exception.DirtyPlayerException;
+import org.mikezerosix.service.PlayerService;
 import org.mikezerosix.util.TelnetLineUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerLoginHandler implements TelnetOutputHandler {
     public static final Logger log = LoggerFactory.getLogger(PlayerLoginHandler.class);
     public static final String REQUEST_TO_SPAWN_PLAYER = TelnetLineUtil.TIME_STAMP + "RequestToSpawnPlayer: (\\d+), (\\d+), (.*?), (\\d+).*";
-    private final Pattern pattern2 = Pattern.compile(REQUEST_TO_SPAWN_PLAYER);
+    private final Pattern spawnPattern = Pattern.compile(REQUEST_TO_SPAWN_PLAYER);
     public static final String AUTHENTICATING_PLAYER = TelnetLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";
-    private final Pattern pattern1 = Pattern.compile(AUTHENTICATING_PLAYER);
-    private PlayerRepository playerRepository;
-    private static int AUTHENTICATE = 0;
-    private static int SPAWN = 1;
+    public static final String REMOVING_PLAYER = TelnetLineUtil.TIME_STAMP + "Removing player with id clientId=(\\d+), entityId=(\\d+).*";
+    private final Pattern removingPattern = Pattern.compile(REMOVING_PLAYER);
+    private PlayerService playerService;
 
-    public PlayerLoginHandler(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
+    public PlayerLoginHandler(PlayerService playerService) {
+        this.playerService = playerService;
     }
 
     @Override
     public Matcher[] matcher(String line) {
-        return new Matcher[]{pattern1.matcher(line), pattern2.matcher(line)};
+        return new Matcher[]{spawnPattern.matcher(line), removingPattern.matcher(line)};
     }
 
     @Override
     public void handleInput(String input) {
         final Matcher[] matchers = matcher(input);
-        final Matcher authenticateMatcher = matchers[AUTHENTICATE];
-        final Matcher spawnMatcher = matchers[SPAWN];
-        try {
-            if (authenticateMatcher.matches()) {
-                final String name = authenticateMatcher.group(1).trim();
-                final String steamId = authenticateMatcher.group(2).trim();
-                log.info("detected login: " + name + " / " + steamId);
-                Player player = playerRepository.findBySteamId(steamId);
-                if (player == null) {
-                    player = new Player();
-                    player.setSteamId(steamId);
-                    player.setLastSync(new Date());
-                    player.setJoined(new Date());
-                }
-                player.setName(name);
-                playerRepository.save(player);
-            }
-
-            if (spawnMatcher.matches()) {
-                final long entityId = Long.parseLong(spawnMatcher.group(1).trim());
-                final long clientId = Long.parseLong(spawnMatcher.group(2).trim());
-                final String name = spawnMatcher.group(3).trim();
-                final long observedEntity = Long.parseLong(spawnMatcher.group(4).trim());
-                Player player = playerRepository.findByName(name);
-                if (player.getEntityId() == null || player.getEntityId().equals(entityId)) {
-                    player.setLastSync(new Date());
-                    player.setLastLogin(new Date());
-                    player.setClientId(clientId);
-                    player.setEntityId(entityId);
-                    player.setOnline(true);
-                    playerRepository.save(player);
-                    return;
-                }
-                throw new DirtyPlayerException("name :" + name + "does not match entityId" + entityId);
-            }
-        } catch (Exception e) {
-            throw new DirtyPlayerException(e);
+        if (matchers[0].find()) {
+            final long entityId = Long.parseLong(matchers[0].group(1).trim());
+            final long clientId = Long.parseLong(matchers[0].group(2).trim());
+            final String name = matchers[0].group(3).trim();
+            playerService.login(entityId, clientId, name);
+            return;
         }
+        if (matchers[1].find()) {
+            final long entityId = Long.parseLong(matchers[0].group(2).trim());
+            playerService.logout(entityId);
+        }
+
     }
 }

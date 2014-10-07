@@ -7,6 +7,7 @@ import org.mikezerosix.rest.*;
 import org.mikezerosix.service.*;
 import org.mikezerosix.telnet.TelnetRunner;
 import org.mikezerosix.telnet.handlers.ChatHandler;
+import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -80,13 +81,17 @@ public class AppConfiguration {
 
     //TODO: maybe add handlerFactory class and pass it to this ?
     @Bean
-    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler, ChatHandler chatHandler) {
-        return new MonitoringService(telnetRunner, ftpService, statHandler, chatHandler);
+    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler, ChatHandler chatHandler, PlayerLoginHandler playerLoginHandler) {
+        return new MonitoringService(telnetRunner, ftpService, statHandler, chatHandler, playerLoginHandler);
     }
 
     @Bean
     public ChatService chatService(CometSharedMessageQueue cometSharedMessageQueue) {
         return new ChatService(cometSharedMessageQueue);
+    }
+    @Bean
+    public PlayerService playerService(CometSharedMessageQueue cometSharedMessageQueue, PlayerRepository playerRepository) {
+        return new PlayerService(cometSharedMessageQueue,playerRepository);
     }
 
     /* Handlers   */
@@ -100,6 +105,10 @@ public class AppConfiguration {
         return new ChatHandler(chatService);
     }
 
+    @Bean
+    public PlayerLoginHandler playerLoginHandler(PlayerService playerService) {
+        return new PlayerLoginHandler( playerService);
+    }
 
     /* Routes */
     //TODO: change to use monitoringService

@@ -45,6 +45,7 @@ public class SettingsService {
         if (noConnections) {
             initConnections();
         }
+
     }
 
     private void initConnections() {
