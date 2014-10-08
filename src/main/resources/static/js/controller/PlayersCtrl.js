@@ -15,13 +15,9 @@ sevenMonitor
                 });
         };
         $scope.getPlayers();
+        $scope.$on('PLAYER', function (event, message) {
+            $scope.getPlayers();
+        });
 
-        $scope.alerts = [];
-        $scope.addAlert = function (alertMsg) {
-            $scope.alerts.push({msg: alertMsg});
-        };
 
-        $scope.closeAlert = function (index) {
-            $scope.alerts.splice(index, 1);
-        };
     });

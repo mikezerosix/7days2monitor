@@ -71,7 +71,7 @@ public class PlayerLoginHandler implements TelnetOutputHandler {
             return;
         }
         if (matchers[1].find()) {
-            final long entityId = Long.parseLong(matchers[0].group(2).trim());
+            final long entityId = Long.parseLong(matchers[1].group(2).trim());
             playerService.logout(entityId);
         }
 

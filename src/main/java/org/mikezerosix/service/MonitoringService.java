@@ -25,7 +25,6 @@ public class MonitoringService {
         this.statHandler = statHandler;
         this.chatHandler = chatHandler;
         this.playerLoginHandler = playerLoginHandler;
-        telnetRunner.addHandler(playerLoginHandler);
     }
 
     public void setConnectionSettings(ConnectionSettings connectionSettings) {
@@ -66,7 +65,6 @@ public class MonitoringService {
         if (handlerClass.equals(ChatHandler.class)) {
             telnetRunner.addHandler(chatHandler);
         }
-
         if (handlerClass.equals(PlayerLoginHandler.class)) {
             telnetRunner.addHandler(playerLoginHandler);
         }

@@ -39,9 +39,11 @@ public class PlayerService {
 
     public void logout(long entityId) {
         Player player = playerRepository.findByEntityId(entityId);
-        player.setOnline(false);
-        playerRepository.save(player);
-        cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.PLAYER, player));
+        if (player != null) {
+            player.setOnline(false);
+            playerRepository.save(player);
+            cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.PLAYER, player));
+        }
         //TODO: run lp command
     }
 }

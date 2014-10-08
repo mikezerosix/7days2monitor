@@ -1,12 +1,22 @@
 'use strict';
 
 sevenMonitor
-    .controller('ChatCtrl', function ($scope, $q, $timeout, $http, $window, SettingsService, TelnetService) {
+    .controller('ChatCtrl', function ($scope, $q, $timeout, $http, $window, SettingsService, TelnetService, PlayerService) {
         $scope.chatDays = [];
         $scope.today = '';
         $scope.processing = false;
         $scope.loading = true;
-
+        $scope.players;
+        $scope.getPlayers = function () {
+            PlayerService.getPlayers()
+                .success(function (data) {
+                    $scope.players = data;
+                })
+                .error(function (status) {
+                    alert(status);
+                });
+        };
+        $scope.getPlayers();
         $scope.readDays = function () {
             TelnetService.readChatDays()
                 .success(function (data) {
@@ -72,7 +82,9 @@ sevenMonitor
                 $scope.readDay();
             }
         });
-
+        $scope.$on('PLAYER', function (event, message) {
+            $scope.getPlayers();
+        });
         $scope.scrollTo = function () {
             var el = $window.document.getElementById('lastMessage');
             if (el) {

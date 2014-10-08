@@ -19,7 +19,7 @@
     <div class="chat-players">
         <h2>Players</h2>
         <ul>
-            <li>TODO</li>
+            <li class="player-{{p.online}}" ng-repeat="p in players" class="player{{player.online}}">{{p.name}}</li>
         </ul>
     </div>
 </div>

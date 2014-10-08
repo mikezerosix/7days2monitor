@@ -1,4 +1,6 @@
 package org.mikezerosix.entities;
+import org.mikezerosix.model.PlayerRole;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,13 +18,18 @@ public class Player {
     private String name;
     private Date joined;
     private Date lastLogin;
+    private String ip;
     private boolean online;
     private Date lastSync;
-
+    private PlayerRole role;
     private int pk;
     private int zk;
     private int score;
     private long clientId;
+    private int claims;
+    private long x;
+    private long y;
+    private long z;
 
     private Integer health;
 
@@ -129,4 +136,54 @@ public class Player {
     public void setHealth(Integer health) {
         this.health = health;
     }
+
+    public long getX() {
+        return x;
+    }
+
+    public void setX(long x) {
+        this.x = x;
+    }
+
+    public long getY() {
+        return y;
+    }
+
+    public void setY(long y) {
+        this.y = y;
+    }
+
+    public long getZ() {
+        return z;
+    }
+
+    public void setZ(long z) {
+        this.z = z;
+    }
+
+    public int getClaims() {
+        return claims;
+    }
+
+    public void setClaims(int claims) {
+        this.claims = claims;
+    }
+
+    public PlayerRole getRole() {
+        return role;
+    }
+
+    public void setRole(PlayerRole role) {
+        this.role = role;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+
 }

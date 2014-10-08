@@ -27,6 +27,7 @@ public class SettingsService {
     }
 
     public void init() {
+        monitoringService.addHandler(PlayerLoginHandler.class);
         Iterable<Setting> settingses = settingsRepository.findAll();
         boolean noSettings = true;
         for (Setting setting : settingses) {
@@ -58,6 +59,7 @@ public class SettingsService {
 
     private void initSettings() {
         for (HandlerSettingKeys key : HandlerSettingKeys.values()) {
+
             settingsRepository.save(new Setting(key.name(), null));
         }
     }
@@ -82,13 +84,7 @@ public class SettingsService {
                     monitoringService.removeHandler(StatHandler.class);
                 }
                 break;
-            case PLAYER_HANDLER_ENABLE:
-                if (Boolean.parseBoolean(setting.getValue())) {
-                    monitoringService.addHandler(PlayerLoginHandler.class);
-                } else {
-                    monitoringService.removeHandler(PlayerLoginHandler.class);
-                }
-                break;
+
             case STAT_HANDLER_DAYS:
                 long maxStat = SafeUtil.safeParseLong(setting.getValue());
                 monitoringService.setStatDays(maxStat);

@@ -1,43 +1,52 @@
 <div id="players-content">
+    <div id="player-list">
     <table border="1">
         <thead>
         <tr>
+            <th>Online</th>
             <th>Name</th>
-            <th>SteamId</th>
-            <th>EntityId</th>
-            <th>Joined</th>
+            <th>Role</th>
+            <th>Tags</th>
             <th>Last Login</th>
-            <th>Last Sync</th>
+            <th>IP</th>
             <th>PK</th>
             <th>ZK</th>
             <th>Score</th>
             <th>Health</th>
-            <th>Keystones</th>
-            <th> locate/ban/kick/promote</th>
+            <th>Claims</th>
+            <th>Coords</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="player in players" class="player{{player.online}}">
-            <td>{{player.name}}</td>
-            <td>
-                <a href="http://steamcommunity.com/profiles/{{player.steamId}}" target="_blank">{{player.steamId}}</a>
+        <tr ng-repeat="p in players" class="player-{{player.online}}">
+            <td><img ng-if="p.online" src="/img/48/green_ball-48.png" title="Online" height="16px" width="16px">
+                <img ng-if="!p.online" src="/img/48/grey_ball-48.png"title="Offline" height="16px" width="16px">
             </td>
-            <td>{{player.entityId}}</td>
-            <td>{{player.joined}}</td>
-            <td>{{player.lastLogin}}</td>
-            <td>{{player.lastSync}}</td>
-            <td>{{player.pk}}</td>
-            <td>{{player.zk}}</td>
-            <td>{{player.score}}</td>
-            <td>{{player.health}}</td>
-
-            <td>1.</td>
-            <td>2.</td>
-
+            <td>{{p.name}}</td>
+            <td>{{p.role}}</td>
+            <td></td>
+            <td>{{p.lastLogin}}</td>
+            <td>{{p.ip}}</td>
+            <td>{{p.pk}}</td>
+            <td>{{p.zk}}</td>
+            <td>{{p.score}}</td>
+            <td>{{p.health}}</td>
+            <td>{{p.claims}}</td>
+            <td>{{p.x}}, {{p.y}}, {{p.z}}</td>
         </tr>
         </tbody>
 
     </table>
-
+    </div>
+    <div id="player-details">
+        <h4>{{player.name}}</h4>
+        Name {{player.name}}
+        EntityId {{player.entityId}}
+        Joined {{player.joined}}
+        Last login {{p.lastLogin}}
+        Last IP {{p.ip}}
+        Steam ID <a href="http://steamcommunity.com/profiles/{{player.steamId}}" target="_blank">{{player.steamId}}</a>
+        friends ? games ?
+    </div>
 
 </div>
