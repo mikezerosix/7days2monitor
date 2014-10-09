@@ -6,6 +6,7 @@ import org.mikezerosix.comet.CometMessage;
 import org.mikezerosix.comet.CometSharedMessageQueue;
 import org.mikezerosix.comet.MessageTarget;
 import org.mikezerosix.entities.ConnectionSettings;
+import org.mikezerosix.telnet.commands.RepeatingCommand;
 import org.mikezerosix.telnet.commands.TelnetCommand;
 import org.mikezerosix.telnet.handlers.ServerGreetingHandler;
 import org.mikezerosix.telnet.handlers.TelnetOutputHandler;
@@ -18,6 +19,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.DelayQueue;
 
 /**
  * http://www.java2s.com/Code/Java/Network-Protocol/ExampleofuseofTelnetClient.htm
@@ -31,7 +33,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     private static final String LOGON_SUCCESSFUL = "Logon successful.";
     private static TelnetRunner instance = null;
     private final List<TelnetOutputHandler> handlers = new ArrayList<>();
-    private final ArrayBlockingQueue<TelnetCommand> commands = new ArrayBlockingQueue<>(12);
+    private final DelayQueue<TelnetCommand> commands = new DelayQueue<>();
     private final TelnetClient telnet = new TelnetClient();
     private BufferedInputStream input = null;
     private PrintStream output = null;
@@ -302,20 +304,17 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         }
     }
 
-    public boolean hasHandler(Class handler) {
-        for (TelnetOutputHandler telnetOutputHandler : handlers) {
-            if (telnetOutputHandler.getClass().equals(handler)) {
-                return true;
-            }
-        }
-        return false;
+    public void addCommand(TelnetCommand command) {
+        commands.add(command);
     }
-
     private void runCommand() throws IOException {
         if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();
             if (runningCommand != null) {
-                write(runningCommand.getCommand());
+                runningCommand.runCommand(output);
+                if (runningCommand instanceof  RepeatingCommand) {
+                    commands.add(runningCommand);
+                }
             }
         }
     }

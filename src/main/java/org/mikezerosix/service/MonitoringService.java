@@ -3,6 +3,7 @@ package org.mikezerosix.service;
 import org.mikezerosix.entities.ConnectionSettings;
 import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.telnet.TelnetRunner;
+import org.mikezerosix.telnet.commands.ListPlayersRepeatingCommand;
 import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
@@ -18,13 +19,15 @@ public class MonitoringService {
     private StatHandler statHandler;
     private ChatHandler chatHandler;
     private PlayerLoginHandler playerLoginHandler;
+    private ListPlayersRepeatingCommand listPlayersRepeatingCommand;
 
-    public MonitoringService(TelnetRunner telnetRunner, FTPService ftpService,  StatHandler statHandler, ChatHandler chatHandler, PlayerLoginHandler playerLoginHandler) {
+    public MonitoringService(TelnetRunner telnetRunner, FTPService ftpService,  StatHandler statHandler, ChatHandler chatHandler, PlayerLoginHandler playerLoginHandler, ListPlayersRepeatingCommand listPlayersRepeatingCommand) {
         this.telnetRunner = telnetRunner;
         this.ftpService = ftpService;
         this.statHandler = statHandler;
         this.chatHandler = chatHandler;
         this.playerLoginHandler = playerLoginHandler;
+        this.listPlayersRepeatingCommand = listPlayersRepeatingCommand;
     }
 
     public void setConnectionSettings(ConnectionSettings connectionSettings) {
@@ -65,10 +68,6 @@ public class MonitoringService {
         if (handlerClass.equals(ChatHandler.class)) {
             telnetRunner.addHandler(chatHandler);
         }
-        if (handlerClass.equals(PlayerLoginHandler.class)) {
-            telnetRunner.addHandler(playerLoginHandler);
-        }
-
     }
 
     public void removeHandler(Class chatHandlerClass) {
@@ -81,5 +80,10 @@ public class MonitoringService {
 
     public void setChatDays(int chatDays) {
         chatHandler.setMaxDays(chatDays);
+    }
+
+    public void init() {
+        telnetRunner.addHandler(playerLoginHandler);
+        telnetRunner.addCommand(listPlayersRepeatingCommand);
     }
 }

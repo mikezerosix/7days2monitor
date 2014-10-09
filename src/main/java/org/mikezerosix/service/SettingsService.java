@@ -27,7 +27,7 @@ public class SettingsService {
     }
 
     public void init() {
-        monitoringService.addHandler(PlayerLoginHandler.class);
+
         Iterable<Setting> settingses = settingsRepository.findAll();
         boolean noSettings = true;
         for (Setting setting : settingses) {
@@ -46,7 +46,7 @@ public class SettingsService {
         if (noConnections) {
             initConnections();
         }
-
+        monitoringService.init();
     }
 
     private void initConnections() {

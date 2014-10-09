@@ -6,6 +6,7 @@ import org.mikezerosix.ftp.FTPService;
 import org.mikezerosix.rest.*;
 import org.mikezerosix.service.*;
 import org.mikezerosix.telnet.TelnetRunner;
+import org.mikezerosix.telnet.commands.ListPlayersRepeatingCommand;
 import org.mikezerosix.telnet.handlers.ChatHandler;
 import org.mikezerosix.telnet.handlers.PlayerLoginHandler;
 import org.mikezerosix.telnet.handlers.StatHandler;
@@ -81,8 +82,8 @@ public class AppConfiguration {
 
     //TODO: maybe add handlerFactory class and pass it to this ?
     @Bean
-    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler, ChatHandler chatHandler, PlayerLoginHandler playerLoginHandler) {
-        return new MonitoringService(telnetRunner, ftpService, statHandler, chatHandler, playerLoginHandler);
+    public MonitoringService monitoringService(TelnetRunner telnetRunner, FTPService ftpService, StatHandler statHandler, ChatHandler chatHandler, PlayerLoginHandler playerLoginHandler, ListPlayersRepeatingCommand listPlayersRepeatingCommand) {
+        return new MonitoringService(telnetRunner, ftpService, statHandler, chatHandler, playerLoginHandler, listPlayersRepeatingCommand);
     }
 
     @Bean
@@ -108,6 +109,11 @@ public class AppConfiguration {
     @Bean
     public PlayerLoginHandler playerLoginHandler(PlayerService playerService) {
         return new PlayerLoginHandler( playerService);
+    }
+
+    @Bean
+    public ListPlayersRepeatingCommand listPlayersRepeatingCommand(PlayerService playerService) {
+        return new ListPlayersRepeatingCommand(playerService);
     }
 
     /* Routes */

@@ -46,4 +46,13 @@ public class PlayerService {
         }
         //TODO: run lp command
     }
+
+    public Player getPlayerByEntityId(long entityId) {
+        return playerRepository.findByEntityId(entityId);
+    }
+
+    public void save(Player player) {
+        // notify if ....
+        playerRepository.save(player);
+    }
 }

@@ -2,6 +2,9 @@ package org.mikezerosix.telnet.commands;
 
 import org.mikezerosix.util.TelnetLineUtil;
 
+import java.io.PrintStream;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,11 +29,6 @@ public class ListContent implements TelnetCommand {
     }
 
     @Override
-    public String getCommand() {
-        return "le";
-    }
-
-    @Override
     public Matcher[] matcher(String line) {
         return null;
     }
@@ -38,5 +36,20 @@ public class ListContent implements TelnetCommand {
     @Override
     public void handleInput(String input) {
 
+    }
+
+    @Override
+    public void runCommand(PrintStream stream) {
+
+    }
+
+    @Override
+    public long getDelay(TimeUnit unit) {
+        return 0;
+    }
+
+    @Override
+    public int compareTo(Delayed o) {
+        return 0;
     }
 }
