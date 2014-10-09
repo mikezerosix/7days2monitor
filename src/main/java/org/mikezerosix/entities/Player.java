@@ -2,6 +2,7 @@ package org.mikezerosix.entities;
 import org.mikezerosix.model.PlayerRole;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.util.Date;
 
 @Entity
@@ -9,9 +10,11 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Column(unique=true)
+    private long id;
+
+    @Column(unique=true )
     private String steamId;
+
     @Column(unique=true)
     private Long entityId;
 

@@ -312,6 +312,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
             runningCommand = commands.poll();
             if (runningCommand != null) {
                 runningCommand.runCommand(output);
+
                 if (runningCommand instanceof  RepeatingCommand) {
                     commands.add(runningCommand);
                 }

@@ -40,7 +40,7 @@ public class ListPlayersRepeatingCommand extends RepeatingCommand {
 
     @Override
     public Matcher[] matcher(String line) {
-        return new Matcher[] {pattern.matcher(line)};
+        return new Matcher[] {pattern.matcher(line), finishedPattern.matcher(line)};
     }
 
     @Override
