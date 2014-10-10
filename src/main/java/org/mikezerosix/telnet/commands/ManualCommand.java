@@ -1,6 +1,8 @@
 package org.mikezerosix.telnet.commands;
 
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
@@ -26,16 +28,5 @@ public abstract class ManualCommand implements TelnetCommand  {
         return 0;
     }
 
-    @Override
-    public synchronized void runCommand(PrintStream stream) {
-        nextRun = System.currentTimeMillis();
-        stream.println(getCommand());
-    }
 
-    abstract String getCommand();
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
 }

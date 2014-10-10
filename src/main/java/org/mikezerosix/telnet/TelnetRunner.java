@@ -36,7 +36,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     private final DelayQueue<TelnetCommand> commands = new DelayQueue<>();
     private final TelnetClient telnet = new TelnetClient();
     private BufferedInputStream input = null;
-    private PrintStream output = null;
+    private OutputStreamWriter output = null;
     private TelnetCommand runningCommand = null;
     private ServerInformation serverInformation = new ServerInformation();
     private ConnectionSettings connectionSettings;
@@ -148,8 +148,9 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
         while (isConnected()) {
             runCommand();
 
-            final String line = bufferedReader.readLine();
-            if (line != null && !line.isEmpty()) {
+            if (bufferedReader.ready()) {
+                final String line = bufferedReader.readLine();
+                //log.debug("read line: " + line );
                 commandHandleInput(line);
                 for (TelnetOutputHandler handler : handlers) {
                     try {
@@ -216,7 +217,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 telnet.connect(connectionSettings.getAddress(), connectionSettings.getPort());
                 waitForConnection();
                 input = new BufferedInputStream(telnet.getInputStream());
-                output = new PrintStream(telnet.getOutputStream());
+                output = new OutputStreamWriter(telnet.getOutputStream());
 
                 statusChange(TelnetStatus.LOGGING_IN);
                 readUntil(PLEASE_ENTER_PASSWORD, WRONG_PASSWORD);
@@ -253,7 +254,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
        /* String cmd = output + "\n";
         byte[] bytes = output.getBytes(Charsets.UTF_8);
         this.output.write(bytes);*/
-        this.output.println(output);
+        this.output.write(output + "\n");
         this.output.flush();
     }
 
@@ -307,16 +308,19 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     public void addCommand(TelnetCommand command) {
         commands.add(command);
     }
+
     private void runCommand() throws IOException {
         if (runningCommand == null || runningCommand.isFinished()) {
             runningCommand = commands.poll();
-            if (runningCommand != null) {
-                runningCommand.runCommand(output);
-
-                if (runningCommand instanceof  RepeatingCommand) {
-                    commands.add(runningCommand);
-                }
+            if (runningCommand == null) {
+                return;
             }
+            if (runningCommand instanceof  RepeatingCommand) {
+                runningCommand.resetCoolDown();
+                commands.add(runningCommand);
+            }
+
+            write(runningCommand.getCommand());
         }
     }
 

@@ -30,9 +30,9 @@ public class Player {
     private int score;
     private long clientId;
     private int claims;
-    private long x;
-    private long y;
-    private long z;
+    private double x;
+    private double y;
+    private double z;
 
     private Integer health;
 
@@ -140,27 +140,31 @@ public class Player {
         this.health = health;
     }
 
-    public long getX() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public double getX() {
         return x;
     }
 
-    public void setX(long x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public long getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(long y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public long getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(long z) {
+    public void setZ(double z) {
         this.z = z;
     }
 

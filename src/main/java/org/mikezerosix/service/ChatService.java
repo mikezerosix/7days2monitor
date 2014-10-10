@@ -3,6 +3,7 @@ package org.mikezerosix.service;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.rolling.RollingPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import com.google.common.collect.Lists;
 import com.sun.javafx.binding.StringFormatter;
@@ -52,7 +53,8 @@ public class ChatService {
 
     public void setMaxLogDays(int maxDays) {
         RollingFileAppender<ILoggingEvent> appender = getLogAppender();
-        TimeBasedRollingPolicy<ILoggingEvent> policy = (TimeBasedRollingPolicy<ILoggingEvent>) appender.getRollingPolicy();
+        RollingPolicy rollingPolicy = appender.getRollingPolicy();
+        TimeBasedRollingPolicy<ILoggingEvent> policy = (TimeBasedRollingPolicy<ILoggingEvent>) rollingPolicy;
         policy.setMaxHistory(maxDays);
     }
 
