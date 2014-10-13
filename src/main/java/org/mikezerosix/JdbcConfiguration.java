@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.inject.Provider;
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Properties;
 
 @ComponentScan
 @EnableJpaRepositories
@@ -26,7 +27,11 @@ import java.sql.Connection;
 @Configuration
 public class JdbcConfiguration {
     private final Logger log = LoggerFactory.getLogger(JdbcConfiguration.class);
-
+    private static Properties properties = new Properties();
+    static {
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
+    }
     @Bean
     public DataSource dataSource() {
         String driverStr = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -50,16 +55,14 @@ public class JdbcConfiguration {
      */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setDatabase(Database.DERBY);
         vendorAdapter.setGenerateDdl(true);
-
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan(Setting.class.getPackage().getName());
         factory.setDataSource(dataSource());
-
+        factory.setJpaProperties(properties);
         return factory;
     }
 

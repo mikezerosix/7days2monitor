@@ -37,6 +37,7 @@ public class Player {
     private Double z;
 
     private Integer health;
+    private String note;
 
     public Long getId() {
         return id;
@@ -173,6 +174,9 @@ public class Player {
     public Double getX() {
         return x;
     }
+    public String getNote() {
+        return note;
+    }
 
     public void setX(Double x) {
         this.x = x;
@@ -192,5 +196,8 @@ public class Player {
 
     public void setZ(Double z) {
         this.z = z;
+    }
+    public void setNote(String note) {
+        this.note = note;
     }
 }

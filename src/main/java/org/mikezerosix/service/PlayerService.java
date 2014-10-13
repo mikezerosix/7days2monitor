@@ -114,6 +114,7 @@ public class PlayerService {
     }
 
     public void setPlayerDays(long playerDays) {
+        log.info("Setting player log history to " + playerDays);
         this.playerDays = playerDays;
     }
 }

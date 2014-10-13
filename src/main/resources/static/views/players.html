@@ -36,26 +36,56 @@
         </tr>
         </tbody>
 
-    </table>
+        </table>
     </div>
     <div id="player-details">
-        <h4>{{selectedPlayer.name}} ({{selectedPlayer.id}})</h4>
+
+        <h4>Player details: {{selectedPlayer.name}}</h4>
+
         <div class="width-third">
-            <label class="pla">Name</label><span class="pla">{{selectedPlayer.name}}</span>
-            <label class="pla">Id</label><span class="pla">{{selectedPlayer.id}}</span>
-            <label class="pla">Entity Id</label><span class="pla">{{selectedPlayer.entityId}}</span>
-            <label class="pla">Client Id</label><span class="pla">{{selectedPlayer.clientId}}</span>
-            <label class="pla">Joined</label><span class="pla">{{selectedPlayer.joined}}</span>
-            <label class="pla">Last login</label><span class="pla">{{selectedPlayer.lastLogin}}</span>
-            <label class="pla">Last IP</label><span class="pla">{{selectedPlayer.ip}}</span>
-            <label class="pla">Steam </label>
-                <span class="pla">Id <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
-                 friends ?
-                    games ?
-                </span>
+            <p class="pla"><label class="pla">Name</label><span class="pla">{{selectedPlayer.name}}</span></p>
+
+            <p class="pla"><label class="pla">Online</label><span class="pla"> {{selectedPlayer.online}}</span></p>
+            <p class="pla"><label class="pla">Id</label><span class="pla">{{selectedPlayer.id}}</span></p>
+
+            <p class="pla"><label class="pla">Entity Id</label><span class="pla">{{selectedPlayer.entityId}}</span></p>
+
+            <p class="pla"><label class="pla">Client Id</label><span class="pla">{{selectedPlayer.clientId}}</span></p>
+
+            <p class="pla"><label class="pla">Joined</label><span class="pla">{{selectedPlayer.joined}}</span></p>
+
+            <p class="pla"><label class="pla">Last login</label><span class="pla">{{selectedPlayer.lastLogin}}</span>
+            </p>
+
+            <p class="pla"><label class="pla">Last IP</label><span class="pla">{{selectedPlayer.ip}} ? </span></p>
+
+            <p class="pla"><label class="pla">Steam</label><span class="pla">
+            Id <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
+            Friends ? Games ?
+            </span></p>
+            <p class="pla"><label class="pla">Tags</label><span class="pla"> ? </span></p>
+            <p class="pla"><label class="pla">Note</label><span class="pla">{{selectedPlayer.note}} ? </span></p>
+
         </div>
-        <div class="width-third"></div>
-        <div class="width-third"></div>
+        <div class="width-third">
+            <p class="pla"><label class="pla">Scope</label><span class="pla">{{selectedPlayer.score}}</span></p>
+
+            <p class="pla"><label class="pla">PK</label><span class="pla">{{selectedPlayer.pk}}</span></p>
+
+            <p class="pla"><label class="pla">ZK</label><span class="pla">{{selectedPlayer.zk}}</span></p>
+
+            <p class="pla"><label class="pla">Health</label><span class="pla">{{selectedPlayer.health}}</span></p>
+
+            <p class="pla"><label class="pla">Land claims</label><span class="pla">{{selectedPlayer.claims}}</span></p>
+
+            <p class="pla"><label class="pla">Buff</label><span class="pla">?</span>
+            </p>
+
+            <p class="pla"><label class="pla">Coordinates</label><span class="pla">{{selectedPlayer.x}}, {{selectedPlayer.y}}, {{selectedPlayer.z}}</span></p>
+
+        </div>
+
+
     </div>
 
 </div>
