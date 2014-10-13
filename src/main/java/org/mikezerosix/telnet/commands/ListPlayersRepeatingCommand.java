@@ -54,6 +54,7 @@ public class ListPlayersRepeatingCommand extends RepeatingCommand {
     public void handleInput(String input) {
         final Matcher[] matchers = matcher(input);
         if (matchers[0].find()) {
+            log.debug("reading player data:" + input);
             final long entityId = Long.parseLong(matchers[0].group(2).trim());
             Player player = playerService.getPlayerByEntityId(entityId, true);
             player.setEntityId(entityId);

@@ -33,8 +33,8 @@ public class Player {
     private double x;
     private double y;
     private double z;
-
     private Integer health;
+    private String note;
 
     public Long getId() {
         return id;
@@ -192,5 +192,11 @@ public class Player {
         this.ip = ip;
     }
 
+    public String getNote() {
+        return note;
+    }
 
+    public void setNote(String note) {
+        this.note = note;
+    }
 }

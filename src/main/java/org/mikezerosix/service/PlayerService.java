@@ -47,7 +47,7 @@ public class PlayerService {
         player.setLastLogin(new Date());
         player.setOnline(true);
         log.info(String.format("Player(%s) logged in: id=%d, entityId=%d, clientId=%d, steamId=%s", player.getName(), player.getId(), player.getEntityId(), player.getClientId(), player.getSteamId()));
-        playerRepository.save(player);
+        save(player);
         cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.PLAYER, player));
     }
 
@@ -56,7 +56,7 @@ public class PlayerService {
             log.info(String.format(" Logging out Player %s  ", player.getName()));
             player.setOnline(false);
             player.setLastSync(new Date());
-            playerRepository.save(player);
+            save(player);
             cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.PLAYER, player));
             return;
         }
@@ -76,6 +76,7 @@ public class PlayerService {
     }
 
     public void save(Player player) {
+        log.info("Saving player :" + player.getName());
         playerRepository.save(player);
     }
 

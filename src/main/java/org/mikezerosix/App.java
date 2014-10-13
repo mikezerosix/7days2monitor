@@ -22,8 +22,7 @@ public class App {
 
     @Inject
     private SettingsService settingsService;
-    @Inject
-    private TelnetRunner telnetRunner;
+
     @Inject
     private UserService userService;
 

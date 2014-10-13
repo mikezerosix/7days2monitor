@@ -1,53 +1,92 @@
 <div id="players-content">
     <div id="player-list">
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Online</th>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Tags</th>
-            <th>Last Login</th>
-            <th>IP</th>
-            <th>PK</th>
-            <th>ZK</th>
-            <th>Score</th>
-            <th>Health</th>
-            <th>Claims</th>
-            <th>Coords</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="p in players" class="player-{{player.online}}" ng-click="selectPlayer(p)" ng-class-odd="'odd'" ng-class-even="'even'">
-            <td><img ng-if="p.online" src="/img/48/green_ball-48.png" title="Online" height="16px" width="16px">
-                <img ng-if="!p.online" src="/img/48/grey_ball-48.png"title="Offline" height="16px" width="16px">
-            </td>
-            <td>{{p.name}}</td>
-            <td>{{p.role}}</td>
-            <td></td>
-            <td>{{p.lastLogin}}</td>
-            <td>{{p.ip}}</td>
-            <td>{{p.pk}}</td>
-            <td>{{p.zk}}</td>
-            <td>{{p.score}}</td>
-            <td>{{p.health}}</td>
-            <td>{{p.claims}}</td>
-            <td>{{p.x}}, {{p.y}}, {{p.z}}</td>
-        </tr>
-        </tbody>
+        <table border="1">
+            <thead>
+            <tr>
+                <th>Online</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Tags</th>
+                <th>Last Login</th>
+                <th>IP</th>
+                <th>PK</th>
+                <th>ZK</th>
+                <th>Score</th>
+                <th>Health</th>
+                <th>Claims</th>
+                <th>Coords</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="p in players" class="player-{{player.online}}" ng-click="selectPlayer(p)"
+                ng-class-odd="'odd'" ng-class-even="'even'">
+                <td><img ng-if="p.online" src="/img/48/green_ball-48.png" title="Online" height="16px" width="16px">
+                    <img ng-if="!p.online" src="/img/48/grey_ball-48.png" title="Offline" height="16px" width="16px">
+                </td>
+                <td>{{p.name}}</td>
+                <td>{{p.role}}</td>
+                <td></td>
+                <td>{{p.lastLogin}}</td>
+                <td>{{p.ip}}</td>
+                <td>{{p.pk}}</td>
+                <td>{{p.zk}}</td>
+                <td>{{p.score}}</td>
+                <td>{{p.health}}</td>
+                <td>{{p.claims}}</td>
+                <td>{{p.x}}, {{p.y}}, {{p.z}}</td>
+            </tr>
+            </tbody>
 
-    </table>
+        </table>
     </div>
     <div id="player-details">
-        <h4>{{selectedPlayer.name}} ({{selectedPlayer.id}})</h4>
-        Name {{selectedPlayer.name}}
-        EntityId {{selectedPlayer.entityId}}
-        EntityId {{selectedPlayer.clientId}}
-        Joined {{selectedPlayer.joined}}
-        Last login {{selectedPlayer.lastLogin}}
-        Last IP {{selectedPlayer.ip}}
-        Steam ID <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
-        friends ? games ?
+
+        <h4>Player details: {{selectedPlayer.name}}</h4>
+
+        <div class="width-third">
+            <p class="pla"><label class="pla">Name</label><span class="pla">{{selectedPlayer.name}}</span></p>
+
+            <p class="pla"><label class="pla">Online</label><span class="pla"> {{selectedPlayer.online}}</span></p>
+            <p class="pla"><label class="pla">Id</label><span class="pla">{{selectedPlayer.id}}</span></p>
+
+            <p class="pla"><label class="pla">Entity Id</label><span class="pla">{{selectedPlayer.entityId}}</span></p>
+
+            <p class="pla"><label class="pla">Client Id</label><span class="pla">{{selectedPlayer.clientId}}</span></p>
+
+            <p class="pla"><label class="pla">Joined</label><span class="pla">{{selectedPlayer.joined}}</span></p>
+
+            <p class="pla"><label class="pla">Last login</label><span class="pla">{{selectedPlayer.lastLogin}}</span>
+            </p>
+
+            <p class="pla"><label class="pla">Last IP</label><span class="pla">{{selectedPlayer.ip}} ? </span></p>
+
+            <p class="pla"><label class="pla">Steam</label><span class="pla">
+            Id <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
+            Friends ? Games ?
+            </span></p>
+            <p class="pla"><label class="pla">Tags</label><span class="pla"> ? </span></p>
+            <p class="pla"><label class="pla">Note</label><span class="pla">{{selectedPlayer.note}} ? </span></p>
+
+        </div>
+        <div class="width-third">
+            <p class="pla"><label class="pla">Scope</label><span class="pla">{{selectedPlayer.score}}</span></p>
+
+            <p class="pla"><label class="pla">PK</label><span class="pla">{{selectedPlayer.pk}}</span></p>
+
+            <p class="pla"><label class="pla">ZK</label><span class="pla">{{selectedPlayer.zk}}</span></p>
+
+            <p class="pla"><label class="pla">Health</label><span class="pla">{{selectedPlayer.health}}</span></p>
+
+            <p class="pla"><label class="pla">Land claims</label><span class="pla">{{selectedPlayer.claims}}</span></p>
+
+            <p class="pla"><label class="pla">Buff</label><span class="pla">?</span>
+            </p>
+
+            <p class="pla"><label class="pla">Coordinates</label><span class="pla">{{selectedPlayer.x}}, {{selectedPlayer.y}}, {{selectedPlayer.z}}</span></p>
+
+        </div>
+
+
     </div>
 
 </div>
