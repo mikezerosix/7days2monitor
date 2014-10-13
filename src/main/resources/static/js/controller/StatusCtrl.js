@@ -13,7 +13,10 @@ sevenMonitor
     $scope.messages = [];
     $scope.status = {'state': 'status-init', 'msg': 'ok'};
     $rootScope.errors = [];
-
+    $rootScope.$on('status_clear', function(event, message) {
+            $scope.status.state = 'ok';
+            $scope.messages = [];
+    });
     $rootScope.$on('status_error', function(event, message) {
       $scope.status.state = 'status-error';
       $scope.status.msg = message;

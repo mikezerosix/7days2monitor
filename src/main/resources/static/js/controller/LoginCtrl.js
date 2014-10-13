@@ -8,6 +8,7 @@ sevenMonitor
                 .success(function (data) {
                     $rootScope.authorized = data;
                     $rootScope.setupDone = checkSettings($q, $http);
+                    $rootScope.$emit('status_clear', 'Login ok');
                 })
                 .error(function (data, status) {
                     $rootScope.$emit('status_error', 'Login failed, error ' + status);

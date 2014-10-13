@@ -14,8 +14,11 @@
                 <li><label  title="Limit of days to store stat. Higher the day count the more it will take up some disk space.">Stats days:</label>
                     <input type="text" size="3" ng-model="settings['STAT_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('STAT_HANDLER_DAYS')">
                 </li>
-                <li><label  title="Limit of days to store player coordinates. Higher the day count, the more it will take up some disk space.">Stats days:</label>
-                <input type="text" size="3" ng-model="settings['PLAYER_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('STAT_HANDLER_DAYS')">
+                <li><label  title="Limit of days to store chat. Higher the day count the more it will take up some disk space.">Chat days:</label>
+                    <input type="text" size="3" ng-model="settings['CHAT_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('CHAT_HANDLER_DAYS')">
+                </li>
+        <!--        <li><label  title="Limit of days to store player coordinates. Higher the day count, the more it will take up some disk space.">Player position days:</label>
+                <input type="text" size="3" ng-model="settings['PLAYER_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('PLAYER_HANDLER_DAYS')">-->
             </li>
 
 
