@@ -59,8 +59,16 @@ public class SettingsService {
 
     private void initSettings() {
         for (HandlerSettingKeys key : HandlerSettingKeys.values()) {
-
-            settingsRepository.save(new Setting(key.name(), null));
+            switch (key) {
+                case PLAYER_HANDLER_DAYS:
+                    settingsRepository.save(new Setting(key.name(), "1"));
+                    break;
+                case PLAYER_HANDLER_INTERVAL:
+                    settingsRepository.save(new Setting(key.name(), "60000"));
+                    break;
+                default:
+                    settingsRepository.save(new Setting(key.name(), null));
+            }
         }
     }
 
@@ -73,10 +81,7 @@ public class SettingsService {
                     monitoringService.removeHandler(ChatHandler.class);
                 }
                 break;
-            case CHAT_HANDLER_DAYS:
-                int maxChat = SafeUtil.safeParseInteger(setting.getValue());
-                monitoringService.setChatDays(maxChat);
-                break;
+
             case STAT_HANDLER_ENABLE:
                 if (Boolean.parseBoolean(setting.getValue())) {
                     monitoringService.addHandler(StatHandler.class);
@@ -85,9 +90,17 @@ public class SettingsService {
                 }
                 break;
 
+            case CHAT_HANDLER_DAYS:
+                monitoringService.setChatDays(SafeUtil.safeParseInteger(setting.getValue()));
+                break;
             case STAT_HANDLER_DAYS:
-                long maxStat = SafeUtil.safeParseLong(setting.getValue());
-                monitoringService.setStatDays(maxStat);
+                monitoringService.setStatDays(SafeUtil.safeParseInteger(setting.getValue()));
+                break;
+            case PLAYER_HANDLER_DAYS:
+                monitoringService.setPlayerDays(SafeUtil.safeParseLong(setting.getValue()));
+                break;
+            case PLAYER_HANDLER_INTERVAL:
+                monitoringService.setPlayerInterval(SafeUtil.safeParseLong(setting.getValue()));
                 break;
         }
     }

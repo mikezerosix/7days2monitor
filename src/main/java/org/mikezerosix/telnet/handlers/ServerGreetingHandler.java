@@ -24,7 +24,7 @@ Difficulty:  4
 
 */
 public class ServerGreetingHandler implements TelnetOutputHandler {
-    public static final Logger log = LoggerFactory.getLogger(ServerGreetingHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ServerGreetingHandler.class);
     private static Pattern[] patterns = new Pattern[11];
     private TelnetRunner.ServerInformation serverInformation;
 

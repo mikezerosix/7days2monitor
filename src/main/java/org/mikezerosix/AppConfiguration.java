@@ -40,6 +40,8 @@ public class AppConfiguration {
 
     @Inject
     private PlayerRepository playerRepository;
+    @Inject
+    private PlayerPositionRepository playerPositionRepository;
 
     @Inject
     private StatRepository statRepository;
@@ -91,8 +93,8 @@ public class AppConfiguration {
         return new ChatService(cometSharedMessageQueue);
     }
     @Bean
-    public PlayerService playerService(CometSharedMessageQueue cometSharedMessageQueue, PlayerRepository playerRepository) {
-        return new PlayerService(cometSharedMessageQueue,playerRepository);
+    public PlayerService playerService(CometSharedMessageQueue cometSharedMessageQueue, PlayerRepository playerRepository, PlayerPositionRepository playerPositionRepository) {
+        return new PlayerService(cometSharedMessageQueue,playerRepository,playerPositionRepository);
     }
 
     /* Handlers   */

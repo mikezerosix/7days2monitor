@@ -25,6 +25,10 @@ public abstract class RepeatingCommand implements TelnetCommand {
         return 0;
     }
 
+    public  void setDelay(long delay) {
+        this.delay = delay;
+    }
+
     @Override
     public void resetCoolDown() {
         nextRun = System.currentTimeMillis() + delay;

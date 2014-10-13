@@ -43,7 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerLoginHandler implements TelnetOutputHandler {
-    public static final Logger log = LoggerFactory.getLogger(PlayerLoginHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerLoginHandler.class);
     public static final String REQUEST_TO_SPAWN_PLAYER = TelnetLineUtil.TIME_STAMP + "RequestToSpawnPlayer: (\\d+), (\\d+), (.*?), (\\d+).*";
     private final Pattern spawnPattern = Pattern.compile(REQUEST_TO_SPAWN_PLAYER);
     public static final String AUTHENTICATING_PLAYER = TelnetLineUtil.TIME_STAMP + "Authenticating player: (.*?)\\sSteamId: (\\d+) TicketLen: (\\d+) Result: OK";

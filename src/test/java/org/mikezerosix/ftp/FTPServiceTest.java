@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class FTPServiceTest {
-    public static final Logger log = LoggerFactory.getLogger(FTPServiceTest.class);
+    private static final Logger log = LoggerFactory.getLogger(FTPServiceTest.class);
 
     private static ConnectionSettings connectionSettings = new ConnectionSettings();
     private FTPService ftpService = new FTPService(new CometSharedMessageQueue());

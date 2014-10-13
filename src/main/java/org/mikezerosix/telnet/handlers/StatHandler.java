@@ -23,7 +23,7 @@ import static org.mikezerosix.util.TelnetLineUtil.TIME_STAMP;
  */
 
 public class StatHandler implements TelnetOutputHandler {
-    public static final Logger log = LoggerFactory.getLogger(StatHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(StatHandler.class);
     public static final String STAT_TRIGGER = TIME_STAMP + "STATS: "
             + DECIMAL_GROUP + ","
             + DECIMAL_GROUP + ","

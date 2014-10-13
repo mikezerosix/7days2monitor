@@ -150,7 +150,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
 
             if (bufferedReader.ready()) {
                 final String line = bufferedReader.readLine();
-                //log.debug("read line: " + line );
+                log.debug("read line: " + line );
                 commandHandleInput(line);
                 for (TelnetOutputHandler handler : handlers) {
                     try {
@@ -319,7 +319,6 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 runningCommand.resetCoolDown();
                 commands.add(runningCommand);
             }
-
             write(runningCommand.getCommand());
         }
     }

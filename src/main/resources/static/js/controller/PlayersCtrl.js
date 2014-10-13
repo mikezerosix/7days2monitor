@@ -3,7 +3,7 @@
 sevenMonitor
     .controller('PlayersCtrl', function ($scope, $rootScope, PlayerService) {
         $rootScope.currTab = 'players' ||  $rootScope.currTab;
-        $scope.selectedPlayer;
+        $scope.selectedPlayer = {};
         $scope.players;
         $scope.getPlayers = function () {
             PlayerService.getPlayers()

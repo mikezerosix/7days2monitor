@@ -128,7 +128,13 @@ h2.login {
     vertical-align: top;
 }
 
+tr.even {
+    background-color: lightgray;
+}
 
+tr.selected {
+    background-color: cornflowerblue;
+}
 .black {
     color: #000000;
 }
@@ -336,4 +342,12 @@ li.player-true {
 }
 li.player-false {
     list-style-image: url('/img/grey_ball-10.png');
+}
+label.pla {
+
+}
+span.pla {
+    display: block;
+    left:10em;
+
 }

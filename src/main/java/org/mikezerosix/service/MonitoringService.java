@@ -86,4 +86,12 @@ public class MonitoringService {
         telnetRunner.addHandler(playerLoginHandler);
         telnetRunner.addCommand(listPlayersRepeatingCommand);
     }
+
+    public void setPlayerDays(long playerDays) {
+        listPlayersRepeatingCommand.setPlayerDays(playerDays);
+    }
+
+    public void setPlayerInterval(long l) {
+        listPlayersRepeatingCommand.setDelay(l);
+    }
 }

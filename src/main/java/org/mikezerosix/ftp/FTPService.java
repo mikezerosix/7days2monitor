@@ -16,7 +16,7 @@ import java.nio.file.AccessDeniedException;
  * http://commons.apache.org/proper/commons-net/apidocs/org/apache/commons/net/ftp/FTPClient.html
  */
 public class FTPService {
-    public static final Logger log = LoggerFactory.getLogger(FTPService.class);
+    private static final Logger log = LoggerFactory.getLogger(FTPService.class);
     private FTPClient ftp;
     private ConnectionSettings connectionSettings;
     private CometSharedMessageQueue cometSharedMessageQueue;

@@ -2,7 +2,7 @@ package org.mikezerosix.entities;
 import org.mikezerosix.model.PlayerRole;
 
 import javax.persistence.*;
-import javax.validation.constraints.Null;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -18,6 +18,7 @@ public class Player {
     @Column(unique=true)
     private Long entityId;
 
+    @NotNull
     private String name;
     private Date joined;
     private Date lastLogin;
@@ -30,9 +31,10 @@ public class Player {
     private int score;
     private long clientId;
     private int claims;
-    private double x;
-    private double y;
-    private double z;
+
+    private Double x;
+    private Double y;
+    private Double z;
 
     private Integer health;
 
@@ -144,30 +146,6 @@ public class Player {
         this.id = id;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    public void setZ(double z) {
-        this.z = z;
-    }
-
     public int getClaims() {
         return claims;
     }
@@ -192,5 +170,27 @@ public class Player {
         this.ip = ip;
     }
 
+    public Double getX() {
+        return x;
+    }
 
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
+
+    public Double getZ() {
+        return z;
+    }
+
+    public void setZ(Double z) {
+        this.z = z;
+    }
 }

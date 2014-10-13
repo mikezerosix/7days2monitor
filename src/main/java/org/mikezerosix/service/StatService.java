@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 
 public class StatService {
-    public static final Logger log = LoggerFactory.getLogger(StatService.class);
+    private static final Logger log = LoggerFactory.getLogger(StatService.class);
     public static final long DAY = 24 * 60 * 60 * 1000;
     private StatRepository statRepository;
     private CometSharedMessageQueue cometSharedMessageQueue;
@@ -25,16 +25,20 @@ public class StatService {
 
     public void record(Stat stat) {
         statRepository.save(stat);
+        runCleanUp();
+        Object[] maxStat = statRepository.getMaxStat();
+        CometMessage statReport = new CometMessage(MessageTarget.STAT, new StatReport(stat, maxStat));
+        cometSharedMessageQueue.addMessage(statReport);
+    }
+
+    private void runCleanUp() {
         if (statDays > 0) {
             if (--tick < 1) {
                 tick = 120;
                 statRepository.cleanup(System.currentTimeMillis() - statDays);
-                log.info("pruning stat db");
+                log.info(String.format("pruning stat db older than %d days", statDays));
             }
         }
-        Object[] maxStat = statRepository.getMaxStat();
-        CometMessage statReport = new CometMessage(MessageTarget.STAT, new StatReport(stat, maxStat));
-        cometSharedMessageQueue.addMessage(statReport);
     }
 
     public void setStatDays(long statDays) {

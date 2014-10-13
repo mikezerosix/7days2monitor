@@ -5,15 +5,19 @@
         <fieldset>
             <legend>Global</legend>
             <ul>
-                <li><label for="chatEnable" title="Turn on chat monitoring. You can not see chat messages unless monitoring is on, but it will take up some disk space to store the chat">Enable chat:</label>
+                <li><label title="Turn on chat monitoring. You can not see chat messages unless monitoring is on, but it will take up some disk space to store the chat">Enable chat:</label>
                     <input type="checkbox" ng-model="settings['CHAT_HANDLER_ENABLE']" ng-true-value="'true'" ng-change="setSetting('CHAT_HANDLER_ENABLE')">
                 </li>
-                <li><label for="statEnable" title="Turn on stat monitoring. You can not see stats unless monitoring is on, but it will take up some disk space.">Enable stats:</label>
+                <li><label  title="Turn on stat monitoring. You can not see stats unless monitoring is on, but it will take up some disk space.">Enable stats:</label>
                     <input type="checkbox" ng-model="settings['STAT_HANDLER_ENABLE']" ng-true-value="'true'" ng-change="setSetting('STAT_HANDLER_ENABLE')">
                 </li>
-                <li><label for="statDays" title="Limit of days to store stat. Higher the day count more it will take up some disk space.">Stats days:</label>
+                <li><label  title="Limit of days to store stat. Higher the day count the more it will take up some disk space.">Stats days:</label>
                     <input type="text" size="3" ng-model="settings['STAT_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('STAT_HANDLER_DAYS')">
                 </li>
+                <li><label  title="Limit of days to store player coordinates. Higher the day count, the more it will take up some disk space.">Stats days:</label>
+                <input type="text" size="3" ng-model="settings['PLAYER_HANDLER_DAYS']" style="width: 3em;" ng-change="setSetting('STAT_HANDLER_DAYS')">
+            </li>
+
 
             </ul>
 

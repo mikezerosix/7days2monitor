@@ -18,13 +18,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="p in players" class="player-{{player.online}}" ng-click="selectPlayer(p)" ng-class-odd="'odd'" ng-class-even="'even'">
+        <tr ng-repeat="p in players" ng-class="{selected: p.id == selectedPlayer.id}" ng-click="selectPlayer(p)" ng-class-odd="'odd'" ng-class-even="'even'">
             <td><img ng-if="p.online" src="/img/48/green_ball-48.png" title="Online" height="16px" width="16px">
                 <img ng-if="!p.online" src="/img/48/grey_ball-48.png"title="Offline" height="16px" width="16px">
             </td>
             <td>{{p.name}}</td>
             <td>{{p.role}}</td>
-            <td></td>
+            <td> </td>
             <td>{{p.lastLogin}}</td>
             <td>{{p.ip}}</td>
             <td>{{p.pk}}</td>
@@ -40,14 +40,22 @@
     </div>
     <div id="player-details">
         <h4>{{selectedPlayer.name}} ({{selectedPlayer.id}})</h4>
-        Name {{selectedPlayer.name}}
-        EntityId {{selectedPlayer.entityId}}
-        EntityId {{selectedPlayer.clientId}}
-        Joined {{selectedPlayer.joined}}
-        Last login {{selectedPlayer.lastLogin}}
-        Last IP {{selectedPlayer.ip}}
-        Steam ID <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
-        friends ? games ?
+        <div class="width-third">
+            <label class="pla">Name</label><span class="pla">{{selectedPlayer.name}}</span>
+            <label class="pla">Id</label><span class="pla">{{selectedPlayer.id}}</span>
+            <label class="pla">Entity Id</label><span class="pla">{{selectedPlayer.entityId}}</span>
+            <label class="pla">Client Id</label><span class="pla">{{selectedPlayer.clientId}}</span>
+            <label class="pla">Joined</label><span class="pla">{{selectedPlayer.joined}}</span>
+            <label class="pla">Last login</label><span class="pla">{{selectedPlayer.lastLogin}}</span>
+            <label class="pla">Last IP</label><span class="pla">{{selectedPlayer.ip}}</span>
+            <label class="pla">Steam </label>
+                <span class="pla">Id <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
+                 friends ?
+                    games ?
+                </span>
+        </div>
+        <div class="width-third"></div>
+        <div class="width-third"></div>
     </div>
 
 </div>

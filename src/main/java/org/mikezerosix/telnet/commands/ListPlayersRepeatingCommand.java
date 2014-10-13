@@ -1,6 +1,7 @@
 package org.mikezerosix.telnet.commands;
 
 import org.mikezerosix.entities.Player;
+import org.mikezerosix.entities.PlayerPosition;
 import org.mikezerosix.service.PlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class ListPlayersRepeatingCommand extends RepeatingCommand {
     public void handleInput(String input) {
         final Matcher[] matchers = matcher(input);
         if (matchers[0].find()) {
+            log.debug("reading player: " + input);
             final long entityId = Long.parseLong(matchers[0].group(2).trim());
             Player player = playerService.getPlayerByEntityId(entityId, true);
             player.setEntityId(entityId);
@@ -63,7 +65,7 @@ public class ListPlayersRepeatingCommand extends RepeatingCommand {
             player.setY(Double.parseDouble(matchers[0].group(6).trim()));
             player.setHealth(Integer.parseInt(matchers[0].group(7).trim()));
             player.setSteamId(matchers[0].group(8));
-            player.setLastSync(new Date(nextRun- delay));
+            player.setLastSync(new Date(nextRun - delay));
             if (!player.isOnline()){
                 playerService.login(player);
             } else {
@@ -74,5 +76,9 @@ public class ListPlayersRepeatingCommand extends RepeatingCommand {
             playerService.logoutStale(new Date(nextRun- delay));
             finished = true;
         }
+    }
+
+    public void setPlayerDays(long playerDays) {
+        playerService.setPlayerDays(playerDays);
     }
 }

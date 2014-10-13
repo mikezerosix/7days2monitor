@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChatService {
-    public static Logger chatLogger = LoggerFactory.getLogger(ChatService.class);
+    private static final Logger chatLogger = LoggerFactory.getLogger(ChatService.class);
     public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS ");
     private CometSharedMessageQueue cometSharedMessageQueue;
     private static AtomicInteger readingLog = new AtomicInteger(0);
