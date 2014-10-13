@@ -9,7 +9,7 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
                     if (data != 'null') {
                         $rootScope.authorized = data;
                     } else {
-                        $rootScope.authorized = false;
+                        $rootScope.authorized = undefined;
                     }
                 })
                 .error(function (data, status) {

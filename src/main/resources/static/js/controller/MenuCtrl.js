@@ -18,7 +18,7 @@ sevenMonitor
         $scope.logout = function () {
             $http.delete('/protected/login')
                 .success(function (data) {
-                    alert('You are logged out');
+                    $rootScope.authorized = undefined;
                 })
                 .error(function (status) {
                     alert('Error: ' + status);

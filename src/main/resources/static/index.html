@@ -38,7 +38,7 @@
 
 </head>
 <body>
-<div ng-if="authorized === false" ng-controller="LoginCtrl" class="centered login">
+<div ng-if="!authorized" ng-controller="LoginCtrl" class="centered login">
     <h2 class="login">Login</h2>
     <form id="login" ng-submit="submit()">
         <input ng-model="user.name" type="text" name="user" placeholder="Username" />

@@ -17,8 +17,8 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
                 }, 1000);
             })
             .error(function (data, status) {
-                $rootScope.$emit('status_error', 'CometService error(' + status + '): ' + data);
                 if (typeof $rootScope.authorized != 'undefined') {
+                    $rootScope.$emit('status_error', 'CometService error(' + status + '): ' + data);
                     $rootScope.authorized = undefined;
                 }
                 $timeout(function () {
