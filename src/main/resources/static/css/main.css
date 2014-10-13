@@ -142,7 +142,13 @@ h2.login {
     display: inline-block;
     vertical-align: top;
 }
-
+.width-fourth {
+    width: 33%;
+    min-width: 17em;
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+}
 tr.even {
     background-color: lightgray;
 }
@@ -396,7 +402,7 @@ li.chat-line {
     bottom: 20px;
     position: absolute;
     width: 100%;
-    height: 50%;
+    height: 55%;
     border: azure;
     border-style: groove;
 }
@@ -407,14 +413,6 @@ li.player-true {
 
 li.player-false {
     list-style-image: url('/img/grey_ball-10.png');
-}
-label.pla {
-
-}
-span.pla {
-    display: block;
-    left:10em;
-
 }
 
 label.pla {

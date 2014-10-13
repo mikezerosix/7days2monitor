@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class RepeatingCommand implements TelnetCommand {
     protected static long delay = 1000 * 60;
     protected static long nextRun = nextRun = System.currentTimeMillis() + 1000;
-
+    protected boolean finished = false;
     @Override
     public long getDelay(TimeUnit unit) {
         return unit.convert(nextRun - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
@@ -30,8 +30,11 @@ public abstract class RepeatingCommand implements TelnetCommand {
     }
 
     @Override
-    public void resetCoolDown() {
+    public void reset() {
         nextRun = System.currentTimeMillis() + delay;
+        finished = false;
     }
+
+
 }
 

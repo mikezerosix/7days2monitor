@@ -42,7 +42,7 @@
 
         <h4>Player details: {{selectedPlayer.name}}</h4>
 
-        <div class="width-third">
+        <div class="width-fourth">
             <p class="pla"><label class="pla">Name</label><span class="pla">{{selectedPlayer.name}}</span></p>
 
             <p class="pla"><label class="pla">Online</label><span class="pla"> {{selectedPlayer.online}}</span></p>
@@ -63,26 +63,23 @@
             Id <a href="http://steamcommunity.com/profiles/{{selectedPlayer.steamId}}" target="_blank">{{selectedPlayer.steamId}}</a>
             Friends ? Games ?
             </span></p>
-            <p class="pla"><label class="pla">Tags</label><span class="pla"> ? </span></p>
-            <p class="pla"><label class="pla">Note</label><span class="pla">{{selectedPlayer.note}} ? </span></p>
+
+            <p class="pla"><label class="pla">Note</label><span class="pla"><textarea ng-model="selectedPlayer.note"></textarea> </span></p>
 
         </div>
-        <div class="width-third">
-            <p class="pla"><label class="pla">Scope</label><span class="pla">{{selectedPlayer.score}}</span></p>
-
-            <p class="pla"><label class="pla">PK</label><span class="pla">{{selectedPlayer.pk}}</span></p>
-
-            <p class="pla"><label class="pla">ZK</label><span class="pla">{{selectedPlayer.zk}}</span></p>
-
-            <p class="pla"><label class="pla">Health</label><span class="pla">{{selectedPlayer.health}}</span></p>
-
+        <div class="width-fourth">
             <p class="pla"><label class="pla">Land claims</label><span class="pla">{{selectedPlayer.claims}}</span></p>
-
-            <p class="pla"><label class="pla">Buff</label><span class="pla">?</span>
-            </p>
-
             <p class="pla"><label class="pla">Coordinates</label><span class="pla">{{selectedPlayer.x}}, {{selectedPlayer.y}}, {{selectedPlayer.z}}</span></p>
-
+            <p class="pla"><label class="pla">Scope</label><span class="pla">{{selectedPlayer.score}}</span></p>
+            <p class="pla"><label class="pla">PK</label><span class="pla">{{selectedPlayer.pk}}</span></p>
+            <p class="pla"><label class="pla">ZK</label><span class="pla">{{selectedPlayer.zk}}</span></p>
+            <p class="pla"><label class="pla">Health</label><span class="pla">{{selectedPlayer.health}}</span></p>
+            <p class="pla"><label class="pla">Tags</label><span class="pla"> ? </span></p>
+            <p class="pla"><label class="pla">Role</label><span class="pla">{{selectedPlayer.role}}</span></p>
+            <p class="pla"><label class="pla">Buff</label>
+            <ul><li>some buff <a onclick="alert('todo');">[x]</a></li></ul>
+            <button onclick="alert('todo');">Add Buff</button>
+            </p>
         </div>
 
 

@@ -11,5 +11,5 @@ import java.util.concurrent.Delayed;
 public interface TelnetCommand extends TelnetOutputHandler, Delayed {
     public boolean isFinished();
     public String getCommand();
-    public void resetCoolDown();
+    public void reset();
 }

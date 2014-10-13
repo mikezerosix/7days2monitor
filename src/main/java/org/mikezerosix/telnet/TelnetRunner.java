@@ -1,6 +1,5 @@
 package org.mikezerosix.telnet;
 
-import com.google.common.base.Charsets;
 import org.apache.commons.net.telnet.*;
 import org.mikezerosix.comet.CometMessage;
 import org.mikezerosix.comet.CometSharedMessageQueue;
@@ -15,10 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.DelayQueue;
 
 /**
@@ -316,7 +313,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                 return;
             }
             if (runningCommand instanceof  RepeatingCommand) {
-                runningCommand.resetCoolDown();
+                runningCommand.reset();
                 commands.add(runningCommand);
             }
             final String command = runningCommand.getCommand();
@@ -326,9 +323,10 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
     }
 
     private void commandHandleInput(String line) {
-        if (runningCommand != null) {
-            runningCommand.handleInput(line);
+        if (runningCommand == null || runningCommand.isFinished()) {
+            return;
         }
+        runningCommand.handleInput(line);
     }
 
     public enum TelnetStatus {

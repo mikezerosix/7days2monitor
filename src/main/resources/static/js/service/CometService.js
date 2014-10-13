@@ -18,7 +18,9 @@ sevenMonitor.factory('CometService', function ($q, $http, $rootScope, $timeout) 
             })
             .error(function (data, status) {
                 $rootScope.$emit('status_error', 'CometService error(' + status + '): ' + data);
-                $rootScope.authorized = undefined;
+                if (typeof $rootScope.authorized != 'undefined') {
+                    $rootScope.authorized = undefined;
+                }
                 $timeout(function () {
                     cometPoll();
                 }, 10000);
