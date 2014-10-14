@@ -58,6 +58,13 @@ var sevenMonitor = angular.module('sevenMonitor', ['ngRoute', 'ngResource', 'ui.
                 resolve: {
                     authorized: checkRouting
                 }
+            })
+            .when('/triggers', {
+                templateUrl: '/views/triggers.html',
+                controller: 'TriggersCtrl',
+                resolve: {
+                    authorized: checkRouting
+                }
             });
 
 

@@ -1,7 +1,8 @@
 'use strict';
 
 sevenMonitor
-    .controller('ChatCtrl', function ($scope, $q, $timeout, $http, $window, SettingsService, TelnetService, PlayerService) {
+    .controller('ChatCtrl', function ($scope, $rootScope, $q, $timeout, $http, $window, SettingsService, TelnetService, PlayerService) {
+        $rootScope.currTab['chat'] = true;
         $scope.chatDays = [];
         $scope.today = '';
         $scope.processing = false;
@@ -27,7 +28,6 @@ sevenMonitor
                 });
         };
         $scope.readDay = function (day) {
-
             $scope.processing = true;
             $scope.$emit('show_loading', '');
             TelnetService.readChatDay(day)
@@ -51,6 +51,10 @@ sevenMonitor
             $scope.$emit('hide_loading', '');
             $scope.processing = false;
         };
+        $scope.hideDay = function (day) {
+            $scope.chatDays[day] = [];
+        };
+
         $scope.readDays();
         $scope.readDay();
 

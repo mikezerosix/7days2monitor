@@ -18,7 +18,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="p in players" ng-class="{selected: p.id == selectedPlayer.id}" ng-click="selectPlayer(p)" ng-class-odd="'odd'" ng-class-even="'even'">
+        <tr ng-repeat="p in players | orderBy: 'name' " ng-class="{selected: p.id == selectedPlayer.id}" ng-click="selectPlayer(p)" ng-class-odd="'odd'" ng-class-even="'even'">
             <td><img ng-if="p.online" src="/img/48/green_ball-48.png" title="Online" height="16px" width="16px">
                 <img ng-if="!p.online" src="/img/48/grey_ball-48.png"title="Offline" height="16px" width="16px">
             </td>

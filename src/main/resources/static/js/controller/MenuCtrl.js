@@ -2,7 +2,7 @@
 
 sevenMonitor
     .controller('MenuCtrl', function ($scope, $rootScope, $location, $http) {
-        $rootScope.currTab = '' || $rootScope.currTab;
+        $rootScope.currTab = [];
         $scope.serverName = '';
         $rootScope.$on('serverName', function (event, message) {
             $scope.serverName = message;

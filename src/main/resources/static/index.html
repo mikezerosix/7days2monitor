@@ -35,6 +35,7 @@
     <script src="js/controller/UserCtrl.js?v1"></script>
     <script src="js/controller/ChatCtrl.js?v2"></script>
     <script src="js/controller/PlayersCtrl.js?v1"></script>
+    <script src="js/controller/TriggersCtrl.js"></script>
 
 </head>
 <body>
@@ -67,11 +68,10 @@
     <div style="float: none;"></div>
 
     <tabset ng-if="authorized">
-        <tab ng-click="selectTab('main')"> <tab-heading class="tab-heading"><img src="/img/home-16.png"> Home</tab-heading> </tab>
-        <tab ng-click="selectTab('players')" > <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
-        <tab ng-click="selectTab('chat')"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
-        <!--        <tab ng-click="selectTab('requests')"> <tab-heading><img src="/img/16/request-16.png"> Request</tab-heading> </tab>
-        -->
+        <tab ng-click="selectTab('main')" active="currTab['main']"> <tab-heading class="tab-heading"><img src="/img/home-16.png"> Home</tab-heading> </tab>
+        <tab ng-click="selectTab('players')" active="currTab['players']"> <tab-heading><img src="/img/players-16.png"> Players</tab-heading> </tab>
+        <tab ng-click="selectTab('chat')" active="currTab['chat']"> <tab-heading><img src="/img/chat-16.png"> Chat</tab-heading> </tab>
+        <tab ng-click="selectTab('triggers')" active="currTab['triggers']"> <tab-heading><img src="/img/16/lightbulb_16.png">Triggers</tab-heading> </tab>
     </tabset>
 
 </div>

@@ -2,7 +2,7 @@
 
 sevenMonitor.controller('MainCtrl', function ($scope, $rootScope, $q, $http, $timeout, SettingsService, TelnetService, FTPService, StatService) {
 
-    $rootScope.currTab = 'main' ||  $rootScope.currTab;
+    $rootScope.currTab['main'] = true;
     $scope.Math = window.Math;
     $scope.errors = $rootScope.errors;
     $scope.uptime;

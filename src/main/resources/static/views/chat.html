@@ -4,8 +4,11 @@
             <img class="loading" src="/img/large-loader.gif">
         </div>
         <fieldset class="chat-day" ng-if="!loading"  ng-repeat="day in chatDays">
-            <legend class="chat-day">{{day}}</legend>
-            <a ng-hide="chatDays[day].length > 0" ng-click="readDay(day)">Show</a>
+            <legend class="chat-day">{{day}}
+                <a ng-hide="chatDays[day].length > 0" ng-click="readDay(day)">Show</a>
+                <a ng-show="chatDays[day].length > 0 && today != day" ng-click="hideDay(day)">Hide</a>
+            </legend>
+
             <ul class="chat-listing">
                 <li class="chat-line" ng-repeat="msg in chatDays[day] track by $index">
                     <span class="chat-time">{{msg.time | limitTo:8}}</span>
@@ -19,8 +22,11 @@
     <div class="chat-players">
         <h2>Players</h2>
         <ul>
-            <li class="player-{{p.online}}" ng-repeat="p in players" class="player{{player.online}}">{{p.name}}</li>
+            <li class="player-{{p.online}}" ng-repeat="p in players | filter:{ online: offlineFilter } | orderBy: 'name' " class="player{{player.online}}">{{p.name}}</li>
         </ul>
+        <div id="chat-player-buttons">
+            <input type="checkbox" ng-model="offlineFilter" ng-true-value="true" ng-false-value="''" >Hide offline
+        </div>
     </div>
 </div>
 <div class="chat-bottom">

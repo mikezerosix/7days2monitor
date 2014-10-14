@@ -1,8 +1,10 @@
 'use strict';
 
 sevenMonitor
-    .controller('SettingsCtrl', function ($scope, $q, $http, $modal, SettingsService) {
-
+    .controller('SettingsCtrl', function ($scope, $rootScope,  $q, $http, $modal, SettingsService) {
+        for (var key in $rootScope.currTab) {
+            $rootScope.currTab[key] = false;
+        }
         $scope.settings = [];
         $scope.settingsIds = [];
         $scope.users = [];

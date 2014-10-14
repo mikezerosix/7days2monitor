@@ -339,9 +339,16 @@ legend.content-block {
     width: 18%;
     position: fixed;
     right: 0;
-    top: 65px;
+    top: 75px;
+    bottom: 55px;
 }
-
+.chat-players h2 {
+    margin: 0.5em 2px 2px;
+}
+#chat-player-buttons {
+    bottom: 0.5em;
+    position: absolute;
+}
 li.chat-line {
     list-style-type: none;
     margin-left: 0.25em;
