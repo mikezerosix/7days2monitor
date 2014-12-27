@@ -157,6 +157,7 @@ public class TelnetRunner extends Thread implements TelnetNotificationHandler {
                         log.error(msg, e);
                         cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.ERROR, msg));
                     }
+
                 }
             } else {
                 safeSleep(waitTime);

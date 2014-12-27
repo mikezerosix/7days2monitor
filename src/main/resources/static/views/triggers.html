@@ -2,7 +2,8 @@
     <table>
         <thead>
         <tr>
-            <th>Event</th>
+            <th>Monitor</th>
+            <th>Params</th>
             <th>Response</th>
         </tr>
         </thead>
@@ -14,9 +15,41 @@
 
             </ol>
         </td> </tr>
+        <tr ng-repeat="monitor in monitors">
+            <td>monitor.type</td>
+            <td>monitor.param1</td>
+            <td> ?</td>
+        </tr>
         </tbody>
 
     </table>
+    <button ng-click="createMonitor()">Add</button>
+     Monitors:
+    --------
+     Player login-> PlayerLoginEvent
+     Player logout -> Player
+     Player inventory Count item $1 limit $2
+     Player proximity coords $1,$2
+     Player invades land control
+     Player establishes land control
+     Player loses land control
+     Player say $1
+
+     Stat $1 exceeds $2
+     Stat $1 fall below $2
+     Connection $1 established
+     Connection $1 lost
+
+    Action:
+    ---------
+    wait $1 sec
+    say $1,$2 -> SayAction.accepts(Object o) {
+    email to $1
+    im to $1
+    kick
+    ban
+    spawn entity
+    tag 
 
 
 </div>

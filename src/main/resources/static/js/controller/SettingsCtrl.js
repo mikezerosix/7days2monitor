@@ -64,7 +64,7 @@ sevenMonitor
         $scope.openConnection = function (connection) {
             $scope.connection = connection;
             var modalInstance = $modal.open({
-                templateUrl: '/views/connection.html',
+                templateUrl: '/views/partial/connection.html',
                 controller: 'ConnectionsCtrl',
                 backdrop: 'static',
                 resolve: {
@@ -99,7 +99,7 @@ sevenMonitor
         $scope.openUser = function (user) {
             $scope.user = user;
             var modalInstance = $modal.open({
-                templateUrl: '/views/user.html',
+                templateUrl: '/views/partial/user.html',
                 controller: 'UserCtrl',
                 backdrop: 'static',
                 resolve: {

@@ -84,7 +84,6 @@ public class PlayerService {
         Player save = playerRepository.save(player);
         savePosition(save);
         cometSharedMessageQueue.addMessage(new CometMessage(MessageTarget.PLAYER, save));
-
     }
 
     private void savePosition(Player player) {

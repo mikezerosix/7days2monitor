@@ -83,13 +83,22 @@ public class PlayerLoginHandler implements TelnetOutputHandler {
             final long entityId = Long.parseLong(matchers[0].group(1).trim());
             final long clientId = Long.parseLong(matchers[0].group(2).trim());
             final String name = matchers[0].group(3).trim();
-            playerService.login(entityId, clientId, name);
+            loginAction(entityId, clientId, name);
             return;
         }
         if (matchers[1].find()) {
             final long entityId = Long.parseLong(matchers[1].group(2).trim());
-            playerService.logout(entityId);
+            logoutAction(entityId);
         }
 
     }
+
+    public void logoutAction(long entityId) {
+        playerService.logout(entityId);
+    }
+
+    public void loginAction(long entityId, long clientId, String name) {
+        playerService.login(entityId, clientId, name);
+    }
+
 }
