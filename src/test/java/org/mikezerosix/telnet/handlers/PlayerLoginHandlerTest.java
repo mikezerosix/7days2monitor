@@ -15,10 +15,10 @@ public class PlayerLoginHandlerTest {
 
     @Test
     public void testMatcher() throws Exception {
-        final Matcher matcher = playerLoginHandler.matcher("167515.900 RequestToSpawnPlayer: 221, 99, [FF00FF]Camalot, 11")[1];
+        final Matcher matcher = playerLoginHandler.matcher("2015-09-22T22:03:37 816874.191 INF RequestToSpawnPlayer: 171, Mike06, 11\n")[1];
         assertTrue(matcher.matches());
 
         assertThat(Long.parseLong(matcher.group(1).trim()), equalTo(221L));
-        final Matcher matcher2 = playerLoginHandler.matcher("19024.030 RequestToSpawnPlayer: 171, 11, Mike06, 10")[1];
+        final Matcher matcher2 = playerLoginHandler.matcher("2015-09-22T22:03:37 816874.191 INF RequestToSpawnPlayer: 171, Mike06, 11\n")[1];
     }
 }

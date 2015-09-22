@@ -27,12 +27,10 @@ public class PlayerService {
         playerPositionRepository = PlayerPositionRepository;
     }
 
-    public void login(long entityId, long clientId, String name) {
+    public void login(long entityId, String name) {
         Player player = getPlayerByEntityId(entityId, true);
-        player.setClientId(clientId);
         player.setEntityId(entityId);
         player.setName(name);
-
         login(player);
     }
 

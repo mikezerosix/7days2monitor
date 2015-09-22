@@ -1,6 +1,8 @@
 package org.mikezerosix;
 
 import org.apache.commons.cli.*;
+import org.jolokia.jvmagent.JolokiaServer;
+import org.jolokia.jvmagent.JolokiaServerConfig;
 import org.mikezerosix.rest.*;
 import org.mikezerosix.service.SettingsService;
 import org.mikezerosix.service.UserService;
@@ -10,6 +12,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 import static org.mikezerosix.service.SettingsService.PROTECTED_URL;
 import static spark.Spark.*;
@@ -49,10 +54,11 @@ public class App {
     @Inject
     private CometResource cometResource;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         readArgs(args);
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfiguration.class);
         App app = context.getBean(App.class);
+
         app.start();
     }
 

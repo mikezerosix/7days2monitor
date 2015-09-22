@@ -42,7 +42,7 @@
             <legend>Connections</legend>
             <ul>
                 <li ng-repeat="connection in connections" ng-click="openConnection(connection)">
-                   <a> {{connection.type}}</a>
+                   <a ng-class="bold: connection.auto"> {{connection.type}}</a>
                 </li>
             </ul>
 
